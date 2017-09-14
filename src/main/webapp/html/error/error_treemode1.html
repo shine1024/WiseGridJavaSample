@@ -1,0 +1,112 @@
+<HTML>
+<HEAD>
+    <TITLE>응용예제 - 드릴다운</TITLE>
+    <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+    <link rel='stylesheet' href='/css/wisegrid.css' type='text/css'>
+    <script type='text/javascript' src='/js/WiseGrid_TAG.js'></script>
+    <script type='text/javascript' src='/js/WiseGrid_Property.js'></script>
+    <script type='text/javascript' src='/js/WiseGrid_Basic_Sample.js'></script>
+    <script language=javascript for='WiseGrid' event='Initialize()'>
+        init(document.WiseGrid);
+    </script>
+<script language=javascript>
+    function init(GridObj) {
+        setProperty(GridObj);
+        //WiseGrid의 배경으로 이미지를 넣는다.
+        GridObj.strBgImage = "/images/unipost_logo_white.gif";
+        GridObj.strHDClickAction = "select"
+
+        setHeader(GridObj);
+
+//	doQuery();
+    }
+
+    function setHeader(GridObj) {
+        //그리드에 컬럼을 등록한다.
+        GridObj.AddHeader("ITEM_FLAG", 		"ITEM_FLAG",		"t_imagetext", 		100,	200,	false);
+        GridObj.AddHeader("SEQ_NO",			"SEQ_NO", 		"t_text", 			8,		85,		true);
+
+        //AddHeader를 완료한 후 헤더를 그리드에 바인딩한다.
+        GridObj.BoundHeader();
+
+        //WiseGrid에 트리모드를 설정한다.
+        GridObj.SetTreeMode("ITEM_FLAG", "*", ",");
+
+        //해당 컬럼을 숨긴다.
+        GridObj.SetColHide("SEQ_NO", true);
+    }
+
+    function setImageList(GridObj) {
+        GridObj.AddImageList("ITEM_FLAG", "/images/drildown01.gif");
+        GridObj.AddImageList("ITEM_FLAG", "/images/drildown03.gif");
+        GridObj.AddImageList("ITEM_FLAG", "/images/drildown02.gif");
+    }
+
+    /* 에러조회 */
+    function error_doQuery() {
+        var GridObj = document.WiseGrid;
+        var servlet_url = "/servlet/wisegrid.sample.ErrorDrillDown";
+        setImageList(GridObj);
+        GridObj.SetParam("mode", "error");
+        GridObj.DoQuery(servlet_url);
+    }
+
+    /* 조회 */
+    function doQuery() {
+        var GridObj = document.WiseGrid;
+        var servlet_url = "/servlet/wisegrid.sample.ErrorDrillDown";
+        setImageList(GridObj);
+        GridObj.SetParam("mode", "search");
+        GridObj.DoQuery(servlet_url);
+    }
+</script>
+</HEAD>
+<BODY bgcolor='#FFFFFF' text='#000000'>
+<form name="examForm">
+    <input type="hidden" name="imageUrl" value="">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr height="20">
+            <td class="title1_k">
+                &nbsp;응용예제<br><hr>
+            </td>
+        </tr>
+        <tr height="20">
+            <td class="title2_k">
+                &nbsp;&nbsp;&nbsp; 드릴다운
+            </td>
+        </tr>
+
+    </table>
+    <hr>
+    <table width="98%" border="0" cellspacing="0" cellpadding="0"  class="title3">
+        <tr>
+            <td>
+                <table width="100%" border="0" cellpadding="2" cellspacing="0" >
+                    <tr>
+                        <td valign="top" align="right">
+                            <table border=0 cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td><script language="javascript">btn(" error_doQuery()","에러조회")</script></td>
+                                    <td><script language="javascript">btn("doQuery()","조회")</script></td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <table width="98%" border="0" cellpadding="0" cellspacing="0" >
+        <tr>
+            <td bgcolor="#00455d" height="3"></td>
+        </tr>
+        <tr>
+            <td align='left'>
+                <script>initWiseGrid("WiseGrid", "100%", "350");</script>
+            </td>
+        </tr>
+    </table>
+</form>
+</BODY>
+</HTML>

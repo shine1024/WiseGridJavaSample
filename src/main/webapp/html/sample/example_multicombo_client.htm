@@ -1,0 +1,354 @@
+<HTML>
+<HEAD>
+<TITLE>기본예제 - 멀티 콤보 </TITLE>
+<meta http-equiv='Content-Type' content='text/html; charset=euc-kr'>
+<link rel='stylesheet' href='/css/wisegrid.css' type='text/css'>
+<script type='text/javascript' src='/js/WiseGrid_TAG.js'></script>
+<script type='text/javascript' src='/js/WiseGrid_Property.js'></script>
+<script type='text/javascript' src='/js/WiseGrid_Basic_Sample.js'></script>
+
+<!--
+	WiseGrid 오브젝트가 생성되고 초기화된 후 발생하는 
+	JavaScript Event인 Initialize()를 받아 그리드의 헤더를 셋팅한다.	
+-->
+<script language=javascript for='WiseGrid' event='Initialize()'>
+	init(document.WiseGrid);
+</script>
+
+<!--  	서버와의 통신이 정상적으로 완료되면 발생한다.   -->
+<script language=javascript for="WiseGrid" event="EndQuery()">
+	GridEndQuery();
+</script> 
+
+<!--  	WiseGrid의 셀이 변경 했을때 발생하는 Javacript Event인 ChangeCell()을 받아 해당하는 작업을 진행한다.  -->
+<script language=javascript for="WiseGrid" event="ChangeCombo(strColumnKey, nRow, nOldIndex, nNewIndex)">
+	GridChangeCombo(strColumnKey, nRow);
+</script>
+
+<script language=javascript for="WiseGrid" event="ChangeCell(strColumnKey, nRow, vtOldValue, vtNewValue)">
+	GridChangeCell(strColumnKey, nRow);
+</script>
+
+
+<script language=javascript>
+function init(GridObj)  {
+	setProperty(GridObj);
+
+	//사용자가 헤더를 드래그해서 컬럼위치를 이동할수 없다.
+	GridObj.bHDMoving = false;
+
+	//헤더의 컬럼위치이동 콤보버튼을 비활성화 한다.
+	GridObj.bHDSwapping = false;
+
+	//헤더의 라인수를 설정한다. 
+	GridObj.nHDLines = 3;
+
+	//투명도를 조절한다.
+	GridObj.nAlphaLevel = 230;
+	
+	//그리드의 배경 이미지를 설정한다.
+	GridObj.strBgImage = "/images/unipost_logo_white.gif";
+
+	setHeader(GridObj);	
+	//doQuery();
+}
+
+function setHeader(GridObj) {   
+	//그리드에 컬럼을 등록한다. 
+	GridObj.AddHeader("SELECTED",		"선택",			"t_checkbox", 		2, 		40,		true);	
+	GridObj.AddHeader("B_CATE", 		"대분류",		"t_combo", 			30, 	120,	true);	
+	GridObj.AddHeader("M_CATE",			"중분류",		"t_combo", 			30, 	120,	true);
+	GridObj.AddHeader("S_CATE", 		"소분류",		"t_combo", 			30, 	120,	true);
+	GridObj.AddHeader("GOODS", 			"상품명", 		"t_text", 			100, 	200,	true);	
+	GridObj.AddHeader("COMPANY", 		"제조사", 		"t_text", 			50, 	100,	true);	
+	GridObj.AddHeader("SELLER", 		"판매자",		"t_text",			10, 	100,	true);
+	GridObj.AddHeader("PRICE", 			"가격", 			"t_number", 		22.3, 	80,		true);	
+	GridObj.AddHeader("SEQ_NO",			"SEQ_NO", 		"t_text", 			8,		85,		true);	
+
+	//그리드에 그룹을 등록한다. 
+	GridObj.AddGroup("DIV", "제품정보");
+	GridObj.AddGroup("ITEM_INFO", "가격정보");
+
+	//그룹에 헤더를 포함시킨다. 
+	GridObj.AppendHeader("DIV", "B_CATE");
+	GridObj.AppendHeader("DIV", "M_CATE");
+	GridObj.AppendHeader("DIV", "S_CATE");
+
+	GridObj.AppendHeader("ITEM_INFO", "GOODS");
+	GridObj.AppendHeader("ITEM_INFO", "COMPANY");
+	GridObj.AppendHeader("ITEM_INFO", "SELLER");
+	GridObj.AppendHeader("ITEM_INFO", "PRICE");
+	
+	//AddHeader를 완료한 후 헤더를 그리드에 바인딩한다
+	GridObj.BoundHeader();
+
+	//해당 컬럼을 숨긴다.
+	GridObj.SetColHide("SEQ_NO", true);	
+ 
+	//t_number 타입의 컬럼을 포맷타입으로  지정한다.
+	GridObj.SetNumberFormat("PRICE", "#,##0.00"); 
+	
+	AddComboList();
+}
+
+/*  콤보 리스트 추가 */
+function AddComboList(){
+var GridObj = document.WiseGrid;
+	
+	// B 라는 ComboListKey를 생성하여 추가
+	GridObj.AddComboList("B_CATE","B");
+	// B라는 ComboList에 ComboItem을 추가
+	GridObj.AddComboListValue("B_CATE","컴퓨터","C","B");
+	GridObj.AddComboListValue("B_CATE","모니터","M","B");
+	GridObj.AddComboListValue("B_CATE","프린터","P","B");
+
+	GridObj.AddComboList("M_CATE","C");		
+	GridObj.AddComboListValue("M_CATE","노트북","C1","C");
+	GridObj.AddComboListValue("M_CATE","조립PC","C2","C");
+	GridObj.AddComboListValue("M_CATE","데스크탑","C3","C");
+	
+	GridObj.AddComboList("M_CATE","M");		
+	GridObj.AddComboListValue("M_CATE","모니터","M1","M");
+ 
+	GridObj.AddComboList("M_CATE","P");		
+	GridObj.AddComboListValue("M_CATE","잉크젯복합기","P1","P");
+	GridObj.AddComboListValue("M_CATE","잉크젯프린터","P2","P");
+	GridObj.AddComboListValue("M_CATE","레이저복합기","P3","P");
+	GridObj.AddComboListValue("M_CATE","레이저프린터","P4","P");
+	GridObj.AddComboListValue("M_CATE","기타","P5","P");
+		
+	
+	GridObj.AddComboList("S_CATE","C1");		
+	GridObj.AddComboListValue("S_CATE","삼성 SENS","N1","C1");
+	GridObj.AddComboListValue("S_CATE","HP 컴팩","N2","C1");
+	GridObj.AddComboListValue("S_CATE","LG XNote","N3","C1");
+	GridObj.AddComboListValue("S_CATE","도시바","N4","C1");
+	GridObj.AddComboListValue("S_CATE","TG 삼보","N5","C1");
+	GridObj.AddComboListValue("S_CATE","ASUS","N6","C1");
+	GridObj.AddComboListValue("S_CATE","Lenovo[IBM]","N7","C1");
+	GridObj.AddComboListValue("S_CATE","후지쯔","N8","C1");
+	GridObj.AddComboListValue("S_CATE","애플","N9","C1");
+	GridObj.AddComboListValue("S_CATE","소니","N10","C1");
+	GridObj.AddComboListValue("S_CATE","기타","N11","C1");
+	
+	
+	GridObj.AddComboList("S_CATE","C2");		
+	GridObj.AddComboListValue("S_CATE","Feel-N","A1","C2");
+	GridObj.AddComboListValue("S_CATE","GT컴퓨터","A2","C2");
+	GridObj.AddComboListValue("S_CATE","아이프로컴","A3","C2");
+	GridObj.AddComboListValue("S_CATE","컴집","A4","C2");
+	GridObj.AddComboListValue("S_CATE","이컴투유","A5","C2");
+	GridObj.AddComboListValue("S_CATE","기타","A6","C2");
+	
+	GridObj.AddComboList("S_CATE","C3");		
+	GridObj.AddComboListValue("S_CATE","주연테크","D1","C3");
+	GridObj.AddComboListValue("S_CATE","삼성 MasicStation","D2","C3");
+	GridObj.AddComboListValue("S_CATE","TG삼보","D3","C3");
+	GridObj.AddComboListValue("S_CATE","LG","D4","C3");
+	GridObj.AddComboListValue("S_CATE","HP컴팩","D5","C3");
+	GridObj.AddComboListValue("S_CATE","기타","D6","C3");
+	
+	GridObj.AddComboList("S_CATE","M1");		
+	GridObj.AddComboListValue("S_CATE","LG","M1","M1");
+	GridObj.AddComboListValue("S_CATE","메인디스플레이","M2","M1");
+	GridObj.AddComboListValue("S_CATE","삼성 Syncmaster","M3","M1");
+	GridObj.AddComboListValue("S_CATE","다비디스플레이","M4","M1");
+	GridObj.AddComboListValue("S_CATE","오리온 Topsync","M5","M1");
+	GridObj.AddComboListValue("S_CATE","데이시스템","M6","M1");
+	GridObj.AddComboListValue("S_CATE","알파스캔","M7","M1");
+	GridObj.AddComboListValue("S_CATE","애니프로","M8","M1");
+	GridObj.AddComboListValue("S_CATE","MOTV","M9","M1");
+	GridObj.AddComboListValue("S_CATE","BTC","M10","M1");
+	GridObj.AddComboListValue("S_CATE","루미온","M11","M1");
+	GridObj.AddComboListValue("S_CATE","디스플레이랜드","M12","M1");
+	GridObj.AddComboListValue("S_CATE","현대","M13","M1");
+	GridObj.AddComboListValue("S_CATE","PCBANK","M14","M1");
+	GridObj.AddComboListValue("S_CATE","뷰소닉","M15","M1");
+	GridObj.AddComboListValue("S_CATE","기타","M16","M1");
+	
+	
+	GridObj.AddComboList("S_CATE","P1");		
+	GridObj.AddComboListValue("S_CATE","HP","IC1","P1");
+	GridObj.AddComboListValue("S_CATE","캐논","IC2","P1");
+	GridObj.AddComboListValue("S_CATE","삼성","IC3","P1");
+	GridObj.AddComboListValue("S_CATE","앱손","IC4","P1");
+	
+	GridObj.AddComboList("S_CATE","P2");		
+	GridObj.AddComboListValue("S_CATE","HP","IP1","P2");
+	GridObj.AddComboListValue("S_CATE","캐논","IP2","P2");
+	GridObj.AddComboListValue("S_CATE","삼성","IP3","P2");
+	GridObj.AddComboListValue("S_CATE","앱손","IP4","P2");
+	
+	GridObj.AddComboList("S_CATE","P3");		
+	GridObj.AddComboListValue("S_CATE","HP","LC1","P3");
+	GridObj.AddComboListValue("S_CATE","캐논","LC2","P3");
+	GridObj.AddComboListValue("S_CATE","삼성","LC3","P3");
+	GridObj.AddComboListValue("S_CATE","기타","LC4","P3");
+		
+	GridObj.AddComboList("S_CATE","P4");		
+	GridObj.AddComboListValue("S_CATE","HP","LP1","P4");
+	GridObj.AddComboListValue("S_CATE","캐논","LP2","P4");
+	GridObj.AddComboListValue("S_CATE","삼성","LP3","P4");
+	GridObj.AddComboListValue("S_CATE","FUJI","LP4","P4");
+	GridObj.AddComboListValue("S_CATE","기타","LP5","P4");
+	
+	GridObj.AddComboList("S_CATE","P5");		
+	GridObj.AddComboListValue("S_CATE","스캐너","E1","P5");
+	GridObj.AddComboListValue("S_CATE","도트/라벨프린터","E2","P5");
+	GridObj.AddComboListValue("S_CATE","포토프린터","E3","P5");
+	GridObj.AddComboListValue("S_CATE","기타","E4","P5");
+
+}
+
+/* 조회 */
+function doQuery() {
+	 
+	var GridObj = document.WiseGrid;
+	var servlet_url = "/servlet/wisegrid.sample.ExampleMulticombo_Client";
+
+	//WiseGrid가 서버에 전송할 mode를 셋팅한다.
+	GridObj.SetParam("mode", "search");
+		
+	//WiseGrid가 서버와 통신시에 데이터를 전달한다.
+	GridObj.DoQuery(servlet_url);
+}
+
+function doUpdate() {
+	 
+	var GridObj = document.WiseGrid;
+	var servlet_url = "/servlet/wisegrid.sample.ExampleMulticombo_Client";
+	var rowCount = GridObj.GetRowCount();
+	
+	for(var i = 0; i < rowCount; i++) {
+		if(GridObj.GetCellValue("SELECTED", i) == 1 ) {
+			if(GridObj.GetComboSelectedIndex('B_CATE',i) == -1  || GridObj.GetComboSelectedIndex('M_CATE',i) == -1  ||  GridObj.GetComboSelectedIndex('S_CATE',i) == -1 ) {
+				alert('수정할 데이터 중 선택되지않은 값이 있습니다.');
+				return;
+			}
+		}
+	}
+		
+	//WiseGrid가 서버에 전송할 mode를 셋팅한다.
+	GridObj.SetParam("mode", "update");
+		
+	//WiseGrid가 서버와 통신시에 데이터를 전달한다.
+	GridObj.DoQuery(servlet_url,'SELECTED');
+}
+
+/* 서버와의 통신이 정상적으로 완료되면 발생한다. */
+function GridEndQuery() {
+	var GridObj = document.WiseGrid;
+	if(GridObj.GetStatus() == "true"){
+		
+		//서버에서 mode로 셋팅한 파라미터를 가져온다.
+		var mode = GridObj.GetParam("mode");
+		if(mode == "search"){
+				//fieldset을 보이지 않게 한다.
+			document.all.message.style.display="none";
+			//textarea값을 비운다.
+			document.examForm.confirm.value =null;		
+		}
+		else if(mode == "update"){
+			//서버에서 update_data 셋팅한 파라미터를 가져온다.
+			var update_data = GridObj.GetParam("update_data");		
+			//fieldset을 보이게 한다.
+			document.all.message.style.display="";
+			//textarea에 서버에서 가져온 update_data 셋팅한 파라미터를 넣는다.
+			document.examForm.confirm.value = update_data;
+		}
+		
+	} else {
+		var error_msg = GridObj.GetMessage();// 서버에서 전송한 상태코드값이 false라면 에러메세지를 가져온다.
+		alert(error_msg);		
+	}	
+}
+
+/*
+	ChangeCombo Event 발생시 
+	대분류가 변경되면 중분류를 대분류의 HiddenValue값을 ComboLsitKey로 가지는 ComBoItemList를 가져와 빈값(-1) 을 선택하고
+	소분류는 중분류가 선택되기전까지 수정할수 없도록 disable 시킨다.
+	중분류 변경시에는 소분류는 중분류의 선택된 HiddenValue 값을  ComboLsitKey로 가지는 ComBoItemList를 가져와 빈값(-1) 을 선택
+*/
+function GridChangeCombo(strColumnKey, nRow) {
+	var GridObj = document.WiseGrid;
+
+	if(strColumnKey != "SELECTED") {
+		GridObj.SetCellValue("SELECTED", nRow, "1");
+	}
+	
+ 	if(strColumnKey == "B_CATE") {
+		combokey = GridObj.GetComboHiddenValue("B_CATE",GridObj.GetComboSelectedIndex('B_CATE',nRow),"B"); 	   
+		GridObj.SetComboSelectedIndex("M_CATE",nRow,-1,combokey); 
+		GridObj.SetComboSelectedIndex("S_CATE",nRow,-1,GridObj.GetComboSelectedListKey("S_CATE",nRow));
+		GridObj.SetCellActivation('S_CATE', nRow, 'disable'); 	
+	} else if(strColumnKey == "M_CATE") {	  
+		combokey = GridObj.GetComboHiddenValue("M_CATE",GridObj.GetComboSelectedIndex('M_CATE',nRow),GridObj.GetComboSelectedListKey("M_CATE",nRow)) ;			  
+		GridObj.SetCellActivation('S_CATE', nRow, 'edit'); 
+		GridObj.SetComboSelectedIndex("S_CATE",nRow,-1,combokey); 		
+	}	
+} 
+
+function GridChangeCell(strColumnKey, nRow) {
+	var GridObj = document.WiseGrid;
+
+	if(strColumnKey != "SELECTED") {
+		GridObj.SetCellValue("SELECTED", nRow, "1");
+	}
+}
+
+</script>
+
+</HEAD>
+<BODY bgcolor='#FFFFFF' text='#000000'>
+<form name="examForm">
+<input type="hidden" name="imageUrl" value="">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+	<tr height="20">
+		<td class="title1_k">
+			&nbsp;기본예제<br><hr>
+		</td>
+	</tr>
+	<tr height="20">
+		<td class="title2_k">
+				&nbsp;&nbsp;&nbsp; 멀티 콤보
+		</td>
+	</tr>
+</table>
+
+<hr>
+<table width="100%" border="0" cellpadding="2" cellspacing="0" >
+	<tr>
+	  <td valign="top" align="right">
+		<table border=0 cellpadding="0" cellspacing="0">
+			<tr>
+				<td><script language="javascript">btn("doQuery()","조회")</script></td>		 
+				<td><script language="javascript">btn("doUpdate()","수정")</script></td>		 
+			</tr>
+		</table>
+	  </td>
+	</tr>
+</table>
+
+<table width="98%" border="0" cellpadding="0" cellspacing="0" >
+	<tr> 
+		<td bgcolor="#00455d" height="3"></td>
+	</tr>
+	<tr>
+		<td align='left'>
+			<script>initWiseGrid("WiseGrid", "100%", "350");</script>
+		</td>
+	</tr>
+</table>
+
+<br>
+<!-- 등록, 수정, 삭제가 실행되면 발생한다.-->
+<div id='message' style="display:none;">
+	<fieldset >
+		<legend> [변경된 내용] </legend>
+		<textarea name="confirm" cols="101" rows="8" style="border:0px" scrolling="auto"  />
+	</fieldset>
+</div>
+</form>
+
+</BODY>
+</HTML>

@@ -1,0 +1,340 @@
+<HTML>
+<HEAD>
+<TITLE>기본예제 - 대용량압축조회</TITLE>
+<meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+<link rel='stylesheet' href='/css/wisegrid.css' type='text/css'>
+<script type='text/javascript' src='/js/WiseGrid_TAG.js'></script>
+<script type='text/javascript' src='/js/WiseGrid_Property.js'></script>
+<script type='text/javascript' src='/js/WiseGrid_Basic_Sample.js'></script>
+<script type='text/javascript' src='/js/jquery/jquery-1.11.1.min.js'></script>
+
+<!--
+	WiseGrid 오브젝트가 생성되고 초기화된 후 발생하는 
+	JavaScript Event인 Initialize()를 받아 그리드의 헤더를 셋팅한다.	
+-->
+<script language=javascript for='WiseGrid' event='Initialize()'>
+	init(document.WiseGrid);
+</script>
+
+<!--  	WiseGrid의 셀을 클릭했을때 발생하는 Javacript Event인 CellClick()을 받아 해당하는 작업을 진행한다.  -->
+<script language=javascript for="WiseGrid" event="CellClick(strColumnKey,nRow)">
+	GridCellClick(strColumnKey, nRow)
+</script>
+
+<!--  	서버와의 통신이 정상적으로 완료되면 발생한다.   -->
+<script language=javascript for="WiseGrid" event="EndQuery()">
+	GridEndQuery()
+</script>
+
+<!--  	통신중에 Stop버튼을 눌러 강제로 Connection을 끊었을 경우 발생한다.   -->
+<script language=javascript for="WiseGrid" event="AbortQuery()">
+	GridAbortQuery()
+</script>
+
+<script language=javascript>
+var query_timer = null;
+var from_time = null;
+var to_time = null;
+
+function init(GridObj) {	
+	setHeader(GridObj);
+	setProperty(GridObj);
+	GridObj.nAlphaLevel = 230;
+	GridObj.strBgImage = "/images/unipost_logo_white.gif";
+}
+
+function setHeader(GridObj) {   
+	//그리드에 컬럼을 등록한다. 
+	GridObj.AddHeader("SELECTED", 		"선택",			"t_checkbox", 	2, 		40,		true);	
+	GridObj.AddHeader("SEQ_NO",			"순번", 			"t_text", 		8,		60,		true);	
+	GridObj.AddHeader("ITEM_FLAG", 		"자재구분",		"t_combo", 		10, 	90,		true);	
+	GridObj.AddHeader("VENDOR_NAME",	"제조회사",		"t_text", 		50, 	80,		true);
+	GridObj.AddHeader("ITEM_CODE", 		"제품코드",		"t_text", 		20, 	100,	true);
+	GridObj.AddHeader("ITEM_NAME", 		"제품명", 		"t_text", 		500,	150,	true);	
+	GridObj.AddHeader("SPECIFICATION", 	"규격", 			"t_text", 		2000, 	200,	true);	
+	GridObj.AddHeader("UNIT", 			"단위",			"t_combo",		10, 	50,		true);
+	GridObj.AddHeader("PRICE", 			"출고가", 		"t_number", 	22.3, 	80,		true);	
+	GridObj.AddHeader("STOCK",			"재고량", 		"t_number", 	22,		60,		true);
+	GridObj.AddHeader("ADD_DATE",		"등록일", 		"t_date", 		8,		85,		true);	
+	GridObj.AddHeader("CHANGE_DATE",	"수정일", 		"t_date", 		8,		85,		true);	
+
+	//AddHeader를 완료한 후 헤더를 그리드에 바인딩한다
+	GridObj.BoundHeader();
+
+	//t_checkbox 타입의 컬럼에 체크를 전체적용한다.
+	GridObj.SetColHDCheckBoxVisible("SELECTED", true);
+
+	//해당 컬럼을 숨긴다.
+	GridObj.SetColHide("SELECTED", true);
+
+	//t_combo 타입의 컬럼에 Combo List 를 추가한다. 
+	GridObj.AddComboListValue("ITEM_FLAG", "프로세서", "CPU"); 
+	GridObj.AddComboListValue("ITEM_FLAG", "메모리", "MEM"); 
+	GridObj.AddComboListValue("ITEM_FLAG", "메인보드", "MAB"); 
+	GridObj.AddComboListValue("ITEM_FLAG", "그래픽카드", "VID"); 
+	GridObj.AddComboListValue("ITEM_FLAG", "모니터", "MOR");
+	GridObj.AddComboListValue("ITEM_FLAG", "하드디스크", "HDD");
+	GridObj.AddComboListValue("ITEM_FLAG", "CDROM", "CDR");
+	GridObj.AddComboListValue("ITEM_FLAG", "키보드", "KEY");
+	GridObj.AddComboListValue("ITEM_FLAG", "마우스", "MOU");
+
+	GridObj.AddComboListValue("UNIT", "EA", "EA");
+	
+	//셀의 글자색을 적용한다.
+	GridObj.SetColCellFgColor("ITEM_CODE", "0|0|255");	
+
+	//t_number 타입의 컬럼을 포맷타입으로  지정한다.
+	GridObj.SetNumberFormat("PRICE", "#,##0.00"); 
+	GridObj.SetNumberFormat("STOCK", "#,##0"); 
+
+	//t_date 타입의 컬럼을 포맷타입으로  지정한다.
+	GridObj.SetDateFormat("ADD_DATE", "yyyy/MM/dd");
+	GridObj.SetDateFormat("CHANGE_DATE", "yyyy/MM/dd");
+}
+
+/* 일반조회 */
+function doQuery() {
+	startTimer('N');
+		
+	var GridObj = document.WiseGrid;
+	var row_count = document.examForm.row_count.value;
+
+	var servlet_url = "/servlet/wisegrid.sample.ExampleSelect_Compress";
+
+	//WiseGrid가 서버에 전송할 mode를 셋팅한다.	
+	GridObj.SetParam("METHOD", "N");
+	GridObj.SetParam("ROWCOUNT", row_count);
+	GridObj.DoQuery(servlet_url, null, true, false);
+}
+
+/* 압축조회 */
+function doQueryZip() {
+	startTimer('Z');
+
+	var GridObj = document.WiseGrid;
+	var row_count = document.examForm.zip_row_count.value;
+
+	var servlet_url = "/servlet/wisegrid.sample.ExampleSelect_Compress";
+	//WiseGrid가 서버에 전송할 mode를 셋팅한다.
+	
+	GridObj.SetParam("METHOD", "Z");	
+	GridObj.SetParam("ROWCOUNT", row_count);
+	
+	//WiseGrid가 서버와 통신시에 데이터를 전달한다. 
+	GridObj.DoQuery(servlet_url, null, true, false);
+}
+
+function getCenterArea() {
+	var center_value = document.WiseGrid.clientWidth / 2 - 140;
+
+	if(center_value < 0)
+		center_value = 0;
+		
+	return center_value;
+}
+
+/* 조회방법에 따른 시작시간 */
+function startTimer(method) {	
+	document.getElementById('loading_bar').style.left = getCenterArea();
+	document.getElementById('loading_bar').style.display = "block";
+
+	toDay = new Date();
+	from_time = toDay.getTime();
+
+	if(method == "N") {// Normal
+	
+		document.getElementById('sec_count').innerHTML = "조회방법 : <font color='blue'>일반조회중</font>&nbsp&nbsp&nbsp&nbsp<font color='gray'>";
+	} else {// Zip	
+		document.getElementById('sec_count').innerHTML = "조회방법 : <font color='blue'>압축조회중</font>&nbsp&nbsp&nbsp&nbsp<font color='gray'>";
+	}
+}
+
+/* 조회방법에 따른 끝시간 */
+function endTimer(method) {
+	document.getElementById('loading_bar').style.display = "none";
+
+	toDay = new Date();
+	to_time = toDay.getTime();
+
+	total_time = (to_time - from_time) / 1000;
+	if(method == "N") {// Normal	
+		document.getElementById('sec_count').innerHTML = "조회방법 : <font color='red'>일반조회완료</font>&nbsp&nbsp&nbsp&nbsp<font color='purple'>" + total_time + "</font> 초";
+		clearInterval(query_timer);
+	} else { // Zip	
+		document.getElementById('sec_count').innerHTML = "조회방법 : <font color='red'>압축조회완료</font>&nbsp&nbsp&nbsp&nbsp<font color='purple'>" + total_time + "</font> 초";
+		clearInterval(query_timer);
+	}
+}
+
+/* 서버와의 통신이 정상적으로 완료되면 발생한다. */
+function GridEndQuery() {
+	var GridObj = document.WiseGrid;
+
+	if(GridObj.GetStatus()  == "true") { // 서버에서 전송한 상태코드를 가져온다.
+		var method = GridObj.GetParam("METHOD");//서버에서 METHOD 셋팅한 파라미터를 가져온다.
+		endTimer(method);
+	} else {
+		errMessage("<font color='red'>에러발생</font>");
+	}
+
+
+	for(i=0; i<GridObj.GetRowCount(); i++) {
+		if(i > 5000) {
+			GridObj.SetCellFgColor('PRICE', i , '255|10|10');
+		}
+	}
+}
+
+/* 통신중에 Stop버튼을 눌러 강제로 Connection을 끊었을 경우 발생한다. */
+function GridAbortQuery() {
+	alert("사용자에 의해 통신이 중단되었습니다.");
+	errMessage("<font color='red'>사용자에 의한 중단</font>");
+}
+
+function errMessage(message) {
+	document.getElementById('sec_count').innerHTML = message;
+}
+
+function excelDown() {
+	var GridObj = document.WiseGrid;
+	GridObj.ExcelExport("", "", true, true);
+}
+
+
+
+</script>
+
+</HEAD>
+<BODY bgcolor='#FFFFFF' text='#000000'>
+<form name="examForm">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+	<tr height="20">
+		<td class="title1_k">
+			&nbsp;기본예제<br><hr>
+		</td>
+	</tr>
+	<tr height="20">
+		<td class="title2_k">
+				&nbsp;&nbsp;&nbsp; 대용량 압축조회 
+		</td>
+	</tr>
+</table>
+<hr>
+<table width="98%" border="0" cellspacing="0" cellpadding="0"  class="title3">
+	<tr>
+
+		<td width="80">일반 조회</td>
+		<td width="100">
+			<select name="row_count">
+				<option value="1000">1,000건</option>
+				<option value="5000">5,000건</option>
+				<option value="10000" selected>10,000건</option>
+				<option value="20000">20,000건</option>
+				<option value="30000">30,000건</option>
+				<option value="60000">60,000건</option>
+				<option value="65000">65,000건</option>
+				<option value="65537">65,537건</option>
+			</select>
+		</td>
+		<td width="100">
+			<table width="100%" border="0" cellpadding="2" cellspacing="0" >
+				<tr>
+				  <td valign="top">
+					<div align="left"><script language="javascript">btn("doQuery()","조회")</script></div>
+					<td><script language="javascript">btn("excelDown()","EXCEL")</script></td>
+				  </td>
+				</tr>
+			</table>
+		</td>
+
+		<td width="100"></td>
+
+		<td width="80">압축 조회</td>
+		<td width="100">
+			<select name="zip_row_count">
+				<option value="1000">1,000건</option>
+				<option value="5000">5,000건</option>
+				<option value="10000" selected>10,000건</option>
+				<option value="20000">20,000건</option>
+				<option value="30000">30,000건</option>
+				<option value="60000">60,000건</option>
+				<option value="65537">65,537건</option>
+			</select>
+		</td>
+		<td width="100">
+			<table width="100%" border="0" cellpadding="2" cellspacing="0" >
+				<tr>
+				  <td valign="top">
+					<div align="left"><script language="javascript">btn("doQueryZip()","압축조회")</script></div>
+				  </td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+
+	<table width="98%" border="0" cellspacing="0" cellpadding="0"  class="title3">
+	<tr>
+		<td align="right"><div id="sec_count" name="sec_count"><font color='blue'>#조회시간을 확인할 수 있습니다#</font></div></td>
+	</tr>
+</table>
+<table width="98%" border="0" cellpadding="0" cellspacing="0" >
+<tr> 
+	<td bgcolor="#00455d" height="3"></td>
+</tr>
+<tr>
+	<td align='left'>
+		<script>initWiseGrid("WiseGrid", "100%", "350");</script>
+	</td>
+</tr>
+</table>
+</form>
+<div id="loading_bar" style="position:absolute; left:250;top:320;width:280px; height:13px; z-index:100; display:none"><iframe src="grid_loading.htm" name="framebody" scrolling="no" frameborder="0" width="100" height="50"></iframe></div>
+</BODY>
+</HTML>
+
+
+<?xml version='1.0' encoding='utf-8'?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<!-- Note:  A "Server" is not itself a "Container", so you may not
+     define subcomponents such as "Valves" at this level.
+     Documentation at /docs/config/server.html
+ -->
+
+<?xml version='1.0' encoding='utf-8'?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<!-- Note:  A "Server" is not itself a "Container", so you may not
+     define subcomponents such as "Valves" at this level.
+     Documentation at /docs/config/server.html
+ -->
+

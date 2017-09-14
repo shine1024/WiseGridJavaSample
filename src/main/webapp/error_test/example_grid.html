@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WiseGrid</title>
+    <script src="/js/WiseGrid_TAG.js"></script>
+    <script language=javascript for="WiseGrid" event="Initialize()">
+        initTest();
+    </script>
+    <script language=javascript for="WiseGrid" event="CellDblClick(strColumnKey, nRow)">
+        alert('Cell DbClick');
+    </script>
+    <script>
+        function initTest() {
+
+            var gridObj = document.WiseGrid;
+            gridObj.AddHeader('TEXT1', 'TEXT1', 't_text', 10, 100, true);
+            gridObj.AddHeader('TEXT2', 'TEXT2', 't_text', 10, 100, true);
+            gridObj.AddHeader('TEXT3', 'TEXT3', 't_text', 10, 100, true);
+
+            gridObj.BoundHeader();
+
+            gridObj.AddRow();
+            gridObj.SetCellValue('TEXT1', 0 , 'text1');
+            gridObj.SetCellValue('TEXT2', 0 , 'text2');
+            gridObj.SetCellValue('TEXT3', 0 , 'text3');
+
+        }
+
+    </script>
+</head>
+<body>
+<script>initWiseGrid('WiseGrid', '400', '350');</script>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+<title>기본예제 - 디자인 - Design 2</title>	
+<link rel='stylesheet' href='/css/wisegrid.css' type='text/css'>
+<script type='text/javascript' src='/js/WiseGridUni_TAG.js'></script>
+<script type='text/javascript' src='/js/WiseGrid_Property.js'></script>
+<script type='text/javascript' src='/js/WiseGrid_Basic_Sample.js'></script>
+
+</head>
+<body>
+<table width="97%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+	<td>
+		<fieldset>
+		<legend><span id="iname" class='title1'>Design 2</span></legend>
+		<br>
+		<table width="100%" border="0" cellpadding="1" cellspacing="1">
+			<tr> 
+				<td valign="top"><img src="/images/wisegrid_colorcode_02.gif" width="300" height="460"></td>
+				<td width="100%" valign="top">
+					<fieldset>
+						<legend><img src="/images/ico_question.gif" width="9" height="10" align="absmiddle"> 디자인소스보기 <a href="javascript:tagCopy('design_source')">[클립보드로 소스복사]</a> </legend>
+<pre id="design_source" class="source">
+function setProperty(GridObj) {	
+	GridObj.strHDFontName = "돋움";
+	GridObj.strCellFontName = "돋움";
+
+	// Cell Font Setting
+	GridObj.nCellFontSize = 10;
+
+	// Header Font Setting
+	GridObj.nHDFontSize = 10;
+	GridObj.bHDFontBold = true;
+
+	GridObj.bMultiRowMenuVisible = true;
+
+	// Header Color
+	GridObj.strHDBgColor="81|162|112";
+	GridObj.strHDFgColor="255|255|255";
+
+	// Cell Color
+	GridObj.strGridBgColor="255|255|255";
+	GridObj.strCellBgColor="255|255|255";
+	GridObj.strCellFgColor="51|51|51";
+	GridObj.strAlternateRowsBgColor="244|250|250";
+
+	// Border Style
+	GridObj.strGridBorderColor = "195|195|193";
+	GridObj.strHDBorderStyle = "solidline";
+	GridObj.strCellBorderStyle = "solidline";
+
+	// ETC Color
+	GridObj.strActiveRowBgColor="214|228|236";
+	GridObj.strSelectedCellBgColor = "241|231|221";
+	GridObj.strSelectedCellFgColor = "51|51|51";
+	GridObj.strStatusbarBgColor = "243|243|243";
+	GridObj.strStatusbarFgColor = "101|101|101";
+
+	// BG Image
+	GridObj.nAlphaLevel = 200;
+	GridObj.strBgImageStyle = "relative"
+	GridObj.strBgImage = "/images/unipost_logo_white.gif";
+
+	// ETC
+	GridObj.bRowSelectorVisible = false;
+	GridObj.bHDSwapping = false;
+	GridObj.nRowHeight = 22;
+	GridObj.SetHelpInfo('http://wisegrid.icompia.com/user_manual/'
+								+ 'wisegrid_user_manual.html', 900, 600, false);
+	GridObj.bAbortQueryVisible = true;
+
+	// 아래의 메소드들은 반드시 BoundHeader 이후 사용되어야 합니다.
+	GridObj.SetColHDCheckBoxVisible("SELECTED", false);
+	GridObj.SetColCellBgColor("SELECTED", "235|235|235");
+}
+</pre>
+					</fieldset>
+				</td>
+			</tr>
+		</table>
+		</fieldset>
+	</td>
+</tr>
+</table>
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+<tr> 
+<td align="right" height="40"><table border="0" cellspacing="3" cellpadding="0">
+  <tr> 
+	<td><script language="javascript">btn("self.close()","Close")</script></td>
+  </tr>
+</table></td>
+</tr>
+</table>
+</body>
+</html>

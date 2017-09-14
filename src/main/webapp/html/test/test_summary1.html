@@ -1,0 +1,78 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>SummarayBar Total Value</title>
+    <script for="WiseGrid" event="Initialize()">
+        initialize();
+    </script>
+    <script type='text/javascript' src='/js/WiseGrid_TAG.js'></script>
+</head>
+<body>
+<script>initWiseGrid("WiseGrid", "100%", "350")</script>
+<script>
+    var gridObj = document.WiseGrid;
+    var data = [
+            ['테스트', '1' , '품목1', '1', '100', '100', '500'] ,
+            ['', '1' , '품목2', '2', '200', '100', '500'] ,
+            ['', '2' , '품목1', '1', '100', '100', '100'] ,
+            ['', '3' , '품목1', '3', '100', '300', '500'] ,
+            ['', '3' , '품목2', '1', '200', '200', '500'] ,
+            ['', '4' , '품목1', '1', '100', '100', '900'] ,
+            ['', '4' , '품목2', '1', '200', '200', '900'] ,
+            ['', '4' , '품목3', '2', '300', '600', '900'] ,
+    ]
+
+    gridObj.nAlphaLevel  = 0;
+    gridObj.bHDMoving = false;
+    gridObj.bHDSwapping = false;
+    gridObj.bRowSelectorVisible = false;
+    gridObj.strRowBorderStyle = 'none';
+    gridObj.nRowSpacing = 0;
+    gridObj.strHDClickAction = 'select';
+
+    function initialize() {
+        setHeader();
+        setGridData();
+        sumTotalValue();
+    }
+
+
+    function setHeader() {
+        gridObj.AddHeader("DEPARTMENT", "매장명", "t_text", 10, 100, true);
+        gridObj.AddHeader("NO", "순번", "t_number", 10, 100, true);
+        gridObj.AddHeader("ITEM", "품목명", "t_text", 10, 100, true);
+        gridObj.AddHeader("UNIT", "수량", "t_number", 10, 100, true);
+        gridObj.AddHeader("PRICE", "단가", "t_number", 10, 100, true);
+        gridObj.AddHeader("AMOUNT", "금액", "t_number", 10, 100, true);
+        gridObj.AddHeader("TOTAL", "정산금액", "t_number", 10, 100, true);
+        gridObj.boundHeader();
+    }
+
+    function setGridData() {
+        for(var n=0; n<5; n++) {
+            gridObj.AddRow();
+            gridObj.SetCellValue('DEPARTMENT', n, data[n][0]);
+            gridObj.SetCellValue('NO', n, data[n][1]);
+            gridObj.SetCellValue('ITEM', n, data[n][2]);
+            gridObj.SetCellValue('UNIT', n, data[n][3]);
+            gridObj.SetCellValue('PRICE', n, data[n][4]);
+            gridObj.SetCellValue('AMOUNT', n, data[n][5]);
+            gridObj.SetCellValue('TOTAL', n, data[n][6]);
+        }
+    }
+
+    function sumTotalValue() {
+        gridObj.SetGroupMerge('AMOUNT');
+        gridObj.AddSummaryBar('SUMMARY', '합계', 'summaryall', 'sum', 'AMOUNT,TOTAL');
+        var n, mergeIndex;
+        var mergeCount = gridObj.GetMergeCount('AMOUNT'), sumValue = 0;
+        for(n=0; n<mergeCount; n++) {
+            mergeIndex = gridObj.GetRowIndexFromMergeIndex('AMOUNT', n);
+            sumValue = parseFloat(gridObj.GetCellValue('AMOUNT', mergeIndex), 10) + sumValue;
+        }
+        gridObj.SetSummaryBarValue('SUMMARY', 'AMOUNT', 0, sumValue);
+    }
+
+</script>
+</body>
+</html>

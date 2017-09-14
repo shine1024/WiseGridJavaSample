@@ -1,0 +1,48 @@
+<HTML>
+<HEAD>
+<TITLE> New Document </TITLE>
+<link rel="stylesheet" href="/css/wisegrid.css" type="text/css">
+<script>
+function search() {
+	parent.leftFrame.lmenu.searchKey.value = form1.searchKey.value;
+	parent.right.location.href = "../demo/search.htm";
+}
+
+function removeImg(form) {
+	alert(form.style);
+}
+
+function enableEnterKey() {
+	function onkeypress(e) {
+		if(window.event.keyCode == 13 && window.event.srcElement.type != "textarea" && window.event.srcElement.type != "button") { // 13 : Enter
+			if(typeof search == "function") 
+				search();
+		}
+	}
+	document.onkeypress = onkeypress;
+}
+enableEnterKey();
+
+</script>
+</HEAD>
+<BODY topmargin="0" leftmargin="0" style="margin-left:0px; margin-top:0px; margin-bottom:0px;margin-right:0px;background-image: url(/images/bg_top_title.gif);background-repeat: repeat-x; background-position: left top;">
+<form name="form1">
+<TABLE height="44" cellpadding="0" cellspacing="0" border="0" width="100%">
+	<TR>
+		<TD width="234" height="1" align="center"><img src="/images/menu/ftv2blank.gif" width="234" height="1"></TD>
+		<TD width="100%" height="72" rowspan="3" align="right" valign="middle"><img src="/images/img_top.gif" width="468" height="69" border="0" usemap="#Map"></TD>
+	</TR>
+	<TR>
+		<TD height="43"><img src="/images/title_top.gif" width="207" height="42" hspace="3"></TD>
+	</TR>
+	<TR>
+		<TD height="28" valign="bottom" style="padding-bottom:4px">
+		</TD>
+	</TR>
+	<TR>
+		<TD height="2" colspan="2"></TD>
+	</TR>
+</TABLE>
+</form>
+</BODY>
+</HTML>

@@ -1,0 +1,39 @@
+<html>
+<head>
+<title>와이즈 그리드 예제</title>
+<meta http-equiv="Content-Type" content="text/html; charset=euc-kr">
+	<style>
+		.leftMenu{ border: 1px dotted gray; }
+	</style>
+	<script src="/js/jquery/jquery-1.11.1.min.js"></script>
+	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+	<script>
+		$(function() {
+			$( "#resizable" ).resizable({
+				resize: function( event, ui ) {
+					var ss = ui.size.width - 20;
+					alert(ss);
+					if(ss > 0) {
+						document.WG_LEFT_MENU.SetColWidth("MENUNAME", ss);
+					}
+				}
+//				ghost: true
+			});
+		});
+	</script>
+</head>
+<frameset rows="*,30" cols="*" frameborder="NO" border="0"  framespacing="0" > 
+	<frameset rows="74,*" cols="*" frameborder="NO" border="0" framespacing="0"> 
+		<frame name="topFrame" noresize src="html/layout/top.htm" scrolling="NO" >
+			<frameset cols="300,*" frameborder="NO" border="0" framespacing="0">
+				<frame id="resizable" class="leftMenu" name="leftFrame" src="html/layout/left_menu.htm" scrolling="NO" >
+				<frame name="rightFrame" src="html/sample/example_select.htm" scrolling="YES">
+			</frameset>
+		</frameset>
+	<frame name="bottomFrame" scrolling="NO" noresize src="html/layout/bottom.htm">
+</frameset>
+<noframes> 
+<body bgcolor="#FFFFFF" text="#000000">
+</body>
+</noframes> 
+</html>

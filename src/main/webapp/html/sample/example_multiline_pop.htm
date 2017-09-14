@@ -1,0 +1,52 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+<title>응용예제 - 줄바꿈</title>	
+<link rel='stylesheet' href='/css/wisegrid.css' type='text/css'>
+<script type='text/javascript' src='/js/WiseGridUni_TAG.js'></script>
+<script type='text/javascript' src='/js/WiseGrid_Property.js'></script>
+<script type='text/javascript' src='/js/WiseGrid_Basic_Sample.js'></script>
+<script>
+function init() {
+	var paramObject = window.dialogArguments;
+
+	document.getElementById("iname").innerHTML = paramObject.iname;
+	document.getElementById("summarion").innerHTML = paramObject.summarion;
+	document.getElementById("idesc").innerHTML = paramObject.idesc;
+}
+</script>
+</head>
+<body>
+<table width="97%" border="0" cellspacing="0" cellpadding="0">
+	<tr>
+		<td>
+			<fieldset>
+			<legend><span id="iname" class='title1'></span></legend><br>
+				<table width="100%" border="0" cellpadding="1" cellspacing="1">
+					<tr> 
+						<td bgcolor="#5FB1CE" height="60"><font color="white"><b>요약</b></font></td>
+						<td><div id="summarion"></div></td>
+					</tr>
+					<tr> 
+						<td bgcolor="#5FB1CE" height="30"><font color="white"><b>본문</b></font></td>
+						<td><div id="idesc"></div></td>
+					</tr>
+				</table>
+			</fieldset>
+		</td>
+	</tr>
+</table>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tr> 
+		<td align="right" height="40"><table border="0" cellspacing="3" cellpadding="0">
+	<tr> 
+		<td><script language="javascript">btn("self.close()","Close")</script></td>
+	</tr>
+</table>
+
+<script>
+	init();
+</script>
+</body>
+</html>

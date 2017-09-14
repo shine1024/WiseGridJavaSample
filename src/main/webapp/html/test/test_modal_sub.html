@@ -1,0 +1,45 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>SummarayBar Total Value</title>
+    <script for="WiseGrid" event="Initialize()">
+        initialize();
+    </script>
+    <script type='text/javascript' src='/js/WiseGrid_TAG.js'></script>
+</head>
+<body>
+<script>initWiseGrid("WiseGrid", "100%", "350")</script>
+<script>
+    var gridObj = document.WiseGrid;
+
+    function initialize() {
+        setHeader();
+        setGridData();
+        setProperty()
+    }
+
+
+    function setHeader() {
+        gridObj.AddHeader("DEPARTMENT", "매장명", "t_text", 10, 100, true);
+        gridObj.AddHeader("NO", "순번", "t_number", 10, 100, true);
+        gridObj.AddHeader("ITEM", "품목명", "t_text", 10, 100, true);
+        gridObj.AddHeader("UNIT", "수량", "t_number", 10, 100, true);
+        gridObj.AddHeader("PRICE", "단가", "t_number", 10, 100, true);
+        gridObj.AddHeader("AMOUNT", "금액", "t_number", 10, 100, true);
+        gridObj.AddHeader("TOTAL", "정산금액", "t_number", 10, 100, true);
+        gridObj.boundHeader();
+    }
+    
+    function setProperty() {
+//        gridObj.strActiveRowBgColor = "214|228|236";
+        gridObj.strRowSelectorBgColor = '100|100|100';
+//        gridObj.SetCellBgColor('DEPARTMENT', 0, '255|10|10');
+        gridObj.SetRowBgColor(0, "214|228|236");
+    }
+    
+    function setGridData() {
+        gridObj.AddRow();
+    }
+</script>
+</body>
+</html>

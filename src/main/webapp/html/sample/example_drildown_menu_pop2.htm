@@ -1,0 +1,66 @@
+<html>
+<head>
+<meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+<link rel='stylesheet' href='/css/wisegrid.css' type='text/css'>
+<title>응용예제 - 메뉴 - 즐겨찾기 추가</title>
+<script>
+	var treeNodeNo = 0;
+	var GridObj = null;
+	var curTreeKey = "";
+
+function load_value() {
+	GridObj = window.dialogArguments.GridObj;
+	curTreeKey = window.dialogArguments.curTreeKey;
+	treeNodeNo = window.dialogArguments.globalTreeNodeNo;
+
+	treeNodeNo = treeNodeNo + 1;
+}
+
+/* 아이템 체크 */
+function chkValue() {
+	var itemName = document.form.itemName.value;
+	var itemURL = document.form.itemURL.value;
+
+	if(itemName == "") 	{
+		alert("노드명은 필수입력입니다.");
+		document.form.itemName.focus();
+		return false;
+	}
+		
+	if(itemURL == "") {
+		alert("URL은 필수입력입니다.");
+		document.form.itemURL.focus();
+		return false;
+	}
+	return true;
+}
+
+/* 아이템 추가 */
+function insertItem() {
+	if(!chkValue())
+		return;
+
+	var newTreeKey = "USER" + treeNodeNo;
+	var newTreeText = document.form.itemName.value;
+	var newURL = "http://" + document.form.itemURL.value;
+
+	//현재트리키에 새로운 트리를 추가
+	GridObj.InsertTreeNode(curTreeKey, newTreeKey, newTreeText);
+	GridObj.SetCellImage("MENU_ID", GridObj.GetRowIndexFromTreeKey(newTreeKey), "3");
+	GridObj.SetCellValue("MENU_URL", GridObj.GetRowIndexFromTreeKey(newTreeKey), newURL);
+
+	window.returnValue = treeNodeNo;
+	window.close();
+}
+
+</script>
+</head>
+<body onLoad="load_value()">
+<form name="form">
+
+	노드명 : <input type="text" name="itemName"><br>
+	URL : http://<input type="text" name="itemURL" size="15" onkeydown="if(event.keyCode == 13){insertItem();}"><br>
+	<input type="button" value="입력" onClick="insertItem()"><br>
+</form>
+</body>	
+</html>

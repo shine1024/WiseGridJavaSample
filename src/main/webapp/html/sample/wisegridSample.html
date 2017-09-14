@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script type='text/javascript' src='/js/WiseGrid_TAG.js'></script>
+    <script  for="WiseGrid" event="Initialize()">
+        init();
+    </script>
+    <script>
+        function init() {
+            var GridObj = document.WiseGrid;
+
+            setHeader(GridObj)
+            setProperty(GridObj);
+
+        }
+
+
+        function setHeader(GridObj) {
+            GridObj.AddHeader("SELECTED",		"선택",			"t_checkbox", 	2, 		80,		true);
+            GridObj.AddHeader("NAME", 	"이름",		"t_text", 		50, 	80,		true);
+            GridObj.AddHeader("AGE", 		"나이",		"t_number", 	20, 	100,	false);
+            GridObj.AddHeader("ADDRESS", 		"주소", 		"t_text", 		500, 	150,	true);
+            GridObj.BoundHeader();
+        }
+
+        function setProperty(GridObj) {
+            GridObj.strHDFontName = "돋움";
+            GridObj.strCellFontName = "돋움";
+            // Cell Font Setting
+            GridObj.nCellFontSize = 10;
+
+            // Header Font Setting
+            GridObj.nHDFontSize = 10;
+            GridObj.bHDFontBold = true;
+
+            GridObj.bMultiRowMenuVisible = true;
+
+            // Header Color
+            GridObj.strHDBgColor="95|177|206";
+            GridObj.strHDFgColor="255|255|255";
+
+            // Cell Color
+            GridObj.strGridBgColor="255|255|255";
+            GridObj.strCellBgColor="255|255|255";
+            GridObj.strCellFgColor="51|51|51";
+
+            // Border Style
+            GridObj.strGridBorderColor = "204|204|204";
+            GridObj.strGridBorderStyle = "solidline";
+            GridObj.strHDBorderStyle = "solidline";
+            GridObj.strCellBorderStyle = "solidline";
+
+            // ETC Color
+            GridObj.strActiveRowBgColor="214|228|236";
+            GridObj.strSelectedCellBgColor = "241|231|221";
+            GridObj.strSelectedCellFgColor = "51|51|51";
+            GridObj.strStatusbarBgColor = "243|243|243";
+            GridObj.strStatusbarFgColor = "101|101|101";
+            GridObj.strProgressbarColor = "0|126|174";
+
+            // ETC
+            GridObj.bRowSelectorVisible = true;
+            GridObj.bHDSwapping = true;
+            GridObj.nAlphaLevel = 0;
+            GridObj.nRowHeight = 14;
+        }
+
+
+        function selectQuery() {
+            var GridObj = document.WiseGrid;
+            var servlet_url = "/wisegrid/sample";
+            GridObj.DoQuery(servlet_url);
+        }
+
+
+
+
+    </script>
+</head>
+<body>
+<input type="button" onclick="selectQuery();" value="조회"/>
+<script>initWiseGrid("WiseGrid", "100%", "350");</script>
+</body>
+</html>

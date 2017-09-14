@@ -1,0 +1,301 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>기본예제 - 기본</title>
+<link rel='stylesheet' href='/css/wisegrid.css' type='text/css'>
+<script type='text/javascript' src='/js/WiseGrid_TAG.js'></script>
+<script type='text/javascript' src='/js/WiseGrid_Property.js'></script>
+<script type='text/javascript' src='/js/WiseGrid_Basic_Sample.js'></script>
+
+<!--
+	WiseGrid 오브젝트가 생성되고 초기화된 후 발생하는 
+	JavaScript Event인 Initialize()를 받아 그리드의 헤더를 셋팅한다.	
+-->
+<script language=javascript for="WiseGrid1" event="Initialize()">
+	init1();	
+</script>
+
+<script language=javascript for="WiseGrid1" event="BeforeShowUserContextMenu(strMenuKey, strCol, nRow)">
+  if(strMenuKey == "MENU_CELL")
+    beforeClickContextMenu(strCol, nRow);
+</script>
+
+<script language=javascript for="WiseGrid1" event="UserContextMenuClick(strMenuKey, strMenuItemKey, strCol, nRow)">
+  if(strMenuKey == "MENU_CELL")
+    gridClickContextMenu(strMenuItemKey, strCol, nRow);
+</script>
+
+<script language="JavaScript">
+
+function init1() {
+	var GridObj = document.WiseGrid1;
+	setHeader(GridObj);
+	setProperty(GridObj);
+	// 그리드의 배경 이미지 지정
+	GridObj.strBgImage = "/images/unipost_logo_white.gif";
+	// 사용자 메뉴 사용 
+	GridObj.bUserContextMenu = true;
+	
+	// AreaMerge 사용을 위해 Property 지정
+	initAreaMergeProperty(GridObj);
+	getdatetime();
+	doQuery(GridObj);
+}
+
+function setHeader(GridObj) {		
+
+	//그리드에 컬럼을 등록한다. 
+	GridObj.AddHeader("SELECTED",			"선택",				"t_checkbox", 	2, 			40,		true);	
+	GridObj.AddHeader("ITEM_FLAG", 			"자재구분",		"t_combo", 		10, 		90,		true);	
+	GridObj.AddHeader("VENDOR_NAME", 	"제조회사",		"t_text", 			50, 		80,		true);
+	GridObj.AddHeader("ITEM_CODE", 		"제품코드",		"t_imagetext", 	20, 		100,		false);
+	GridObj.AddHeader("ITEM_NAME", 		"제품명", 			"t_text", 			500, 		150,		true);	
+	GridObj.AddHeader("SPECIFICATION", 	"규격", 			"t_text", 			2000, 	200,		true);	
+	GridObj.AddHeader("UNIT", 					"단위",				"t_combo",		10, 		50,		true);
+	GridObj.AddHeader("PRICE", 					"출고가", 			"t_number", 		22.3, 	80,		true);	
+	GridObj.AddHeader("STOCK",					"재고량", 			"t_number", 		22.3,		60,		true);
+	GridObj.AddHeader("ADD_DATE",			"등록일", 			"t_date", 			8,			85,		true);	
+	GridObj.AddHeader("CHANGE_DATE",	"수정일", 			"t_date", 			8,			85,		true);	
+	GridObj.AddHeader("SEQ_NO",				"SEQ_NO", 		"t_text", 			8,			85,		true);	
+	
+	//AddHeader를 완료한 후 헤더를 그리드에 바인딩한다
+	GridObj.BoundHeader();	
+	
+	//t_checkbox 타입의 컬럼에 체크를 전체적용한다.
+	GridObj.SetColHDCheckBoxVisible("SELECTED", true);
+	
+	//해당 컬럼을 숨긴다.
+	GridObj.SetColHide("SEQ_NO", true);
+	
+	//t_combo 타입의 컬럼에 Combo List 를 추가한다. 
+	GridObj.AddComboListValue("ITEM_FLAG", "프로세서", "CPU"); 
+	GridObj.AddComboListValue("ITEM_FLAG", "메모리", "MEM"); 
+	GridObj.AddComboListValue("ITEM_FLAG", "메인보드", "MAB"); 
+	GridObj.AddComboListValue("ITEM_FLAG", "그래픽카드", "VID"); 
+	GridObj.AddComboListValue("ITEM_FLAG", "모니터", "MOR");
+	GridObj.AddComboListValue("ITEM_FLAG", "하드디스크", "HDD");
+	GridObj.AddComboListValue("ITEM_FLAG", "CDROM", "CDR");
+	GridObj.AddComboListValue("ITEM_FLAG", "키보드", "KEY");
+	GridObj.AddComboListValue("ITEM_FLAG", "마우스", "MOU");
+
+	GridObj.AddComboListValue("UNIT", "EA", "EA");
+
+	//이미지리스트에 이미지 URL을 추가한다
+	GridObj.AddImageList("ITEM_CODE", "/images/bt_search.gif");
+
+	//셀의 글자색을 적용한다.
+	GridObj.SetColCellFgColor("ITEM_CODE", "0|0|255");	
+	
+	//t_number 타입의 컬럼을 포맷타입으로  지정한다.
+	GridObj.SetNumberFormat("PRICE", "#,##0.00"); 
+	GridObj.SetNumberFormat("STOCK", "#,##0"); 
+
+	//t_date 타입의 컬럼을 포맷타입으로  지정한다.
+	GridObj.SetDateFormat("ADD_DATE", "yyyy/MM/dd");
+	GridObj.SetDateFormat("CHANGE_DATE", "yyyy/MM/dd");
+ 	
+	//엑셀로 Export할때 상단에 헤더를 추가한다. 
+	GridObj.SetExcelHeader("기본예제", 20, 15, "center");
+
+	//엑셀로 Export할때 하단에 Footer를 추가한다.
+ 	GridObj.SetExcelFooter("Copyright 2014 UNIPOST CORP.", 15, 10, "right");
+}
+
+//AreaMerge Property
+function initAreaMergeProperty(GridObj) {
+	GridObj.strRowBorderStyle = "none";
+	GridObj.strHDClickAction = "select";
+	GridObj.bHDMoving = false;
+	GridObj.bHDSwapping = false;	
+}
+
+/* 조회 */
+function doQuery(GridObj) {
+
+	var servlet_url = "/servlet/wisegrid.sample.ExampleSelect";
+	
+	//WiseGrid가 서버에 전송할 Param을 셋팅한다.
+	GridObj.SetParam("mode", "search");
+	GridObj.SetParam("from_date",document.form1.from_date.value );
+	GridObj.SetParam("to_date",document.form1.to_date.value);
+
+	//WiseGrid가 서버와 통신시에 데이터를 전달한다.
+	GridObj.DoQuery(servlet_url);
+}
+
+/*  컨텍스트 메뉴를 띄우기 이전에 발생한 이벤트 */
+function beforeClickContextMenu(strCol, nRow) {
+	var GridObj = document.WiseGrid1;
+	//지정한 컨텍스트 메뉴의 사용자 메뉴를 모두 삭제한다.
+	GridObj.RemoveAllContextMenuItem("MENU_CELL");
+
+	// Cell(strColumnKey,nRow) 영역이 AreaMerge의 영역에 포함 여부를 판단
+	// 포함이면 사용자 콘텍스트 메뉴 사용
+	if(GridObj.IsAreaMergeInside(strCol, nRow))
+		addUserContextAreaMergeRemove();
+}
+
+/* 사용자 콘텍스트 메뉴 추가 */
+function addUserContextAreaMergeRemove() {
+	var GridObj = document.WiseGrid1;
+
+	// 구분선 추가
+	GridObj.AddContextMenuSeparator("MENU_CELL");
+	// 선택된 AreaMerge 영역을 삭제하는 메뉴 추가
+	GridObj.AddUserContextMenuItem("MENU_CELL", "USER_MENU_AREAMERGE_DEL", "선택된 영역머지 삭제");
+}
+
+/*  사용자 메뉴 클릭 이벤트 시 발생  */
+function gridClickContextMenu(strMenuItemKey, strCol, nRow) {
+	var GridObj = document.WiseGrid1;
+
+	// 선택된 메뉴가 USER_MENU_AREAMERGE_DEL 이면 AreaMerge 삭제
+	if(strMenuItemKey == "USER_MENU_AREAMERGE_DEL") {
+	  GridObj.RemoveAreaMerge(GridObj.GetAreaMergeKey(strCol, nRow));
+	}
+}
+
+var nAreaMergeIndex = 0;
+
+/* AreaMerge 영역을 설정*/
+function addAreaMerge(GridObj) {
+	// areaMerge 영역의 Width, Height 를 가져 옴
+	var areaWidth = document.form1.areaWidth.value;
+	var areaHeight = document.form1.areaHeight.value;
+	var activeCol = GridObj.GetActiveColKey();
+	var activeRow = GridObj.GetActiveRowIndex();
+
+	if(activeCol == "" || activeRow == -1) {
+		alert("영역을 선택하여 주십시오.");
+		return;
+	}
+
+	if(GridObj.IsAreaMergeInside(activeCol, activeRow)) {
+		alert("이미 AreaMerge가 되어 있는 영역입니다.");
+		return;
+	}
+
+	// 선택된 셀로부터  입력된  areaWidth만큼 더 큰 ColHDKey,
+	// 선택된 셀로부터  입력된  areaHeight만큼 더 큰 RowIndex
+	// 를 가져온다
+	var endCol = GridObj.GetColHDKey(GridObj.GetColHDIndex(activeCol) + parseInt(areaWidth) - 1);
+	var endRow = activeRow + parseInt(areaHeight) - 1 ;
+
+	nAreaMergeIndex++; // MergeIndex를 증가
+
+	// 새로 만들어진 AreaMerge 의 이름을 지정
+	var newAreaMergeKey = "AM_KEY_" + nAreaMergeIndex;
+
+	try {
+	// 입력된 정보를 가지고 AreaMerge를 생성 한다.
+	GridObj.AddAreaMerge(newAreaMergeKey,activeCol,activeRow,endCol,endRow);
+	} catch(e) {
+		alert(e.message);
+	}
+
+	// AreaMerge 생상을 지정
+	setAreaMergeColor(GridObj, newAreaMergeKey);
+}
+
+/*  AreaMerge  색상 지정 */
+function setAreaMergeColor(GridObj, strAreaMergeKey) {
+	var fgColor = document.form1.fgColor.value;
+	var bgColor = document.form1.bgColor.value;
+
+	// 입력된 정보를 가지고 AreaMerge 색상 지정
+	GridObj.SetAreaMergeColor(strAreaMergeKey,fgColor, bgColor);
+}
+
+/*  적용된 AreaMerge 삭제 */
+function clearAreaMerge(GridObj) {
+	if(confirm("적용된 영역머지를 모두 삭제하시겠습니까?"))
+		GridObj.ClearAreaMerge();
+}
+
+function removeAreaMerge(GridObj) {
+	// 선택된 셀의 ColKey, RowIndex 를 가져온다
+	var activeCol = GridObj.GetActiveColKey();
+	var activeRow = GridObj.GetActiveRowIndex();
+	var areaMergeKey;
+
+    if(activeCol == "" || activeRow == -1) {
+    	alert("영역을 선택하여 주십시오.");
+    	return;
+    }
+
+    // 선택된 셀이 AreaMerge 된영역인지 판단하여
+    // AreaMergeKey를 가져온다
+    if(GridObj.IsAreaMergeInside(activeCol,activeRow)) {
+		areaMergeKey = GridObj.GetAreaMergeKey(activeCol,activeRow);
+    } else {
+    	alert("AreaMerge 영역이 아닙니다.");
+    	return;
+	}
+
+	// areaMergeKey 에 해당하는  영역을 삭제한다
+	GridObj.RemoveAreaMerge(areaMergeKey);
+}
+</script>
+</head>
+
+<body>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr height="20">
+    <td class="title1_k">
+    	&nbsp;응용예제<br><hr>
+    </td>
+  </tr>
+  <tr height="20">
+    <td class="title2_k">
+			&nbsp;&nbsp;&nbsp; AreaMerge
+    </td>
+  </tr>
+</table>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+	<tr>
+		<td>
+			<table width="98%" border="0" cellspacing="0" cellpadding="0"  class="title3">
+				<tr>
+					<td><br>
+						<img src="/images/ico_question.gif" width="9" height="10" align="absmiddle"> <img src="/images/ico_link.gif" width="15" height="11" align="absmiddle"> <font color=#1B74A9>AreaMerge 기능을 이용하면 컬럼타입에 상관없이 원하는 영역을 병합할 수 있습니다.</font><br>
+						<hr>
+						<table width="100%" border="0" cellpadding="2" cellspacing="0" >
+							<tr>
+								<td>
+									영역넓이 : <input type="text" name="areaWidth" value="2" size="5"/>,
+									영역높이 : <input type="text" name="areaHeight" value="2" size="5"/>
+									<font color="red">*머지를 시작할 셀을 선택후 영역머지 버튼을 클릭해 주십시오.</font>
+    						</td>
+    						<td><script language="javascript">btn("addAreaMerge(WiseGrid1)","영역머지")</script></td>
+    					</tr>
+    					<tr>
+    						<td>
+    							글자색 : <input type="text" id="fgColor" name="fgColor" size="13" value="255|255|255"/>,
+    							배경색 : <input type="text" id="bgColor" name="bgColor" size="13" value="255|0|0" />
+								</td>
+    						<td><script language="javascript">btn("clearAreaMerge(document.WiseGrid1)","영역모두삭제")</script></td>
+							</tr>
+							<tr>
+							<td><font color="red">*AreaMerge된 영역을 선택적으로 삭제하시려면 영역 위에서 마우스 오른쪽 클릭 후<br><b>선택된 영역머지 삭제</b>를 클릭하시기 바랍니다.</font></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+ <table width="98%" border="0" cellpadding="0" cellspacing="0" align=center >
+	<tr> 
+		<td bgcolor="#00455d" height="3"></td>
+	</tr>
+	<tr>
+		<td align='left'>
+			<script>initWiseGrid("WiseGrid1", "100%", "300");</script>
+		</td>
+	</tr>
+</table>
+<br>
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+<meta charset="UTF-8">
+<title>e_mail</title>
+<link rel='stylesheet' href='/css/wisegrid.css' type='text/css'>
+<script type='text/javascript' src='/js/WiseGrid_TAG.js'></script>
+<script type='text/javascript' src='/js/WiseGrid_Property.js'></script>
+<script for="WiseGrid" event="Initialize()">
+    init();
+</script>
+<script>
+function init() {
+    var grid=  document.WiseGrid;
+    grid.AddHeader("EMAIL", "이메일" , "t_text", 150, 150, true);
+    grid.BoundHeader();
+}
+function doQuery() {
+    var grid= document.WiseGrid;
+    var url = "/servlet/wisegrid.sample.ExampleEmailProcess";
+    grid.SetParam("mode", "search");
+    grid.DoQuery(url);
+}
+
+</script>
+</head>
+<body>
+<button onclick="doQuery();">조회</button>
+<script>initWiseGrid("WiseGrid", "100%", "350");</script>
+</body>
+</html>

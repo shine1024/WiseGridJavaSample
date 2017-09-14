@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+         version="3.1">
+
+    <servlet>
+        <servlet-name>invoker</servlet-name>
+        <servlet-class>org.apache.catalina.servlets.InvokerServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>invoker</servlet-name>
+        <url-pattern>/servlet/*</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>WiseGridSample</servlet-name>
+        <servlet-class>wisegrid.sample.WiseGridSample</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>WiseGridSample</servlet-name>
+        <url-pattern>/wisegrid/sample</url-pattern>
+    </servlet-mapping>
+
+</web-app>

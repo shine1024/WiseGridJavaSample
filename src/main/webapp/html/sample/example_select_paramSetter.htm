@@ -1,0 +1,269 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>기본예제 - 기본</title>
+<link rel='stylesheet' href='/css/wisegrid.css' type='text/css'>
+<script type='text/javascript' src='/js/WiseGrid_TAG.js'></script>
+<script type='text/javascript' src='/js/WiseGrid_Property.js'></script>
+<script type='text/javascript' src='/js/WiseGrid_Basic_Sample.js'></script>
+
+<!--
+	WiseGrid 오브젝트가 생성되고 초기화된 후 발생하는 
+	JavaScript Event인 Initialize()를 받아 그리드의 헤더를 셋팅한다.	
+-->
+<script language=javascript for="WiseGrid" event="Initialize()">
+	var GridObj = document.WiseGrid;
+	setHeader(GridObj);
+	setProperty(GridObj);
+	GridObj.strBgImage = "/images/unipost_logo_white.gif";
+	GridObj.bUserContextMenu = true;
+</script>
+
+<!--  	서버와의 통신이 정상적으로 완료되면 발생한다.   -->
+<script language=javascript for="WiseGrid" event="EndQuery()">
+	GridEndQuery();
+</script>
+
+<!--  	WiseGrid의 셀을 클릭했을때 발생하는 Javacript Event인 CellClick()을 받아 해당하는 작업을 진행한다.  -->
+<script language=javascript for="WiseGrid" event="CellClick(strColumnKey,nRow)">
+	
+</script>
+
+<!--	 WiseGrid의 셀의 내용이 변경되었을때 발생한다. -->
+<script language=javascript for="WiseGrid" event="ChangeCell(strColumnKey,nRow,nOldValue,nNewValue)">
+
+</script>
+
+<!--   	 WiseGrid의 t_combo타입의 컬럼내용이 변경되었을때 발생합니다  -->
+<script language=javascript for="WiseGrid" event="ChangeCombo(strColumnKey,nRow,nOldIndex,nNewIndex)">
+	
+</script>
+
+<script language="JavaScript">
+function setHeader(GridObj) {		
+	//그리드에 컬럼을 등록한다. 
+	GridObj.AddHeader("SELECTED",		"선택",			"t_checkbox", 	2, 		40,		true);	
+	GridObj.AddHeader("ITEM_FLAG", 		"자재구분",		"t_combo", 		10, 	90,		true);	
+	GridObj.AddHeader("VENDOR_NAME", 	"제조회사",		"t_text", 		50, 	80,		true);
+	GridObj.AddHeader("ITEM_CODE", 		"제품코드",		"t_imagetext", 	20, 	100,	false);
+	GridObj.AddHeader("ITEM_NAME", 		"제품명", 		"t_text", 		500, 	150,	true);	
+	GridObj.AddHeader("SPECIFICATION", 	"규격", 			"t_text", 		2000, 	200,	true);	
+	GridObj.AddHeader("UNIT", 			"단위",			"t_combo",		10, 	50,		true);
+	GridObj.AddHeader("PRICE", 			"출고가", 		"t_number", 	22.3, 	80,		true);	
+	GridObj.AddHeader("STOCK",			"재고량", 		"t_number", 	22,		60,		true);
+	GridObj.AddHeader("ADD_DATE",		"등록일", 		"t_date", 		8,		85,		true);	
+	GridObj.AddHeader("CHANGE_DATE",	"수정일", 		"t_date", 		8,		85,		true);	
+	GridObj.AddHeader("SEQ_NO",			"SEQ_NO", 		"t_text", 		8,		85,		true);	
+	
+	//AddHeader를 완료한 후 헤더를 그리드에 바인딩한다
+	GridObj.BoundHeader();	
+
+	GridObj.SetColHDCheckBoxValue("SELECTED", true);
+
+	// 스크롤 이동시에 툴팁에 보여줄 컬럼을 지
+	GridObj.SetScrollTip("ITEM_NAME");
+	
+	//t_checkbox 타입의 컬럼에 체크를 전체적용한다.
+	GridObj.SetColHDCheckBoxVisible("SELECTED", true);
+	
+	//해당 컬럼을 숨긴다.
+	GridObj.SetColHide("SEQ_NO", true);
+	 
+	//t_combo 타입의 컬럼에 Combo List 를 추가한다. 
+	GridObj.AddComboListValue("ITEM_FLAG", "프로세서", "CPU"); 
+	GridObj.AddComboListValue("ITEM_FLAG", "메모리", "MEM"); 
+	GridObj.AddComboListValue("ITEM_FLAG", "메인보드", "MAB"); 
+	GridObj.AddComboListValue("ITEM_FLAG", "그래픽카드", "VID"); 
+	GridObj.AddComboListValue("ITEM_FLAG", "모니터", "MOR");
+	GridObj.AddComboListValue("ITEM_FLAG", "하드디스크", "HDD");
+	GridObj.AddComboListValue("ITEM_FLAG", "CDROM", "CDR");
+	GridObj.AddComboListValue("ITEM_FLAG", "키보드", "KEY");
+	GridObj.AddComboListValue("ITEM_FLAG", "마우스", "MOU");
+
+	GridObj.AddComboListValue("UNIT", "EA", "EA");
+
+	//이미지리스트에 이미지 URL을 추가한다
+	GridObj.AddImageList("ITEM_CODE", "/images/bt_search.gif");
+
+	//셀의 글자색을 적용한다.
+	GridObj.SetColCellFgColor("ITEM_CODE", "0|0|255");	
+	
+	//t_number 타입의 컬럼을 포맷타입으로  지정한다.
+	GridObj.SetNumberFormat("PRICE", "#,##0.00"); 
+	GridObj.SetNumberFormat("STOCK", "#,##0"); 
+
+	//t_date 타입의 컬럼을 포맷타입으로  지정한다.
+	GridObj.SetDateFormat("ADD_DATE", "yyyy/MM/dd");
+	GridObj.SetDateFormat("CHANGE_DATE", "yyyy/MM/dd");
+ 	
+	//엑셀로 Export할때 상단에 헤더를 추가한다. 
+	GridObj.SetExcelHeader("기본예제", 20, 15, "center");
+
+	//엑셀로 Export할때 하단에 Footer를 추가한다.
+ 	GridObj.SetExcelFooter("Copyright 2014 UNIPOST CORP.", 15, 10, "right");
+}
+
+/* 조회 */
+function doQuery() {
+	var GridObj = document.WiseGrid;
+	var servlet_url = "/servlet/wisegrid.sample.ExampleSelect_ParamSetter";
+	
+
+	//WiseGrid가 서버와 통신시에 데이터를 전달한다.
+	GridObj.DoQuery(servlet_url);
+}
+function GridEndQuery(){
+	var out = document.getElementById('outter');
+	var gridJsonObj = WiseGridHelper.paramToJson();
+	out.innerHTML += 'gridJsonObj.arg1 : ' + gridJsonObj.arg1+'<br/>';
+
+	var gridJsonArray = WiseGridHelper.paramToJsonArray();
+	out.innerHTML += 'gridJsonArray[0].key :'+gridJsonArray[0].key+'<br/>';
+	out.innerHTML += 'gridJsonArray[0].val :'+gridJsonArray[0].val+'<br/>';
+	out.innerHTML += '=============================================================<br/>';
+}
+
+WiseGridHelper = {
+	setGridParam : function(_id){
+		try{
+			var GridObj = document.WiseGrid;
+			var f = document.getElementById(_id);
+			var inputs = f.getElementsByTagName('input');
+			var selects = f.getElementsByTagName('select');
+			for(var i=0; i<inputs.length; i++){
+				if(inputs[i].type =='text' || inputs[i].type =='hidden'){
+					GridObj.SetParam(inputs[i].name, inputs[i].value);
+				} 
+				else if(inputs[i].type =='radio'){
+					if(inputs[i].checked)GridObj.SetParam(inputs[i].name, inputs[i].value);
+				}
+				else if(inputs[i].type =='checkbox'){
+					if(inputs[i].checked)GridObj.SetParam(inputs[i].name, inputs[i].value);
+				}
+			}
+			for(var s=0; s<selects.length; s++){
+				GridObj.SetParam(selects[s].name, selects[s].value);
+			}
+		}catch(e){alert(e.message)}
+		
+		alert(_id + ' form의 모든 입력 항목이 GridParam으로 저장되었습니다.')
+	},
+	paramToJson : function(){
+		try{
+			var GridObj = document.WiseGrid;
+			var jsonObj = {};
+			var keyCount = GridObj.GetParamCount();
+			for(var i=0; i<keyCount; i++){
+				var key = GridObj.GetParamKey(i);
+				jsonObj[key] = GridObj.GetParam(key);
+			}
+			return jsonObj;
+		}catch(e){alert(e.message)}
+	},
+	paramToJsonArray : function(){
+		try{
+			var GridObj = document.WiseGrid;
+			var jsonArr = [];
+			var keyCount = GridObj.GetParamCount();
+			for(var i=0; i<keyCount; i++){
+				var key = GridObj.GetParamKey(i);
+				jsonArr[i] = {key :key,val:GridObj.GetParam(key)}
+			}
+			return jsonArr;
+		}catch(e){alert(e.message)}
+	}
+}
+</script>
+</head>
+
+<body>
+<form name="frm" id="frm">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr height="20">
+    <td class="title1_k">
+    	&nbsp;기본예제<br><hr>
+    </td>
+  </tr>
+  <tr height="20">
+    <td style="font-size:12px;">
+		<ul>
+			<li><span style="color:brown;">WisGridHelper</span>.setGridParam('formID'); <span style="color:green;">/*특정 폼의 입력항목을 모두 그리드에 파라미터로 저장합니다.*/</span><br/></li>
+			<li>
+				<span style="color:brown;">WisGridHelper</span>.paramToJson(); <span style="color:green;">/*그리드에 저장되어 있는 파라미터를 JSON Object로 반환합니다.*/</span><br/>
+				<span>ex) <span style="color:blue">var</span> gridJsonObj = <span style="color:brown;">WisGridHelper</span>.paramToJson();</span><br/>
+				<span style="padding-left:23px;">gridJsonObj.arg1 ==> 1</span>	
+			</li>
+			<li>
+				<span style="color:brown;">WisGridHelper</span>.paramToJsonArray(); <span style="color:green;">/*그리드에 저장되어 있는 파라미터를 JSON Array로 반환합니다.*/</span><br/>
+				<span>ex) <span style="color:blue">var</span> gridJsonObj = <span style="color:brown;">WisGridHelper</span>.paramToJson();</span><br/>
+				<span style="padding-left:23px;">gridJsonArray[0].key ==> arg1</span><br/>
+				<span style="padding-left:23px;">gridJsonArray[0].val ==> 1</span>
+			</li>
+		</ul>
+    </td>
+  </tr> 
+</table>
+<hr>
+	<div id="forms"></div>
+	<div id="outter"></div>
+	<script type="text/javascript">
+		(function(){
+			for(var i=1; i<=10; i++){
+			var input = document.createElement('input');
+			input.name = 'arg'+i;
+			input.id = 'arg'+i;
+			input.type = 'text';
+			input.value = i;
+			
+			document.getElementById('forms').appendChild(input);
+		}})();
+	</script>
+<select name="sel1" id="sel1">
+	<option value="sel1Val1">val1</option>
+	<option value="sel1Val2">val2</option>
+	<option value="sel1Val3">val3</option>
+	<option value="sel1Val4">val4</option>
+</select>
+<select name="sel2" id="sel2">
+	<option value="sel2Val1">val1</option>
+	<option value="sel2Val2">val2</option>
+	<option value="sel2Val3">val3</option>
+	<option value="sel2Val4">val4</option>
+</select>
+<input type="radio" name="rad" value="israd1">
+<input type="radio" name="rad" value="israd2">
+<input type="checkbox" name="chk1" id="chk1" value="isChk">
+<input type="checkbox" name="chk2" id="chk2" value="isChk2">
+<table width="98%" border="0" cellspacing="0" cellpadding="0"  class="title3">
+	<tr>
+		<table width="100%" border="0" cellpadding="2" cellspacing="0" >
+			<tr>
+				<td valign="top" align="right">
+					<table border=0 cellpadding="0" cellspacing="0">
+						<tr>
+							<td><script language="javascript">btn("doQuery()","조회")</script></td>	
+							<td><script language="javascript">btn("WiseGridHelper.setGridParam('frm')","Form Serialize")</script></td>	
+						</tr>
+					</table>
+				 </td>
+			</tr>
+		</table>
+	  </tr>
+</table>
+<div id="ds"></div>
+ <table width="100%" height="350" border="0" cellpadding="0" cellspacing="0" >
+	<tr> 
+		<td bgcolor="#00455d" height="3"></td>
+	</tr>
+	<tr>
+		<td align='left'>
+			<script>initWiseGrid("WiseGrid", "100%", "100%");</script>
+		</td>
+	</tr>
+</table>
+
+<br>
+
+</form>
+</body>
+</html>

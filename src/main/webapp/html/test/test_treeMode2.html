@@ -1,0 +1,58 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script type='text/javascript' src='/js/WiseGrid_TAG.js'></script>
+    <script for="WiseGrid" event="Initialize()">
+        initialize();
+    </script>
+    <script>initWiseGrid("WiseGrid", "100%", "350")</script>
+    <script>
+        var gridObj = document.WiseGrid;
+        var treeData = [
+            ["*", "G000000001", "(주)주식회사"],
+            ["G000000001", "G000000002", "운영팀"],
+            ["G000000002", "G000000020", "김길동 부장"],
+            ["G000000002", "G000000021", "홍길동 주임"],
+
+            ["G000000001", "G000000003", "영업팀"],
+            ["G000000003", "G000000030", "김철수 부장"],
+            ["G000000003", "G000000031", "박민수 대리"],
+            ["G000000003", "G000000032", "김하늘 대리"],
+
+            ["G000000003", "G000000003_sub1", "영업1팀"],
+            ["G000000003_sub1", "G000000003_sub1_1", "김무현 과장"],
+            ["G000000003_sub1", "G000000003_sub1_2", "김수미 대리"],
+
+            ["G000000003", "G000000003_sub2", "영업2팀"],
+            ["G000000003_sub2", "G000000003_sub2_1", "나현수 과장"],
+            ["G000000003_sub2", "G000000003_sub2_2", "남도현 대리"],
+        ];
+
+        function initialize() {
+            setHeader();
+            setData();
+            setTreeMode();
+        }
+
+        function setHeader() {
+            gridObj.AddHeader("MENU", "조직도", "t_imagetext", 10, 300, true);
+            gridObj.boundHeader();
+        }
+
+        function setTreeMode() {
+            gridObj.SetTreeMode("MENU", "*", ",");
+        }
+
+        function setData() {
+            for (var n = 0; n < treeData.length; n++) {
+                gridObj.AddRow();
+                gridObj.SetCellHiddenValue('MENU', n, treeData[n][0] + "," + treeData[n][1]);
+                gridObj.SetCellValue("MENU", n, treeData[n][2]);
+            }
+        }
+    </script>
+</head>
+<body>
+</body>
+</html>

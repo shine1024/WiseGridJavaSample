@@ -1,0 +1,60 @@
+<html>
+<head>
+<meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+<link rel='stylesheet' href='/css/wisegrid.css' type='text/css'>
+<title>응용예제 - 메뉴 - 폴더추가</title>
+<script>
+	var treeNodeNo = 0;
+	var GridObj = null;
+	var curTreeKey = "";
+
+function load_value() {
+	GridObj = window.dialogArguments.GridObj;
+	curTreeKey = window.dialogArguments.curTreeKey;
+	treeNodeNo = window.dialogArguments.globalTreeNodeNo;
+
+	treeNodeNo = treeNodeNo + 1;
+}
+
+/*폴더명 체크*/
+function chkValue() {
+	var folderName = document.form.folderName.value;
+
+	if(folderName == "") {
+		alert("폴더명은 필수입력입니다.");
+		document.form.folderName.focus();
+		return false;
+	}
+			
+	return true;
+}
+
+/* 폴더 추가 */
+function insertFolder() {
+	if(!chkValue())
+		return;
+		
+	var newTreeKey = "USER" + treeNodeNo;
+	var newTreeText = document.form.folderName.value;
+
+	//현재트리키에 새로운 트리를 추가
+	GridObj.InsertTreeNode(curTreeKey, newTreeKey, newTreeText);
+	GridObj.SetCellImage("MENU_ID", GridObj.GetRowIndexFromTreeKey(newTreeKey), "2");
+
+	window.returnValue = treeNodeNo;
+	window.close();
+}
+
+</script>
+</head>
+<body onLoad="load_value()">
+<form name="form">
+	추가할 폴더명을 입력하세요
+	
+	<br>
+	<input type="text" name="folderName" onkeydown="if(event.keyCode == 13){insertFolder();return;}"><br>
+	<input type="button" value="입력" onClick="insertFolder()"><br>
+	<input type="text" name="test" style="display:none">
+</form>
+</body>	
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"> 
+<HTML>
+<HEAD>
+<TITLE>Basic Sample</TITLE>
+<meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+<link rel='stylesheet' href='/css/wisegrid.css' type='text/css'>
+<script type='text/javascript' src='/js/WiseGrid_TAG.js'></script>
+<script type='text/javascript' src='example_fomular.js'></script>
+<script type='text/javascript' src='/js/WiseGrid_Property.js'></script>
+<style type="text/css">
+#out{
+width:auto;height:26px;display:none;padding-left:10px;
+background:url(/images/sub/toolbarbg.gif) repeat-x;
+border:1px solid #99bbe8;
+}
+#outTxt{
+width:auto;height:auto;margin-top:7px;
+}
+.sFuncHd{
+text-align:right;
+background-color:#EBF3FF;
+border-bottom: 1px solid #D1DBE8;
+padding-right:4px;
+}
+.sFuncTx{
+border-bottom: 1px solid #D1DBE8;
+}
+#information{margin-top:10px;}
+</style>
+<script type="text/javascript">
+var GridObj={};
+</script>
+<script language=javascript for='WiseGrid' event='Initialize()'>
+	GridObj = document.WiseGrid;
+	
+	setDefaultProperty(GridObj);
+	setConditionProperty(GridObj);
+	setHeader(GridObj);
+	</script>
+
+
+<script language=javascript for="WiseGrid" event="EndQuery()">
+//	endQuery(GridObj);
+</script>
+
+<script language=javascript for="WiseGrid" event="CellClick(strColumnKey,nRow)">
+	var hiddenVal = GridObj.GetCellHiddenValue(strColumnKey,nRow);
+	if(hiddenVal.indexOf('=')>-1){
+		activeCellHiddenValue(GridObj,strColumnKey,nRow);
+	}else{
+		textClose();
+	}
+</script>
+</HEAD>
+<BODY >
+<form name="examForm">
+<div id="contents" style="width:100%">
+    <div id="headerArea">
+		<div class="title1_k">기본예제</div>
+		<div class="hr"></div>
+		<div class="title2_k" style="padding-left:20px;">엑셀수식</div>
+    </div>
+	<div id="info" style="margin-top:10px;">
+		<div style="width:auto;margin-left:30px;">
+			엑셀과 같이 수식을 이용한 기능 구현이 가능합니다. (일부 수식만 지원)<br/>
+			다른점은 구분자를 엑셀은 <font color="red" style="font-weight:bold;">","</font> WiseGrid는 <font style="font-weight:bold;" color="red">";"</font>를 사용합니다.
+		</div>
+		<div style="margin-top:10px;">
+			<font color="red">(※엑셀 수식이 적용된 셀의 개수가 증가할 수록 비례해서 전체 연산 속도가 증가할 수 있습니다.)</font>
+		</div>
+		
+		<div>
+	</div>
+	
+	<div id="support" style="clear:both;margin-top:10px;">
+		<div id="supportList">
+		<table width="100%" cellpadding="2" cellspacing="0" style="border:1px solid #D1DBE8;">
+			<tr>
+				<td class="sFuncHd">SUM</td>
+				<td class="sFuncTx">첫번째 인자로 2번째 인자의 영역과 비교하여 컬럼인덱스(3번째 인자)에 해당하는 값을 출력합니다.<br/>ex) =vlookup(B5;E1:F4;2;false)</td>
+			</tr>
+		</table>
+		</div>
+	</div>
+	
+	
+	<div style="margin-top:20px;">
+		<div style="float:left"><script type="text/javascript">btn("doQuery(GridObj)","조회")</script></div>
+		<div ><script type="text/javascript">btn("toggleCalcMode(GridObj)","엑셀수식 모드")</script></div>
+		<div style="margin-top:5px;margin-bottom:5px;">※WiseGrid영역의 밑줄이 표시된 셀은 엑셀 수식이 적용된 셀입니다. 해당 셀을 클릭하면 적용된 수식을 확인할 수 있습니다.</div>
+	</div>
+	<div id="out">
+		<div id="outTxt" style="margin-left:30px;width:auto;height:auto;"></div>
+	</div>
+    <div id="gridArea">
+        <script type="text/javascript">initWiseGrid("WiseGrid", "100%", "350");</script>
+    </div>
+</div>
+</div>
+</form>
+</BODY>
+</HTML>

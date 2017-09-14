@@ -1,0 +1,380 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>example_keypress_select</title>
+<link rel='stylesheet' href='/css/wisegrid.css' type='text/css'>
+<script src="/js/jquery/jquery-1.11.1.min.js"></script>
+<script type='text/javascript' src='/js/WiseGrid_TAG.js'></script>
+<script type='text/javascript' src='/js/WiseGrid_Property.js'></script>
+<script type='text/javascript' src='/js/WiseGrid_Basic_Sample.js'></script>
+<script type="text/javascript" for="WiseGrid" event="Initialize()">
+    init();
+</script>
+
+<!-- Key를 눌렀을때 발생 -->
+<script type="text/javascript" for="WiseGrid" event="keyDown(keyCode, optionKey)">
+    var ctrlPressed = optionKey&2;
+    var shiftPresssed = optionKey&1;
+
+    if(ctrlPressed && keyCode==81){
+        if(!WiseGrid.isEditMode()) doSelect();
+    }
+    /* 테스트 */
+    if( keyCode==113){
+        console.log(keyCode);
+        alert(1);
+    }
+
+    if( keyCode==114){
+        console.log(keyCode);
+        alert(1);
+    }
+    if( keyCode==115){
+        console.log(keyCode);
+        alert(1);
+    }
+    if( keyCode==116){
+        console.log(keyCode);
+        alert(1);
+    }
+    if( keyCode==117){
+        console.log(keyCode);
+        alert(1);
+    }
+    if( keyCode==118){
+        console.log(keyCode);
+        alert(1);
+    }
+    if( keyCode==119){
+        console.log(keyCode);
+        alert(1);
+    }
+    if( keyCode==120){
+        console.log(keyCode);
+        alert(1);
+    }
+    if( keyCode==121){
+        console.log(keyCode);
+        alert(1);
+    }
+    if( keyCode==122){
+        console.log(keyCode);
+        alert(1);
+    }
+    if( keyCode==123){
+        console.log(keyCode);
+        alert(1);
+    }
+
+
+
+    if(ctrlPressed && keyCode==65){
+        if(!WiseGrid.isEditMode()) doLineInsert();
+    }
+    if(ctrlPressed && keyCode==68) {
+        if(!WiseGrid.isEditMode()) doDelete();
+    }
+    if(ctrlPressed && keyCode==83){
+        if(!WiseGrid.isEditMode()) doSave();
+    }
+    if(ctrlPressed && keyCode==107){
+        if(WiseGrid.isEditMode() == true){
+            //alert(1);
+                var oldValue = WiseGrid.GetCellValue(WiseGrid.GetActiveColKey(), WiseGrid.GetActiveRowIndex());
+                var newValue = oldValue*1000;
+                WiseGrid.SetCellValue(WiseGrid.GetActiveColKey(), WiseGrid.GetActiveRowIndex(), newValue);
+                WiseGrid.SetCellFocus(WiseGrid.GetActiveColKey(), WiseGrid.GetActiveRowIndex() , true);
+        }
+    }
+
+
+    if(ctrlPressed && keyCode==70){
+        if(!WiseGrid.isEditMode() || WiseGrid.isEditMode()){
+            e.preventDefault();
+            doSaveCancel();
+        }
+    }
+    if((ctrlPressed && keyCode==82) || keyCode==115 ){
+        /*location.reload();*/
+    }
+</script>
+
+<script type="text/javascript" for="WiseGrid" event="EndQuery()">
+    GridEndQuery();
+</script>
+
+<script type="text/javascript" for="WiseGrid" event="CellClick(strColumnKey,nRow)">
+    GridCellClick(strColumnKey, nRow)
+</script>
+
+<script type="text/javascript" for="WiseGrid" event="BeforeShowUserContextMenu(strMenuKey, strCol, nRow)">
+    if(strMenuKey == "MENU_CELL")
+        BeforeClickContextMenu(nRow);
+</script>
+
+<script type="text/javascript" for="WiseGrid" event="UserContextMenuClick(strMenuKey, strMenuItemKey, strCol, nRow)">
+    if(strMenuKey == "MENU_CELL" && strMenuItemKey == "USER_MENU_SAVE_CANCEL")
+        CancelCRUDRow(nRow);
+</script>
+
+<script language="JavaScript">
+/* 그리드영역 이외의 영역은 자바스크립트 이벤트로 처리. */
+$(function () {
+    var grid = document.WiseGrid;
+    var servlet_url = "/servlet/wisegrid.sample.ExampleSave";
+    var isCtrl = false;
+    $(document).keyup(function (e) {
+        if(e.which==17) isCtrl =false;
+    }).keydown(function (e) {
+        /*e.preventDefault();*/
+        console.log(e.which+" "+isCtrl);
+        if(e.which==17) isCtrl=true;
+        // 조회
+        if(e.which==81 && isCtrl==true){
+            console.log("ctrl+q");
+            doSelect();
+        }
+        // 행추가
+        if(e.which==65 && isCtrl==true){
+            e.preventDefault();
+            console.log("ctrl+a");
+            doLineInsert();
+        }
+        // 삭제
+        else if(e.which==68 && isCtrl==true){
+            e.preventDefault();
+            console.log("ctrl+d");
+            doDelete();
+        }
+        // 저장
+        else if(e.which==83 && isCtrl==true){
+            e.preventDefault();
+            console.log("ctrl+s");
+            doSave();
+        }
+        // 저장취소
+        else if(e.which==70 && isCtrl==true){
+            e.preventDefault();
+            console.log("ctrl+f")
+            doSaveCancel();
+        }
+        // 화면 새로고침
+        else if(e.which==116 || (isCtrl==true && e.which==82)){
+        }
+    })
+});
+
+function getCellInfo(){
+    var GridObj = document.WiseGrid;
+}
+
+
+function init() {
+    var GridObj = document.WiseGrid;
+    setHeader(GridObj);
+    //setProperty(GridObj);
+
+    GridObj.strBgImage = "/images/unipost_logo_white.gif";
+    GridObj.bUserContextMenu = true;
+    GridObj.bUseDefaultContextMenu = true;
+    getdatetime();
+}
+
+function setHeader(GridObj) {
+    GridObj.AddHeader("CRUD",			"구분",			"t_text", 		8, 		40,		true);
+    GridObj.AddHeader("ITEM_FLAG", 		"자재구분",		"t_combo", 		10, 	90,		true);
+    GridObj.AddHeader("VENDOR_NAME", 	"제조회사",		"t_text", 		50, 	80,		true);
+    GridObj.AddHeader("ITEM_CODE", 		"제품코드",		"t_imagetext", 	20, 	100,	false);
+    GridObj.AddHeader("ITEM_NAME", 		"제품명", 		"t_text", 		500, 	150,	true);
+    GridObj.AddHeader("SPECIFICATION", 	"규격", 			"t_text", 		2000, 	200,	true);
+    GridObj.AddHeader("UNIT", 			"단위",			"t_combo",		10, 	50,		true);
+    GridObj.AddHeader("PRICE", 			"출고가", 		"t_number", 	22.3, 	80,		true);
+    GridObj.AddHeader("STOCK",			"재고량", 		"t_number", 	22,		400,		true);
+    GridObj.AddHeader("ADD_DATE",		"등록일", 		"t_date", 		8,		85,		true);
+    GridObj.AddHeader("CHANGE_DATE",	"수정일", 		"t_date", 		8,		85,		true);
+    GridObj.AddHeader("SEQ_NO",			"SEQ_NO", 		"t_text", 		8,		85,		true);
+
+    GridObj.BoundHeader();
+
+    GridObj.SetCRUDMode("CRUD", "생성", "수정", "삭제");
+    GridObj.SetColHide("SEQ_NO", true);
+
+    GridObj.AddComboListValue("ITEM_FLAG", "프로세서", "CPU");
+    GridObj.AddComboListValue("ITEM_FLAG", "메모리", "MEM");
+    GridObj.AddComboListValue("ITEM_FLAG", "메인보드", "MAB");
+    GridObj.AddComboListValue("ITEM_FLAG", "그래픽카드", "VID");
+    GridObj.AddComboListValue("ITEM_FLAG", "모니터", "MOR");
+    GridObj.AddComboListValue("ITEM_FLAG", "하드디스크", "HDD");
+    GridObj.AddComboListValue("ITEM_FLAG", "CDROM", "CDR");
+    GridObj.AddComboListValue("ITEM_FLAG", "키보드", "KEY");
+    GridObj.AddComboListValue("ITEM_FLAG", "마우스", "MOU");
+
+    GridObj.AddComboListValue("UNIT", "EA", "EA");
+    GridObj.AddImageList("ITEM_CODE", "/images/bt_search.gif");
+    GridObj.SetColCellFgColor("ITEM_CODE", "0|0|255");
+    GridObj.SetNumberFormat("PRICE", "#,##0.00");
+    GridObj.SetNumberFormat("STOCK", "#,##0");
+    GridObj.SetDateFormat("ADD_DATE", "yyyy/MM/dd");
+    GridObj.SetDateFormat("CHANGE_DATE", "yyyy/MM/dd");
+
+}
+
+function doSelect() {
+    var GridObj = document.WiseGrid;
+    var servlet_url = "/servlet/wisegrid.sample.ExampleSave";
+
+    GridObj.SetParam("mode", "search");
+    GridObj.SetParam("from_date",document.form.from_date.value );
+    GridObj.SetParam("to_date",document.form.to_date.value);
+
+    GridObj.DoQuery(servlet_url);
+}
+
+function doDelete() {
+    var GridObj = document.WiseGrid;
+    GridObj.DeleteRow(GridObj.GetActiveRowIndex());
+}
+
+function doLineInsert() {
+    var GridObj = document.WiseGrid;
+    GridObj.AddRow();
+    GridObj.SetCellImage('ITEM_CODE', GridObj.GetActiveRowIndex(), 0);
+    GridObj.SetCellActivation("ITEM_CODE", GridObj.GetActiveRowIndex(), "edit");
+}
+
+function doSave() {
+    var GridObj = document.WiseGrid;
+    var servlet_url = "/servlet/wisegrid.sample.ExampleSave";
+    GridObj.SetParam("mode", "save");
+    GridObj.DoQuery(servlet_url, "CRUD");
+}
+
+function doSaveCancel() {
+    var GridObj = document.WiseGrid;
+
+    if(confirm("저장 플래그를 모두 초기화 합니다"))
+        GridObj.CancelCRUD();
+}
+
+function BeforeClickContextMenu(nRow) {
+    var GridObj = document.WiseGrid;
+    var save_flag = GridObj.GetCellHiddenValue("CRUD", nRow);
+
+    if(save_flag != "R") {
+        userItemContextMenuAdd();
+    } else {
+        defaultContextMenu();
+    }
+}
+
+function userItemContextMenuAdd() {
+    var GridObj = document.WiseGrid;
+    GridObj.RemoveAllContextMenuItem("MENU_CELL");
+    GridObj.AddContextMenuSeparator("MENU_CELL");
+    GridObj.AddUserContextMenuItem("MENU_CELL", "USER_MENU_SAVE_CANCEL", "저장취소");
+}
+
+function defaultContextMenu() {
+    var GridObj = document.WiseGrid;
+    GridObj.RemoveAllContextMenuItem("MENU_CELL");
+}
+
+function GridEndQuery() {
+    var GridObj = document.WiseGrid;
+    var mode = GridObj.GetParam("mode");
+
+    if(mode == "search") {
+        if(GridObj.GetStatus() == "true") 	{
+            document.all.message.style.display = "none";
+            document.form.confirm.value = null;
+        } else	{
+            var error_msg = GridObj.GetMessage();
+            alert(error_msg);
+        }
+    }
+
+    if(mode == "save") {
+        if(GridObj.GetStatus() == "true") 	{
+            var saveData = GridObj.GetParam("saveData");
+            document.all.message.style.display="";
+            document.form.confirm.value = saveData;
+        } else	{
+            var error_msg = GridObj.GetMessage();
+            alert(error_msg);
+        }
+    }
+}
+
+function getdatetime()
+{
+    var today = new Date();
+    var year = today.getYear();
+    var month = today.getMonth() + 1;
+    var day = today.getDate();
+    if(month < 10)
+        month = "0" + month;
+    if(day < 10)
+        day = "0" + day;
+    document.form.to_date.value = year + "" + month + "" + day;
+}
+
+</script>
+</head>
+
+<body>
+<form name="form">
+    <table width="60%" border="0" cellspacing="0" cellpadding="0">
+        <tr height="20">
+            <td class="title1_k">
+                &nbsp; # Key Event 사용 # <br><hr>
+            </td>
+        </tr>
+        <tr height="20"><td class="title2_k">&nbsp;&nbsp;&nbsp; - 다음 예제의 경우 ctrl + q : 조회. ctrl +a : 행추가. ctrl + s : 저장. ctrl + f : 저장취소. ctrl + d : 삭제.</td></tr>
+    </table>
+    <hr>
+    <table width="98%" border="0" cellspacing="0" cellpadding="0"  class="title3">
+        <tr>
+            <table width="100%" border="0" cellpadding="2" cellspacing="0" >
+                <tr>
+                    <td width="80">등록일</td>
+                    <td>
+                        <input type="text" name="from_date" size="8" value="20070101"> ~
+                        <input type="text" name="to_date" size="8" value="">
+                    </td>
+                    <td valign="top" align="right">
+                        <table border=0 cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td><script language="javascript">btn("doSelect()","조회")</script></td>
+                                <td><script language="javascript">btn("doDelete()","삭제")</script></td>
+                                <td><script language="javascript">btn("doLineInsert()","행추가")</script></td>
+                                <td><script language="javascript">btn("doSave()","저장")</script></td>
+                                <td><script language="javascript">btn("doSaveCancel()","저장취소")</script></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </tr>
+    </table>
+    <table width="100%" height="350" border="0" cellpadding="0" cellspacing="0" >
+        <tr>
+            <td bgcolor="#00455d" height="3"></td>
+        </tr>
+        <tr>
+            <td align='left'>
+                <script>initWiseGrid("WiseGrid", "100%", "350");</script>
+            </td>
+        </tr>
+    </table>
+
+    <br>
+    <div id='message' style="display:none ">
+        <fieldset >
+            <legend> [변경된 내용] </legend>
+            <textarea name="confirm" cols="101" rows="8" style="border:0px" scrolling="auto"></textarea>
+        </fieldset>
+    </div>
+
+</form>
+</body>
+</html>

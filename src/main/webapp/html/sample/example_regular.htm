@@ -1,0 +1,258 @@
+<HTML>
+<HEAD>
+<TITLE>응용예제 - 정규식</TITLE>
+<meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+<link rel='stylesheet' href='/css/wisegrid.css' type='text/css'>
+<script type='text/javascript' src='/js/WiseGrid_TAG.js'></script>
+<script type='text/javascript' src='/js/WiseGrid_Property.js'></script>
+<script type='text/javascript' src='/js/WiseGrid_Basic_Sample.js'></script>
+
+<!--
+	WiseGrid 오브젝트가 생성되고 초기화된 후 발생하는 
+	JavaScript Event인 Initialize()를 받아 그리드의 헤더를 셋팅한다.	
+-->
+<script language=javascript for='WiseGrid' event='Initialize()'>
+	init(document.WiseGrid);
+</script>
+
+<!--  	WiseGrid의 셀을 클릭했을때 발생하는 Javacript Event인 CellClick()을 받아 해당하는 작업을 진행한다.  -->
+<script language=javascript for="WiseGrid" event="CellClick(strColumnKey,nRow)">
+	GridCellClick(strColumnKey, nRow)
+</script>
+
+<!--   	WiseGrid의 셀의 내용이 변경되었을때 발생한다.  -->
+<script language=javascript for="WiseGrid" event="ChangeCell(strColumnKey, nRow, vtOldValue, vtNewValue)">
+	document.WiseGrid.SetCellBgColor(strColumnKey, nRow, "default");
+	clearValidation();
+	runRegExp();
+</script>
+
+<!--   	메서드가 실행된 후, 해당 컬럼의 로우별 데이터가 정규식에 맞을 경우 발생한다.   -->
+<script type="text/javascript" for="WiseGrid" event="RegExp(strRegExpKey, strColumnKey, nRow)">
+	GridRegExp(strRegExpKey, strColumnKey, nRow);
+</script>
+
+<script language=javascript>
+function init(GridObj) {	
+	setHeader(GridObj);
+	setProperty(GridObj);
+
+	//투명도를 조절한다.
+	GridObj.nAlphaLevel = 230;
+	GridObj.strBgImage = "/images/unipost_logo_white.gif";
+}
+
+function setHeader() {
+	//그리드에 컬럼을 등록한다. 						
+	document.WiseGrid.AddHeader("REG_TEXT1",		"제품코드",	    "t_text",		200,		150,	true);
+	document.WiseGrid.AddHeader("REG_TEXT2",		"IP Address",   "t_text",		200,		150,	true);
+
+	//AddHeader를 완료한 후 헤더를 그리드에 바인딩한다.
+	document.WiseGrid.BoundHeader();
+
+	// WISEREGEXP_ISEMPTY : 정규식에 빈값체크가 없어서 추가한 키
+	document.WiseGrid.AddRegExp("REG0", "WISEREGEXP_ISEMPTY", true); 
+	document.WiseGrid.AddRegExp("REG1", "^WG[0-9]{8,10}", false);
+	document.WiseGrid.AddRegExp("REG2", "((2[0-4]\\d|25[0-5]|[01]?\\d\\d?)\\.){3}(2[0-4]\\d|25[0-5]|[01]?\\d\\d?)", false);
+
+	addData();
+}
+
+
+function addData() {
+	GridObj = document.WiseGrid;
+
+	/*
+	그리드의 마지막 열에 빈 로우를 추가한다. 
+	지정한 셀의 로우 인덱스에  값을 넣는다.
+	*/
+
+	// Row 1	
+	GridObj.AddRow();
+	GridObj.SetCellValue("REG_TEXT1", GridObj.GetActiveRowIndex(), "WG2007112301");
+	GridObj.SetCellValue("REG_TEXT2", GridObj.GetActiveRowIndex(), "192.168.1.56");
+
+	// Row 2
+	GridObj.AddRow();
+	GridObj.SetCellValue("REG_TEXT1", GridObj.GetActiveRowIndex(), "WG2007112302");
+	GridObj.SetCellValue("REG_TEXT2", GridObj.GetActiveRowIndex(), "168.126.63.1");
+
+	// Row 3
+	GridObj.AddRow();
+	GridObj.SetCellValue("REG_TEXT1", GridObj.GetActiveRowIndex(), "WG2007112303");
+	GridObj.SetCellValue("REG_TEXT2", GridObj.GetActiveRowIndex(), "168.126.63,1");
+
+	// Row 4
+	GridObj.AddRow();
+	GridObj.SetCellValue("REG_TEXT1", GridObj.GetActiveRowIndex(), "BG2007112304");
+	GridObj.SetCellValue("REG_TEXT2", GridObj.GetActiveRowIndex(), "211.123.54.2");
+
+	// Row 5
+	GridObj.AddRow();
+	GridObj.SetCellValue("REG_TEXT1", GridObj.GetActiveRowIndex(), "WG2007112305");
+	GridObj.SetCellValue("REG_TEXT2", GridObj.GetActiveRowIndex(), "211.123.54.2");
+
+	// Row 6
+	GridObj.AddRow();
+	GridObj.SetCellValue("REG_TEXT1", GridObj.GetActiveRowIndex(), "WG2007112306");
+	GridObj.SetCellValue("REG_TEXT2", GridObj.GetActiveRowIndex(), "211.123.54.2");
+
+	// Row 7
+	GridObj.AddRow();
+	GridObj.SetCellValue("REG_TEXT1", GridObj.GetActiveRowIndex(), "WG2007112307");
+	GridObj.SetCellValue("REG_TEXT2", GridObj.GetActiveRowIndex(), "211.123.54.2");
+
+	// Row 8
+	GridObj.AddRow();
+	GridObj.SetCellValue("REG_TEXT1", GridObj.GetActiveRowIndex(), "WGA200711238");
+	GridObj.SetCellValue("REG_TEXT2", GridObj.GetActiveRowIndex(), "192.168.1.260");
+
+	// Row 9
+	GridObj.AddRow();
+	GridObj.SetCellValue("REG_TEXT1", GridObj.GetActiveRowIndex(), "WG2007112309");
+	GridObj.SetCellValue("REG_TEXT2", GridObj.GetActiveRowIndex(), "211.123.54.2");
+
+	// Row 10
+	GridObj.AddRow();
+	GridObj.SetCellValue("REG_TEXT1", GridObj.GetActiveRowIndex(), "WG2007112310123");
+	GridObj.SetCellValue("REG_TEXT2", GridObj.GetActiveRowIndex(), "211.123.54.2");	
+
+	GridObj.AddRow();
+}
+
+/* 유효성 체크 */
+function runRegExp() {
+	var arrRegExp1 = new Array(2);
+	arrRegExp1[0] = "REG0";
+	arrRegExp1[1] = "REG1";
+	//arrRegExp1[1] = "REG2";
+
+	var arrRegExp2 = new Array(2);
+	arrRegExp2[0] = "REG0";
+	arrRegExp2[1] = "REG2";
+
+	//적용된 정규식 체크
+	if(!document.WiseGrid.CheckRegExp(arrRegExp1, "REG_TEXT1"));
+		return;
+	  
+	if(!document.WiseGrid.CheckRegExp(arrRegExp2, "REG_TEXT2"));
+
+}
+
+//해당 정규식에 일치하는 셀의 정보를 반환한다
+function GridRegExp(strRegExpKey, strColumnKey, nRow) {
+
+	if(strRegExpKey == "REG0") {
+	  var newHTML = "* <font color='blue'>'" + document.WiseGrid.GetColHDText(strColumnKey) + "'</font> 컬럼의 <font color='blue'>" + (nRow + 1) + "번째</font> 데이터가 빈값입니다. <font color='red'><a href=\"javascript:goFocus(\'" + strColumnKey + "\', " + nRow + ")\"'>[포커스이동]</a></font><br><br>";
+			addValidationData(newHTML);
+			chgValidationColor(strColumnKey, nRow);
+	} else if(strRegExpKey == "REG1") 	{
+		var newHTML = "* <font color='blue'>'" + document.WiseGrid.GetColHDText(strColumnKey) + "'</font> 컬럼의 <font color='blue'>" + (nRow + 1) + "번째</font> 데이터(" + document.WiseGrid.GetCellValue(strColumnKey, nRow) + ")는 'WG'문자열로 시작해야 하며 8 ~ 10자리의 숫자가 뒤에 붙어야 합니다. <font color='red'><a href=\"javascript:goFocus(\'" + strColumnKey + "\', " + nRow + ")\"'>[포커스이동]</a></font><br><br>";
+			addValidationData(newHTML);
+			chgValidationColor(strColumnKey, nRow);
+	} else if(strRegExpKey == "REG2") 	{
+		var newHTML = "* <font color='blue'>'" + document.WiseGrid.GetColHDText(strColumnKey) + "'</font> 컬럼의 <font color='blue'>" + (nRow + 1) + "번째</font> 데이터(" + document.WiseGrid.GetCellValue(strColumnKey, nRow) + ")가 IP Address 규칙에 맞지 않습니다. <font color='red'><a href=\"javascript:goFocus(\'" + strColumnKey + "\', " + nRow + ")\"'>[포커스이동]</a></font><br><br>";
+			addValidationData(newHTML);
+			chgValidationColor(strColumnKey, nRow);
+	}
+}
+
+/* 조회 */
+function doQuery() {
+	var GridObj = document.WiseGrid;
+	var servlet_url = "/servlet/wisegrid.sample.ExampleSave";
+
+	//WiseGrid가 서버에 전송할 mode를 셋팅한다.
+	GridObj.SetParam("mode", "search");
+		
+	//WiseGrid가 서버와 통신시에 데이터를 전달한다.
+	GridObj.DoQuery(servlet_url);
+}
+
+/*지정한 셀에 포커스를 잡는다. */
+function goFocus(strColumnKey, nRow) {
+	GridObj = document.WiseGrid;
+	GridObj.SetCellFocus(strColumnKey, nRow, false);
+}
+
+/*지정한셀의 색을 체크한다.*/
+function chgValidationColor(strColumnKey, nRow) {
+	GridObj = document.WiseGrid;
+	GridObj.SetCellBgColor(strColumnKey, nRow, "255|200|200");
+}
+
+/* 유효성 데이타를 추가 */
+function addValidationData(newHTML) {
+	objChkValidationList = document.getElementById("chkValidationList");	
+	objChkValidationList.innerHTML += newHTML;
+//objChkValidationList.scrollTop = 1000000;
+}
+
+/*유효성을 clear */
+function clearValidation() {
+	objChkValidationList = document.getElementById("chkValidationList");
+	objChkValidationList.innerHTML = "<br>";
+}
+
+</script>
+
+</HEAD>
+<BODY bgcolor='#FFFFFF' text='#000000'>
+<form name="Form">
+<input type="hidden" name="imageUrl" value="">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+	<tr height="20">
+		<td class="title1_k">
+			&nbsp;응용예제<br><hr>
+		</td>
+	</tr>
+	<tr height="20">
+		<td class="title2_k">
+				&nbsp;&nbsp;&nbsp; 정규식
+		</td>
+	</tr>
+</table>
+
+<hr>
+
+<table width="100%" border="0" cellpadding="2" cellspacing="0" >
+	<tr>
+	  <td valign="top" align="right">
+		<table border=0 cellpadding="0" cellspacing="0">
+			<tr>
+				<td><script language="javascript">btn("runRegExp()","Validation Check")</script></td>
+			</tr>
+		</table>
+	  </td>
+	</tr>
+</table>
+
+<table width="98%" border="0" cellpadding="0" cellspacing="0" >
+	<tr>
+		<td width="100%">
+			<table width="100%" border="0" cellpadding="0" cellspacing="0" >
+				<tr> 
+					<td bgcolor="#00455d" height="3"></td>
+				</tr>
+				<tr>
+					<td align='left'>
+						<script>initWiseGrid("WiseGrid", "80%", "350");</script>
+					</td>
+				</tr>
+			</table>
+		</td>
+		<td width="10">&nbsp;</td>
+	</tr>
+    <tr>
+        <td width="300" valign="top">
+            <fieldset>
+                <legend>Validation Check List</legend>
+                <div id="chkValidationList" style="font-family:굴림;font-size:9pt;width:
+                800px;height:335p;;overflow:scroll;"/><br></div>
+            </fieldset>
+        </td>
+    </tr>
+</table>
+</form>
+</BODY>
+</HTML>

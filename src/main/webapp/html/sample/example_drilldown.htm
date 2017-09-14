@@ -1,0 +1,280 @@
+<HTML>
+<HEAD>
+	<TITLE>응용예제 - 드릴다운</TITLE>
+	<meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+	<link rel='stylesheet' href='/css/wisegrid.css' type='text/css'>
+	<script type='text/javascript' src='/js/WiseGrid_TAG.js'></script>
+	<script type='text/javascript' src='/js/WiseGrid_Property.js'></script>
+	<script type='text/javascript' src='/js/WiseGrid_Basic_Sample.js'></script>
+
+	<!--
+        WiseGrid 오브젝트가 생성되고 초기화된 후 발생하는
+        JavaScript Event인 Initialize()를 받아 그리드의 헤더를 셋팅한다.
+    -->
+	<script language=javascript for='WiseGrid' event='Initialize()'>
+		init(document.WiseGrid);
+	</script>
+
+	<!--  서버와의 통신이 정상적으로 완료되면 발생한다.   -->
+	<script language=javascript for="WiseGrid" event="EndQuery()">
+		GridEndQuery()
+	</script>
+
+	<!--  	WiseGrid의 셀을 클릭했을때 발생하는 Javacript Event인 CellClick()을 받아 해당하는 작업을 진행한다.  -->
+	<script language=javascript for="WiseGrid" event="CellClick(strColumnKey,nRow)">
+		GridCellClick(strColumnKey, nRow)
+	</script>
+
+	<script language=javascript>
+		function init(GridObj) {
+			setProperty(GridObj);
+			document.WiseGrid.strLanguagePack = "EN";
+
+			// t_number 타입의 셀에 값이 NULL 일경우 빈값을 표시한다.
+			GridObj.bNullValueNumberFormat = false;
+
+			//t_number 타입의 셀에 값이 NULL 일경우 데이터의 표시방법을 결정한다
+			GridObj.bHDSwapping = false;
+
+			//클릭한 컬럼의 셀을 선택한다
+			GridObj.strHDClickAction = "select";
+
+			//Drag로 선택된 셀의 배경색상을 변경한다.
+			GridObj.strSelectedCellBgColor = "250|200|200";
+
+			//투명도를 조절한다.
+			GridObj.nAlphaLevel = 230;
+
+			//WiseGrid의 배경으로 이미지를 넣는다.
+			GridObj.strBgImage = "/images/icompia_logo_white.gif";
+
+			setHeader(GridObj);
+
+			doQuery();
+		}
+
+		function setHeader(GridObj) {
+			//그리드에 컬럼을 등록한다.
+			GridObj.AddHeader("ITEM_FLAG", 		"자재구분",		"t_imagetext", 		100,	200,	false);
+			GridObj.AddHeader("ITEM_CODE", 		"제품코드",		"t_imagetext", 		20, 	100,	false);
+			GridObj.AddHeader("SPECIFICATION", 	"규격", 			"t_text", 			2000,	200,	true);
+			GridObj.AddHeader("UNIT", 			"단위",			"t_combo",			10,		50,		true);
+			GridObj.AddHeader("PRICE", 			"출고가", 		"t_number", 		22.2,	100,	true);
+			GridObj.AddHeader("STOCK",			"재고량", 		"t_number", 		22,		60,		true);
+			GridObj.AddHeader("ADD_DATE",		"등록일", 		"t_date", 			8,		85,		true);
+			GridObj.AddHeader("CHANGE_DATE",	"수정일", 		"t_date", 			8,		85,		true);
+			GridObj.AddHeader("SEQ_NO",			"SEQ_NO", 		"t_text", 			8,		85,		true);
+
+			//AddHeader를 완료한 후 헤더를 그리드에 바인딩한다.
+			GridObj.BoundHeader();
+
+			//WiseGrid에 트리모드를 설정한다.
+			GridObj.SetTreeMode("ITEM_FLAG", "*", ",");
+
+			//이미지리스트에 이미지 URL을 추가한다.
+			GridObj.AddImageList("ITEM_FLAG", "/images/drildown01.gif");
+			GridObj.AddImageList("ITEM_FLAG", "/images/drildown03.gif");
+			GridObj.AddImageList("ITEM_FLAG", "/images/drildown02.gif");
+
+			//해당 컬럼을 숨긴다.
+			GridObj.SetColHide("SEQ_NO", true);
+
+			//이미지리스트에 이미지 URL을 추가한다
+			GridObj.AddImageList("ITEM_CODE", "/images/bt_search.gif");
+
+			//셀의 글자색을 적용한다.
+			GridObj.SetColCellFgColor("ITEM_CODE", "0|0|255");
+
+			//t_combo 타입의 컬럼에 Combo List 를 추가한다.
+			GridObj.AddComboListValue("UNIT", "EA", "EA");
+
+			//t_number 타입의 컬럼을 포맷타입으로  지정한다.
+			GridObj.SetNumberFormat("PRICE", "#,##0.00");
+			GridObj.SetNumberFormat("STOCK", "#,##0");
+
+			//t_date 타입의 컬럼을 포맷타입으로  지정한다.
+			GridObj.SetDateFormat("ADD_DATE", "yyyy/MM/dd");
+			GridObj.SetDateFormat("CHANGE_DATE", "yyyy/MM/dd");
+		}
+
+		/* 조회 */
+		function doQuery() {
+			var GridObj = document.WiseGrid;
+			var servlet_url = "/servlet/wisegrid.sample.ExampleDrilldown";
+
+			//WiseGrid가 서버에 전송할 mode를 셋팅한다.
+			GridObj.SetParam("mode", "search");
+
+			//WiseGrid가 서버와 통신시에 데이터를 전달한다.
+			GridObj.DoQuery(servlet_url);
+		}
+
+
+		/* 서버와의 통신이 정상적으로 완료되면 발생한다. */
+		function GridEndQuery() {
+			var GridObj = document.WiseGrid;
+
+			/*
+			 * 서버에서 전송한 상태코드를 가지고
+			 * 서버에서 mode로 셋팅한 파라미터를 가져온다.
+			 */
+			if(GridObj.GetStatus() == "true") {
+				var mode = GridObj.GetParam("mode");
+
+				//조회시
+				if(mode == "search") {
+					/*
+					 * 지정한 셀에 포커스를 잡고, 트리키로 로우인덱스를 가져온다.
+					 * 트리의 첫번째 노드키를 반환한다.
+					 */
+					GridObj.SetCellFocus("ITEM_FLAG", GridObj.GetRowIndexFromTreeKey(GridObj.GetTreeFirstNodeKey()), false);
+
+					//로우인덱스로 트리키를 가져온다.
+					var first_node = GridObj.GetTreeKeyFromRowIndex(0);
+					chkChildNode(first_node);
+				}
+			}
+		}
+
+		/* 드릴다운 네비게이터 */
+		function openDrilDownNavigator() {
+			var GridObj = document.WiseGrid;
+
+			// 전체 트리 노드를 연다.
+			GridObj.ExpandTreeAll();
+
+			/*
+			 * 지정한 셀에 포커스를 잡고, 트리키로 로우인덱스를 가져온다.
+			 * 트리의 첫번째 노드키를 반환한다.
+			 */
+			GridObj.SetCellFocus("ITEM_FLAG", GridObj.GetRowIndexFromTreeKey(GridObj.GetTreeFirstNodeKey()), false);
+
+			popUpOpen("example_drilldown_navigate_pop.htm", "drildown_navigator", 540, 600);
+		}
+
+		/* 재계산 */
+		function chkSum() {
+			var GridObj = document.WiseGrid;
+
+			//트리키로 로우인덱스를 가져온다
+			var first_node = GridObj.GetTreeKeyFromRowIndex(0);
+			chkChildNode(first_node);
+		}
+
+		/* 해당 트리 노드 체크 */
+		function chkChildNode(node_key) {
+			var GridObj = document.WiseGrid;
+
+			//해당 트리 노드가 자식노드를 가지고 있는지 체크한다.
+//			if(GridObj.HasTreeChildNode(node_key)) {
+			if(GridObj.HasTreeChildNode(node_key)) {
+				//해당 트리 노드의 자식 노드키를 반환한다.
+				chkChildNode(GridObj.GetTreeChildNodeKey(node_key));
+
+				//해당 트리 노드가 부모노드를 가지고 있는지 체크한다.
+				if(GridObj.HasTreeParentNode(node_key)) {
+					//해당 트리 노드의 이전 노드키를 반환한다
+					var parent_node_key = GridObj.GetTreeParentNodeKey(node_key);
+					//부모노드들의 Summary를 계산
+					setTreeSummary(parent_node_key);
+
+					//부모 노드가 다음노드를 가지고 있는지 체크한다.
+					if(GridObj.HasTreeNextNode(parent_node_key)) {
+						chkChildNode(GridObj.GetTreeNextNodeKey(parent_node_key));
+					}
+				}
+			} else {
+				// 해당 트리 노드의 부모 노드키를 반환한다.
+				var parent_node_key = GridObj.GetTreeParentNodeKey(node_key);
+				//부모노드들의 Summary를 계산
+				setTreeSummary(parent_node_key);
+
+				//부모 노드가 다음노드를 가지고 있는지 체크한다.
+				if(GridObj.HasTreeNextNode(parent_node_key)) {
+					//부모 노드의 다음 노드키를 반환한다.
+					chkChildNode(GridObj.GetTreeNextNodeKey(parent_node_key));
+				}
+			}
+		}
+
+		/*  해당 노드들의 Summary를 계산 */
+		function setTreeSummary(node_key) {
+			var GridObj = document.WiseGrid;
+
+			//해당 트리 노드의 자식 노드들의 Summary를 계산하여 반환한다.
+			var sum_value = GridObj.GetTreeSummaryValue(node_key, "PRICE", "sum", false);
+			var stock_value = GridObj.GetTreeSummaryValue(node_key, "STOCK", "sum", false);
+
+			//트리키로 로우인덱스를 가져온다.
+			var row_index = GridObj.GetRowIndexFromTreeKey(node_key);
+
+			//지정한 셀에 값을 넣는다.
+			GridObj.SetCellValue("PRICE", row_index, sum_value);
+			GridObj.SetCellValue("STOCK", row_index, stock_value);
+		}
+
+		function test() {
+			try {
+				document.WiseGrid.MoveTreeNode("G000000012301", "G000000002");
+			} catch (e) {
+				alert(e.message);
+			}
+
+		}
+
+	</script>
+
+</HEAD>
+<BODY bgcolor='#FFFFFF' text='#000000'>
+<form name="examForm">
+	<input type="hidden" name="imageUrl" value="">
+	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+		<tr height="20">
+			<td class="title1_k">
+				&nbsp;응용예제<br><hr>
+			</td>
+		</tr>
+		<tr height="20">
+			<td class="title2_k">
+				&nbsp;&nbsp;&nbsp; 드릴다운
+			</td>
+		</tr>
+
+	</table>
+	<hr>
+	<table width="98%" border="0" cellspacing="0" cellpadding="0"  class="title3">
+		<tr>
+			<td>
+				<table width="100%" border="0" cellpadding="2" cellspacing="0" >
+					<tr>
+						<td valign="top" align="right">
+							<table border=0 cellpadding="0" cellspacing="0">
+								<tr>
+									<td><script language="javascript">btn("doQuery()","조회")</script></td>
+									<td><script language="javascript">btn("document.WiseGrid.ExpandTreeAll()","전체열기")</script></td>
+									<td><script language="javascript">btn("document.WiseGrid.CollapseTreeAll()","전체닫기")</script></td>
+									<td><script language="javascript">btn("openDrilDownNavigator()","드릴다운 네비게이터")</script></td>
+									<td><script language="javascript">btn("chkSum()","재계산")</script></td>
+									<td><script language="javascript">btn("test()","테스트")</script></td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+
+	<table width="98%" border="0" cellpadding="0" cellspacing="0" >
+		<tr>
+			<td bgcolor="#00455d" height="3"></td>
+		</tr>
+		<tr>
+			<td align='left'>
+				<script>initWiseGrid("WiseGrid", "100%", "350");</script>
+			</td>
+		</tr>
+	</table>
+</form>
+</BODY>
+</HTML>

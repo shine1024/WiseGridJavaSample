@@ -1,0 +1,44 @@
+<HTML>
+<HEAD>
+    <TITLE>Test Events</TITLE>
+</HEAD>
+<BODY>
+<script src="/js/WiseGridVB_TAG.js"></script>
+<SCRIPT FOR="WiseGrid" EVENT="Initialize()" LANGUAGE="javascript">
+    WiseGrid.AddHeader("TEST1", "TEST1", "t_text", 150, 150, true);
+    WiseGrid.BoundHeader();
+    WiseGrid.AddRow();
+    WiseGrid.AddRow();
+    WiseGrid.AddRow();
+    WiseGrid.AddRow();
+</SCRIPT>
+
+<!--
+<script for="WiseGrid" event="HeaderClick(strColumnKey)" language="vbscript">
+    msgbox "header Click"
+    call a("aa")
+</script>
+-->
+
+
+
+<!--<script for="WiseGrid" event="CellClick(colKey, nRow, keyDown)" language="javascript">
+    alert("Cell Click");
+</script>-->
+
+
+<script for="WiseGrid" event="CellClick(colKey, nRow)" language="vbscript">
+    msgbox "Cell Click"
+</script>
+
+
+<script for="WiseGrid" event="CellDblClick(colKey, nRow)" language="vbscript">
+        msgbox "Cell DoubleClick"
+</script>
+
+<script for="WiseGrid" event="CellRClick(colKey, nRow)" language="vbscript">
+    msgbox nRow
+</script>
+<script>initWiseGrid("WiseGrid","100%", "350");</script>
+</BODY>
+</HTML>

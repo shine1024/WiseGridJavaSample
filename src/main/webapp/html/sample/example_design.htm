@@ -1,0 +1,408 @@
+<HTML>
+<HEAD>
+<TITLE>기본예제 -  디자인</TITLE>
+<meta http-equiv='Content-Type' content='text/html; charset=euc-kr'>
+<link rel='stylesheet' href='/css/wisegrid.css' type='text/css'>
+<script type='text/javascript' src='/js/WiseGrid_TAG.js'></script>
+<script type='text/javascript' src='/js/WiseGrid_Property.js'></script>
+<script type='text/javascript' src='/js/WiseGrid_Basic_Sample.js'></script>
+
+<!--
+	WiseGrid 오브젝트가 생성되고 초기화된 후 발생하는 
+	JavaScript Event인 Initialize()를 받아 그리드의 헤더를 셋팅한다.	
+-->
+<script language=javascript for='WiseGrid' event='Initialize()'>
+	init(document.WiseGrid);
+</script>
+
+<!--   	WiseGrid의 셀을 클릭했을때 발생하는 Javacript Event인 CellClick()을 받아 해당하는 작업을 진행한다.  -->
+<script language=javascript for="WiseGrid" event="CellClick(strColumnKey,nRow)">
+	GridCellClick(strColumnKey, nRow)
+</script>
+
+<script language=javascript>
+function init(GridObj) {	
+	setHeader(GridObj);
+	setProperty1(GridObj);
+	GridObj.strBgImage = "/images/unipost_logo_white.gif";
+	doQuery();
+}
+
+function setHeader(GridObj) {    
+	//그리드에 컬럼을 등록한다. 
+	GridObj.AddHeader("SELECTED",		"선택",			"t_checkbox", 	2, 		40,		true);	
+	GridObj.AddHeader("ITEM_FLAG",		"자재구분",		"t_combo", 		10, 	90,		true);	
+	GridObj.AddHeader("VENDOR_NAME",	"제조회사",		"t_text", 		50, 	80,		true);
+	GridObj.AddHeader("ITEM_CODE",		"제품코드",		"t_imagetext", 	20, 	100,	true);
+	GridObj.AddHeader("ITEM_NAME",		"제품명", 		"t_text", 		500, 	150,	true);	
+	GridObj.AddHeader("SPECIFICATION",	"규격", 			"t_text", 		2000,	200,	true);	
+	GridObj.AddHeader("UNIT",			"단위",			"t_combo",		10, 	50,		true);
+	GridObj.AddHeader("PRICE",			"출고가", 		"t_number", 	22.2,	100,	true);	
+	GridObj.AddHeader("STOCK",			"재고량", 		"t_number", 	22,		60,		true);
+	GridObj.AddHeader("ADD_DATE",		"등록일", 		"t_date", 		8,		85,		true);	
+	GridObj.AddHeader("CHANGE_DATE",	"수정일", 		"t_date", 		8,		85,		true);	
+	GridObj.AddHeader("SEQ_NO",			"SEQ_NO", 		"t_text", 		8,		85,		true);	
+
+	//AddHeader를 완료한 후 헤더를 그리드에 바인딩한다
+	GridObj.BoundHeader();	
+		
+	//해당 컬럼을 숨긴다.
+	GridObj.SetColHide("SEQ_NO", true);
+
+	//t_combo 타입의 컬럼에 Combo List 를 추가한다. 
+	GridObj.AddComboListValue("ITEM_FLAG",		"프로세서",			"CPU"); 
+	GridObj.AddComboListValue("ITEM_FLAG",		"메모리",				"MEM"); 
+	GridObj.AddComboListValue("ITEM_FLAG",		"메인보드",			"MAB"); 
+	GridObj.AddComboListValue("ITEM_FLAG",		"그래픽카드",		"VID"); 
+	GridObj.AddComboListValue("ITEM_FLAG",		"모니터",				"MOR");
+	GridObj.AddComboListValue("ITEM_FLAG",		"하드디스크",		"HDD");
+	GridObj.AddComboListValue("ITEM_FLAG",		"CDROM",				"CDR");
+	GridObj.AddComboListValue("ITEM_FLAG",		"키보드",				"KEY");
+	GridObj.AddComboListValue("ITEM_FLAG",		"마우스",				"MOU");
+
+	GridObj.AddComboListValue("UNIT", "EA", "EA");
+
+	//이미지리스트에 이미지 URL을 추가한다
+	GridObj.AddImageList("ITEM_CODE", "/images/bt_search.gif");
+
+	//셀의 글자색을 적용한다.
+	GridObj.SetColCellFgColor("ITEM_CODE", "0|0|255");	
+
+ 	//t_number 타입의 컬럼을 포맷타입으로  지정한다.
+	GridObj.SetNumberFormat("PRICE", "#,##0.00"); 
+	GridObj.SetNumberFormat("STOCK", "#,##0"); 
+
+	//t_date 타입의 컬럼을 포맷타입으로  지정한다.
+	GridObj.SetDateFormat("ADD_DATE", "yyyy/MM/dd");
+	GridObj.SetDateFormat("CHANGE_DATE", "yyyy/MM/dd");
+}
+
+/*디자인 1*/
+function setProperty1(GridObj) {
+	GridObj.strHDFontName = "돋움";
+	GridObj.strCellFontName = "돋움";
+
+	// Cell Font Setting
+	GridObj.nCellFontSize = 10;
+
+	// Header Font Setting
+	GridObj.nHDFontSize = 10;
+	GridObj.bHDFontBold = true;
+	
+	//헤더에서 마우스 오른쪽 클릭시 나오는 다중열 추가/삭제 메뉴를 활성화
+	GridObj.bMultiRowMenuVisible = true;
+
+	// Header Color
+	GridObj.strHDBgColor="95|177|206";
+	GridObj.strHDFgColor="255|255|255";
+
+	// Cell Color
+	GridObj.strGridBgColor="255|255|255";
+	GridObj.strCellBgColor="255|255|255";
+	GridObj.strCellFgColor="51|51|51";
+	GridObj.strAlternateRowsBgColor="default";
+
+	// Border Style
+	GridObj.strGridBorderColor = "204|204|204";
+	GridObj.strHDBorderStyle = "solidline";
+	GridObj.strCellBorderStyle = "solidline";
+	GridObj.strGridBorderStyle = "solidline";
+
+	// ETC Color
+	GridObj.strActiveRowBgColor="214|228|236";
+	GridObj.strSelectedCellBgColor = "241|231|221";
+	GridObj.strSelectedCellFgColor = "51|51|51";
+	GridObj.strStatusbarBgColor = "243|243|243";
+	GridObj.strStatusbarFgColor = "101|101|101";
+
+	// BG Image
+	GridObj.nAlphaLevel = 200;
+	GridObj.strBgImageStyle = "relative";
+	GridObj.strBgImage = "/images/unipost_logo_white.gif";
+
+	// ETC
+	GridObj.bStatusbarVisible = true;
+	GridObj.bRowSelectorVisible = true;
+	GridObj.bHDSwapping = true;
+	GridObj.nHDLines = 1;
+	GridObj.nRowHeight = 22;
+	GridObj.bAbortQueryVisible = true;
+		
+	//t_checkbox 타입의 컬럼에 체크를 전체적용한다.
+	GridObj.SetColHDCheckBoxVisible("SELECTED", true);
+	GridObj.SetColCellBgColor("SELECTED", "235|235|235");
+}
+
+/*디자인 2*/
+function setProperty2(GridObj) {	
+	GridObj.strHDFontName = "돋움";
+	GridObj.strCellFontName = "돋움";
+
+	// Cell Font Setting
+	GridObj.nCellFontSize = 10;
+
+	// Header Font Setting
+	GridObj.nHDFontSize = 10;
+	GridObj.bHDFontBold = true;
+
+	//헤더에서 마우스 오른쪽 클릭시 나오는 다중열 추가/삭제 메뉴를 활성화
+	GridObj.bMultiRowMenuVisible = true;
+
+	// Header Color
+	GridObj.strHDBgColor="81|162|112";
+	GridObj.strHDFgColor="255|255|255";
+
+	// Cell Color
+	GridObj.strGridBgColor="255|255|255";
+	GridObj.strCellBgColor="255|255|255";
+	GridObj.strCellFgColor="51|51|51";
+	GridObj.strAlternateRowsBgColor="244|250|250";
+
+	// Border Style
+	GridObj.strGridBorderColor = "195|195|193";
+	GridObj.strHDBorderStyle = "solidline";
+	GridObj.strCellBorderStyle = "solidline";
+	GridObj.strGridBorderStyle = "solidline";
+
+	// ETC Color
+	GridObj.strActiveRowBgColor="214|228|236";
+	GridObj.strSelectedCellBgColor = "241|231|221";
+	GridObj.strSelectedCellFgColor = "51|51|51";
+	GridObj.strStatusbarBgColor = "243|243|243";
+	GridObj.strStatusbarFgColor = "101|101|101";
+
+	// BG Image
+	GridObj.nAlphaLevel = 200;
+	GridObj.strBgImageStyle = "relative";
+	GridObj.strBgImage = "/images/unipost_logo_white.gif";
+
+	// ETC
+	GridObj.bStatusbarVisible = true;
+	GridObj.bRowSelectorVisible = false;
+	GridObj.bHDSwapping = false;
+	GridObj.nHDLines = 1;
+	GridObj.nRowHeight = 22;	
+	GridObj.bAbortQueryVisible = true;
+	
+	//t_checkbox 타입의 컬럼에 체크를 전체적용한다.
+	GridObj.SetColHDCheckBoxVisible("SELECTED", false);
+	GridObj.SetColCellBgColor("SELECTED", "235|235|235");
+}
+
+/*디자인 3*/
+function setProperty3(GridObj) {	
+	GridObj.strHDFontName = "돋움";
+	GridObj.strCellFontName = "돋움";
+	// Cell Font Setting
+	GridObj.nCellFontSize = 10;
+
+	// Header Font Setting
+	GridObj.nHDFontSize = 10;
+	GridObj.bHDFontBold = true;
+	
+	//헤더에서 마우스 오른쪽 클릭시 나오는 다중열 추가/삭제 메뉴를 활성화
+	GridObj.bMultiRowMenuVisible = true;
+
+	// Header Color
+	GridObj.strHDBgColor="195|223|205";
+	GridObj.strHDFgColor="0|84|76";
+
+	// Cell Color
+	GridObj.strGridBgColor="255|255|255";
+	GridObj.strCellBgColor="255|255|255";
+	GridObj.strCellFgColor="51|51|51";
+	GridObj.strAlternateRowsBgColor="244|250|250";
+
+	// Border Style
+	GridObj.strGridBorderColor = "195|195|193";
+	GridObj.strHDBorderStyle = "solidline";
+	GridObj.strCellBorderStyle = "solidline";
+	GridObj.strGridBorderStyle = "solidline";
+
+	// ETC Color
+	GridObj.strActiveRowBgColor="default";
+	GridObj.strSelectedCellBgColor = "241|231|221";
+	GridObj.strSelectedCellFgColor = "51|51|51";
+
+	// BG Image
+	GridObj.nAlphaLevel = 230;
+	GridObj.strBgImageStyle = "tiled";
+	GridObj.strBgImage = "/images/unipost_logo_white.gif";
+
+	// ETC
+	GridObj.bStatusbarVisible = false;
+	GridObj.bRowSelectorVisible = false;
+	GridObj.bHDSwapping = false;
+	GridObj.nHDLines = 2;
+	GridObj.nRowHeight = 22;
+	GridObj.bAbortQueryVisible = true;
+	
+	//t_checkbox 타입의 컬럼에 체크를 전체적용한다.
+	GridObj.SetColHDCheckBoxVisible("SELECTED", false);
+	GridObj.SetColCellBgColor("SELECTED", "235|235|235");
+}
+
+/*디자인 4*/
+function setProperty4(GridObj) {	
+	GridObj.strHDFontName = "돋움";
+	GridObj.strCellFontName = "돋움";
+
+	// Cell Font Setting
+	GridObj.nCellFontSize = 10;
+
+	// Header Font Setting
+	GridObj.nHDFontSize = 10;
+	GridObj.bHDFontBold = true;
+
+	//헤더에서 마우스 오른쪽 클릭시 나오는 다중열 추가/삭제 메뉴를 활성화
+	GridObj.bMultiRowMenuVisible = true;
+
+	// Header Color
+	GridObj.strHDBgColor="214|229|236";
+	GridObj.strHDFgColor="33|79|108";
+
+	// Cell Color
+	GridObj.strGridBgColor="255|255|255";
+	GridObj.strCellBgColor="255|255|255";
+	GridObj.strCellFgColor="51|51|51";
+	GridObj.strAlternateRowsBgColor="244|250|250";
+
+	// Border Style
+	GridObj.strGridBorderColor = "195|195|193";
+	GridObj.strHDBorderStyle = "solidline";
+	GridObj.strCellBorderStyle = "solidline";
+	GridObj.strGridBorderStyle = "solidline";
+
+	// ETC Color
+	GridObj.strActiveRowBgColor="default";
+	GridObj.strSelectedCellBgColor = "241|231|221";
+	GridObj.strSelectedCellFgColor = "51|51|51";
+	GridObj.strStatusbarBgColor = "243|243|243";
+	GridObj.strStatusbarFgColor = "101|101|101";
+
+	// BG Image
+	GridObj.nAlphaLevel = 230;
+	GridObj.strBgImageStyle = "stretched";
+	GridObj.strBgImage = "/images/unipost_logo_white.gif";
+	
+	// ETC
+	GridObj.bStatusbarVisible = false;
+	GridObj.bRowSelectorVisible = false;
+	GridObj.bHDSwapping = false;
+	GridObj.nHDLines = 2;
+	GridObj.nRowHeight = 22;
+	GridObj.bAbortQueryVisible = true;
+	
+	GridObj.SetColHDCheckBoxVisible("SELECTED", false);
+	GridObj.SetColCellBgColor("SELECTED", "235|235|235");
+}
+
+/* 라디오버튼으로 클릭한 디자인이 변화한다.*/
+function changeDesign(val) {
+	var GridObj = document.WiseGrid;
+	if(val == "D1") {
+		setProperty1(GridObj);
+	} else if(val == "D2") {
+		setProperty2(GridObj);
+	} else if(val == "D3") {
+		setProperty3(GridObj);
+	} else {
+		setProperty4(GridObj);
+	}
+}
+
+/* 라디오버튼으로 클릭한 디자인의 소스가 pop-up 창으로 띄운다.*/
+function viewSourceDesign() {
+	radioObj = document.examForm.design_style;
+	
+	for(i=0; i<radioObj.length; i++) {
+		if(radioObj[i].checked) {
+			if(radioObj[i].value == "D1") {
+				window.showModalDialog("example_design_pop1.htm", null, "dialogWidth:900px; dialogHeight:550px");
+			} else if(radioObj[i].value == "D2") {
+				window.showModalDialog("example_design_pop2.htm", null, "dialogWidth:900px; dialogHeight:550px");
+			} else if(radioObj[i].value == "D3") {
+				window.showModalDialog("example_design_pop3.htm", null, "dialogWidth:900px; dialogHeight:550px");
+			} else {
+				window.showModalDialog("basic_example_design_pop4.htm", null, "dialogWidth:900px; dialogHeight:550px");
+			}
+		}
+	}
+}
+
+/*라디오버튼으로 클릭한 디자인의 소스를 선택한다.*/
+function selectSourceDesion(num) {
+	radioObj = document.examForm.design_style;
+	radioObj[num].checked = true;
+	if(num == 0)
+		changeDesign("D1");
+	else if(num == 1)
+		changeDesign("D2");
+	else if(num == 2)
+		changeDesign("D3");
+	else
+		changeDesign("D4");
+}
+
+function doQuery() {
+	var GridObj = document.WiseGrid;
+	var servlet_url = "/servlet/wisegrid.sample.ExampleSelect";
+	
+	//WiseGrid가 서버에 전송할 mode를 셋팅한다.
+	GridObj.SetParam("mode", "search");		
+
+	//WiseGrid가 서버와 통신시에 데이터를 전달한다. 서버에서는 체크된 로우만 전송받게 된다.
+	GridObj.DoQuery(servlet_url);
+}
+
+</script>
+
+</HEAD>
+<BODY bgcolor='#FFFFFF' text='#000000'>
+<form name="examForm">
+<input type="hidden" name="imageUrl" value="">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr height="20">
+    <td class="title1_k">
+    	&nbsp;기본예제<br><hr>
+    </td>
+  </tr>
+  <tr height="20">
+    <td class="title2_k">
+			&nbsp;&nbsp;&nbsp; 디자인
+    </td>
+  </tr> 
+</table>
+<hr>
+<table width="98%" border="0" cellspacing="0" cellpadding="0"  class="title3">  
+	<tr>		
+		<td width="60">디자인</td>
+		<td width="300">
+			<input type="radio" name="design_style" value="D1" onClick="changeDesign(this.value)" checked>
+				<a href="javascript:selectSourceDesion(0)">디자인1</a>&nbsp;&nbsp;
+			<input type="radio" name="design_style" value="D2" onClick="changeDesign(this.value)">
+				<a href="javascript:selectSourceDesion(1)">디자인2</a>&nbsp;&nbsp;
+			<input type="radio" name="design_style" value="D3" onClick="changeDesign(this.value)">
+				<a href="javascript:selectSourceDesion(2)">디자인3</a>&nbsp;&nbsp;
+			<input type="radio" name="design_style" value="D4" onClick="changeDesign(this.value)">
+				<a href="javascript:selectSourceDesion(3)">디자인4</a>&nbsp;&nbsp;
+		</td>
+		<td width="40"></td>
+		<td valign="top" width="120"><a href="javascript:viewSourceDesign()" class="detail_link">[디자인 소스보기]</a></td>
+		<td align="right"><script language="javascript">btn("doQuery()","조회")</script></td>
+	</tr>
+</table>
+
+<table width="98%" border="0" cellpadding="0" cellspacing="0" >
+	<tr> 
+		<td bgcolor="#00455d" height="3"></td>
+	</tr>
+	<tr>
+		<td align='left'>
+			<script>initWiseGrid("WiseGrid", "100%", "350");</script>
+		</td>
+	</tr>
+</table>
+</form>
+</BODY>
+</HTML>

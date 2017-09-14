@@ -1,0 +1,262 @@
+<HTML>
+<HEAD>
+<TITLE>기본예제 - 엑셀내보내기</TITLE>
+<meta http-equiv='Content-Type' content='text/html; charset=euc-kr'>
+<link rel='stylesheet' href='/css/wisegrid.css' type='text/css'>
+<script type='text/javascript' src='/js/WiseGrid_TAG.js'></script>
+<script type='text/javascript' src='/js/WiseGrid_Property.js'></script>
+<script type='text/javascript' src='/js/WiseGrid_Basic_Sample.js'></script>
+
+<!--
+	WiseGrid 오브젝트가 생성되고 초기화된 후 발생하는 
+	JavaScript Event인 Initialize()를 받아 그리드의 헤더를 셋팅한다.	
+-->
+<script language=javascript for='WiseGrid' event='Initialize()'>
+	init(document.WiseGrid);
+</script>
+
+<!--  	WiseGrid의 셀을 클릭했을때 발생하는 Javacript Event인 CellClick()을 받아 해당하는 작업을 진행한다.  -->
+<script language=javascript for="WiseGrid" event="CellClick(strColumnKey,nRow)">
+	GridCellClick(strColumnKey, nRow)
+</script>
+
+<!--  	서버와의 통신이 정상적으로 완료되면 발생한다.   -->
+<script language=javascript for="WiseGrid" event="EndQuery()">
+	EndGridQuery()
+</script>
+
+<script language=javascript>
+function init(GridObj) {
+	setProperty(GridObj);
+
+	//사용자가 헤더를 드래그해서 컬럼위치를 이동할수 없다.
+	GridObj.bHDMoving = false;
+
+	//사용자가 헤더를 드래그해서 컬럼위치를 이동할수 없다.
+	GridObj.bHDSwapping = false;
+
+	//로우 셀렉터를 WiseGrid에서 숨긴다.
+	GridObj.bRowSelectorVisible = false;
+
+	//로우의 테두리에 아무것도 나타나지 않는다.
+	GridObj.strRowBorderStyle = "none";
+
+	//RowSpacing값을 정한다. 
+	GridObj.nRowSpacing = 0;
+
+	//클릭한 컬럼의 셀을 선택가능하게 한다.
+	GridObj.strHDClickAction = "select";
+
+	//클릭한 컬럼의 모든 셀을 선택한다 
+	GridObj.strActiveRowBgColor = "default";
+
+	//헤더의 라인수를 설정한다. 
+	GridObj.nHDLines = 4;
+
+	setHeader(GridObj);
+	doQuery();
+
+}
+
+function setHeader(GridObj) {    
+	//그리드에 컬럼을 등록한다. 
+	GridObj.AddHeader("SELECTED",		"선택",			"t_checkbox", 	2, 		40,		true);	
+	GridObj.AddHeader("ITEM_FLAG", 		"자재구분",		"t_combo", 		10, 	90,		true);	
+	GridObj.AddHeader("VENDOR_NAME", 	"제조회사",		"t_text", 		50, 	80,		true);
+	GridObj.AddHeader("ITEM_CODE", 		"제품코드",		"t_imagetext", 	20, 	100,	false);
+	GridObj.AddHeader("ITEM_NAME", 		"제품명", 		"t_text", 		500, 	150,	true);	
+	GridObj.AddHeader("SPECIFICATION", 	"규격", 			"t_text", 		2000, 	200,	true);	
+	GridObj.AddHeader("UNIT", 			"단위",			"t_combo",		10, 	50,		true);
+	GridObj.AddHeader("PRICE", 			"출고가", 		"t_number", 	22.3, 	80,		true);	
+	GridObj.AddHeader("STOCK",			"재고량", 		"t_number", 	22,		60,		true);
+	GridObj.AddHeader("ADD_DATE",		"등록일", 		"t_date", 		8,		85,		true);	
+	GridObj.AddHeader("CHANGE_DATE",	"수정일", 		"t_date", 		8,		85,		true);	
+	GridObj.AddHeader("SEQ_NO",			"SEQ_NO", 		"t_text", 		8,		85,		true);	
+	
+	//그리드에 그룹을 등록한다. 
+	GridObj.AddGroup("ITEM_INFO", "제품정보");
+	GridObj.AddGroup("PRICE_INFO", "가격정보");
+
+	//그룹에 헤더를 포함시킨다. 	
+	GridObj.AppendHeader("PRICE_INFO", "PRICE");
+	GridObj.AppendHeader("PRICE_INFO", "STOCK");
+	
+	GridObj.AppendHeader("ITEM_INFO", "ITEM_FLAG");
+	GridObj.AppendHeader("ITEM_INFO", "VENDOR_NAME");
+	GridObj.AppendHeader("ITEM_INFO", "ITEM_CODE");
+	GridObj.AppendHeader("ITEM_INFO", "ITEM_NAME");
+	GridObj.AppendHeader("ITEM_INFO", "SPECIFICATION");
+	GridObj.AppendHeader("ITEM_INFO", "UNIT");
+	
+	//그룹을 그룹으로 묶는다. 
+	GridObj.AppendGroup("ITEM_INFO", "PRICE_INFO");	
+	
+	//AddHeader를 완료한 후 헤더를 그리드에 바인딩한다
+	GridObj.BoundHeader();
+
+
+
+
+	//해당 컬럼을 숨긴다.
+	GridObj.SetColHide("SEQ_NO", true);
+	GridObj.SetColHide("SELECTED", true);
+	
+	//t_combo 타입의 컬럼에 Combo List 를 추가한다. 
+	GridObj.AddComboListValue("ITEM_FLAG", "프로세서", "CPU"); 
+	GridObj.AddComboListValue("ITEM_FLAG", "메모리", "MEM"); 
+	GridObj.AddComboListValue("ITEM_FLAG", "메인보드", "MAB"); 
+	GridObj.AddComboListValue("ITEM_FLAG", "그래픽카드", "VID"); 
+	GridObj.AddComboListValue("ITEM_FLAG", "모니터", "MOR");
+	GridObj.AddComboListValue("ITEM_FLAG", "하드디스크", "HDD");
+	GridObj.AddComboListValue("ITEM_FLAG", "CDROM", "CDR");
+	GridObj.AddComboListValue("ITEM_FLAG", "키보드", "KEY");
+	GridObj.AddComboListValue("ITEM_FLAG", "마우스", "MOU");
+
+	GridObj.AddComboListValue("UNIT", "EA", "EA");
+	
+	//이미지리스트에 이미지 URL을 추가한다
+	GridObj.AddImageList("ITEM_CODE", "/images/bt_search.gif");
+
+	//셀의 글자색을 적용한다.
+	GridObj.SetColCellFgColor("ITEM_CODE", "0|0|255");	
+
+ 	//t_number 타입의 컬럼을 포맷타입으로  지정한다.
+	GridObj.SetNumberFormat("PRICE", "#,##0.00"); 
+	GridObj.SetNumberFormat("STOCK", "#,##0"); 
+
+	//t_date 타입의 컬럼을 포맷타입으로  지정한다.
+	GridObj.SetDateFormat("ADD_DATE", "yyyy/MM/dd");
+	GridObj.SetDateFormat("CHANGE_DATE", "yyyy/MM/dd"); 	
+}
+
+/* 조회 */
+function doQuery() {
+	var GridObj = document.WiseGrid;
+	var servlet_url = "/servlet/wisegrid.sample.ExampleSelect";
+
+	//WiseGrid가 서버에 전송할 mode를 셋팅한다.
+	GridObj.SetParam("mode", "search");	
+
+	//WiseGrid가 서버와 통신시에 데이터를 전달한다.
+	GridObj.DoQuery(servlet_url);
+}
+
+/* 서버와의 통신이 정상적으로 완료되면 발생한다. */
+function EndGridQuery() {
+	var GridObj = document.WiseGrid;
+	
+	if(GridObj.GetStatus() == "true") 	{ // 서버에서 전송한 상태코드를 가져온다.
+		//모든 SummaryBar를 Clear한다. 
+		GridObj.ClearSummaryBar();
+
+		//Group Merge를 Clear한다. 
+		GridObj.ClearGroupMerge();
+
+		//지정한 컬럼들을 컬럼 단위로 Merge한다. 
+		GridObj.SetGroupMerge("ITEM_FLAG,VENDOR_NAME");
+
+		//WiseGrid에 SummaryBar를 추가한다.
+		GridObj.AddSummaryBar('SUMMARY1', '소계', 'ITEM_FLAG', 'sum', 'PRICE,STOCK'); 
+		GridObj.AddSummaryBar('SUMMARY2', '소계', 'VENDOR_NAME', 'sum', 'PRICE,STOCK');
+		GridObj.AddSummaryBar('SUMMARY3', '합계', 'summaryall', 'sum', 'PRICE,STOCK'); 
+		
+		//SummaryBar의 색상을 조절한다. 
+		GridObj.SetSummaryBarColor('SUMMARY1', '100|100|100', '210|251|212');
+		GridObj.SetSummaryBarColor('SUMMARY2', '100|100|100', '222|243|250');
+		GridObj.SetSummaryBarColor('SUMMARY3', '100|100|100', '250|222|222'); 
+		
+		//SummaryBar의 폰트를 조절한다. 
+		GridObj.SetSummaryBarFont('SUMMARY1', '돋움', '10', true, false, false, false);
+		GridObj.SetSummaryBarFont('SUMMARY2', '돋움', '10', true, false, false, false);
+		GridObj.SetSummaryBarFont('SUMMARY3', '돋움', '10', true, false, false, false);
+	}
+}
+/* ExcelImport */
+function ExcelImport() {
+	var GridObj = document.WiseGrid; 
+
+	// AddHeader 한 순서로 ColumnList를 작성해 Import 한다.
+	GridObj.ExcelImport('', 'importall','row', true, true)
+}
+
+/* ExcelExport */
+function ExcelDown1() {
+	var GridObj = document.WiseGrid;
+	
+	//SetExcelHeader, SetExcelFooter 으로 추가한 정보들을 Clear한다. 
+	GridObj.ClearExcelInfo();
+
+	//그리드의 데이터를 사용자의 PC에 파일로 저장한다. SetColHide()로 숨겨진 컬럼은 내보내지 않는다. 
+	GridObj.AddExcelLine(GridObj.SetCellFontBold(""), 5, 10, "left");//, "100|100|100", "220|220|220");
+	GridObj.ExcelExport('', '', true, true);
+}
+
+function ExcelDown2() {
+	var GridObj = document.WiseGrid;
+	
+	var toDay = new Date(); 
+	
+	//SetExcelHeader, SetExcelFooter 으로 추가한 정보들을 Clear한다. 
+	GridObj.ClearExcelInfo();
+
+	//엑셀로 Export할때 상단에 헤더를 추가한다. 
+	GridObj.SetExcelHeader("자 재 구 분 별   재 고 현 황", 40, 15, "center", "0|0|0", "240|240|240");
+
+	//엑셀로 Export할때 하단에 Footer를 추가한다. 
+	GridObj.SetExcelFooter("Copyright 2014 UNIPOST (" + toDay.toLocaleString() + ")", 20, 10, 'right', "100|100|100", "220|220|220");
+	GridObj.AddExcelLine("등록일 : 2014  ~ 2014", 20, 10, "left");//, "100|100|100", "220|220|220");
+	//그리드의 데이터를 사용자의 PC에 파일로 저장한다. SetColHide()로 숨겨진 컬럼은 내보내지 않는다.
+	GridObj.ExcelExport('', '', true, true);	
+}
+
+</script>
+
+</HEAD>
+<BODY bgcolor='#FFFFFF' text='#000000'>
+<form name="examForm">
+<input type="hidden" name="imageUrl" value="">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr height="20">
+    <td class="title1_k">
+    	&nbsp;기본예제<br><hr>
+    </td>
+  </tr>
+  <tr height="20">
+    <td class="title2_k">
+			&nbsp;&nbsp;&nbsp; 엑셀 내보내기
+    </td>
+  </tr> 
+</table>
+<hr>
+<table width="98%" border="0" cellspacing="0" cellpadding="0"  class="title3"> 
+  <tr>
+    <td>
+		<table width="100%" border="0" cellpadding="2" cellspacing="0" >
+		    <tr>
+		      <td valign="top" align="right">
+		      	<table border=0 cellpadding="0" cellspacing="0">
+		      		<tr>
+		      			<td><script language="javascript">btn("doQuery()","조회")</script></td>
+		      			<td><script language="javascript">btn("ExcelDown1()","ExcelExport")</script></td>
+		      			<td><script language="javascript">btn("ExcelDown2()","ExcelExport(Header, Footer 포함)")</script></td>
+		      			<td><script language="javascript">btn("ExcelImport()","ExcelImport")</script></td>
+		      		</tr>
+		      	</table>
+		      </td>
+		   	</tr>
+		</table>
+	</td>
+  </tr>
+</table>
+<table width="98%" border="0" cellpadding="0" cellspacing="0" >
+	<tr> 
+		<td bgcolor="#00455d" height="3"></td>
+	</tr>
+	<tr>
+		<td align='left'>
+			<script>initWiseGrid("WiseGrid", "100%", "350");</script>
+		</td>
+	</tr>
+</table>
+</BODY>
+</HTML>

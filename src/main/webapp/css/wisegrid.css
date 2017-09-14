@@ -1,0 +1,85 @@
+.wigrTl{background : url('') repeat-x; width:10px;height:7px;}
+body
+{scrollbar-face-color: #FFFFFF;
+scrollbar-highlight-color: #FFFFFF;
+scrollbar-3dlight-color: #E6E6E6;
+scrollbar-shadow-color: #E6E6E6;
+scrollbar-darkshadow-color: #F8F8F8;
+scrollbar-track-color: #F8F8F8;
+scrollbar-arrow-color: #E7EEF7;
+font-family:"verdana";
+font-size: 11px;
+color: #464646; 
+margin-left:25px; 
+margin-top:10px;
+line-height:140%;
+	/*background-image: url(..../images/bg_main.gif);background-repeat: repeat-y; background-position: left top;*/
+}
+
+a:link {font-size: 11px;color: #A36107;text-decoration: underline;}
+a:hover {font-size: 11px;color: #A36107;text-decoration: underline;}
+a:visited {font-size: 11px;color: #A36107;	text-decoration: underline}
+a:active {font-size: 11px;color: #A36107;text-decoration: underline;}
+hr {margin: 0;padding: 0;height: 1px;border: none;border-top: 2px dashed #C3C3C3; width:100%; }
+td {font-size: 11px;color: #464646;text-decoration: none;}
+.input1 {border-bottom:solid #CECECE 1px;border-left:solid #CECECE 1px;border-right:solid #CECECE 1px;border-top:solid #CECECE 1px;font-size:11px; font-family:돋움; height:20px; width:160px;color:#525252;}
+
+ul {margin-left:22px;margin-bottom:0px;margin-top:3px;list-style-type:square;line-height:150%}
+ol {margin-left:22px;margin-bottom:0px;margin-top:3px;list-style-type:circle}
+
+.title1 {font-size: 17px;color: #1B74A9;text-decoration: none;font-weight:bold; line-height:150%; letter-spacing:-1px; text-transform:capitalize}
+.title1_k {font-family:"돋움";font-size: 17px;color: #1B74A9;text-decoration: none;font-weight:bold; line-height:150%; letter-spacing:-1px; text-transform:capitalize}
+.title2 {font-size: 14px;color: #FFFFFF;text-decoration: none;font-weight:bold; line-height:150%; letter-spacing:-1px;background-color:#999999 }
+.title2_k {font-family:"돋움";font-size: 14px;color: #FFFFFF;text-decoration: none;font-weight:bold; line-height:150%; letter-spacing:-1px;background-color:#999999 }
+.title3 {font-size: 12px;color: #000000;text-decoration: none;font-weight:bold; line-height:150%; letter-spacing:-1px; }
+.title3_k {font-family:"돋움";font-size: 12px;color: #000000;text-decoration: none;font-weight:bold; line-height:150%; letter-spacing:-1px; }
+.title4 {font-size: 13px;color: #105B88;text-decoration: none;font-weight:bold; line-height:150%; letter-spacing:-1px; background-color:#A8D1EA ; padding:2px}
+
+.blue {color: #1B74A9; line-height:150%; }
+.dotum {font-family:"돋움"}
+
+pre.source {
+  padding-left:6px;
+  padding-top:6px; 
+  padding-bottom:6px;   
+  font-family:verdana,TypeWriter,monotype,verdana,monospace;font-size:11px;
+  background-color:#000000;
+  color:#FFD700; /* gold */;
+}
+
+.btn_txt{color:#000000;background-image: url(../images/btn_bg.gif);background-repeat: repeat-X; background-position: left top;font-family:verdana;font-weight:bold; padding: 2px 2px 2px 2px;}
+.btn_left{width:4px;background-image: url(../images/btn_left.gif);background-repeat: no-repeat; background-position: left;}
+.btn_right{width:4px;background-image: url(../images/btn_right.gif);background-repeat: no-repeat; background-position: right;}
+
+.source_link:link {font-size: 11px;color: #2BB0FF;text-decoration: underline;}
+.source_link:hover {font-size: 11px;color: #2BB0FF;text-decoration: underline;}
+.source_link:visited {font-size: 11px;color: #2BB0FF;	text-decoration: underline;}
+.source_link:active {font-size: 11px;color: #2BB0FF;text-decoration: underline;}
+
+.detail_link:link {font-size: 11px;color: #FF3A3A;text-decoration: underline;}
+.detail_link:hover {font-size: 11px;color: #FF3A3A;text-decoration: underline;}
+.detail_link:visited {font-size: 11px;color: #FF3A3A;	text-decoration: underline;}
+.detail_link:active {font-size: 11px;color: #FF3A3A;text-decoration: underline;}
+
+.source_comment {color:#67FF63}
+.source_wisegrid {color:#FF9CFC}
+.source_special {color:#FF3A3A}
+
+	#out{
+		width:auto;height:26px;display:none;padding-left:10px;
+		/*background:url(/images/sub/toolbarbg.gif) repeat-x;*/
+		border:1px solid #99bbe8;
+	}
+	#outTxt{
+		width:auto;height:auto;margin-top:7px;
+	}
+	.sFuncHd{
+		text-align:right;
+		background-color:#EBF3FF;
+		border-bottom: 1px solid #D1DBE8;
+		padding-right:4px;
+	}
+	.sFuncTx{
+		border-bottom: 1px solid #D1DBE8;
+	}
+	#information{margin-top:10px;}

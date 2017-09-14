@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<HTML>
+<HEAD>
+    <TITLE>Z-Index</TITLE>
+    <script>
+        function setindex()
+        {
+            div1.style.zIndex=text1.value;
+            select1.style.zIndex=text2.value;
+            getindexes();
+        }
+
+        function getindexes(){
+
+            text1.value=div1.style.zIndex;
+            text2.value=select1.style.zIndex;
+            text3.value=5;
+        }
+    </script>
+</HEAD>
+<BODY onload="getindexes()">
+
+Div
+<input type="text" value="" id=text1 name=text1 ><p>
+
+    Select
+    <input type="text" value="" id=text2 name=text2><p>
+
+    IFrame
+    <input type="text" value="" id=text3 name=text3><p>
+    <input type="button" value="Set Z-Index" id=button1 name=button1 onclick="setindex()">
+<DIV id=div1 name=div1  style="width:200px;height:200px;background-color:lightblue;position:absolute;left:350px;top:250px;z-index:-1">DIV</DIV>
+<select id=select1 name=select1 style=";position:absolute;left:300px;top:400px;width:300px;z-index:-1">
+        size=1 >
+    <option>Option1
+    <option>Option2
+    <option>Option3
+</select>
+<IFRAME id=iframe1 name=iframe1 src="" scroll=none style="width:100;height:115;position:absolute;
+left:400;top:300;border-color:green;z-index:5"></iframe>
+</BODY>
+</HTML>

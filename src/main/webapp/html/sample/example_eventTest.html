@@ -1,0 +1,84 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>기본예제 - 기본</title>
+<link rel='stylesheet' href='/css/wisegrid.css' type='text/css'>
+<script type='text/javascript' src='/js/WiseGrid_TAG.js'></script>
+<script language=javascript for="WiseGrid" event="Initialize()">
+    init();
+</script>
+
+<!-- cell click -->
+<script language="javascript" for="WiseGrid" event="CellClick(strColumnKey, nRow)">
+    alert("Cell Click");
+</script>
+
+
+<!-- col scroll -->
+<script language=javascript for='WiseGrid' event='ColScroll(nLeft,nPosition,nWidth,nRange,nScrollIndex)'>
+    alert("Col Event")
+</script>
+
+
+<!-- EndFileExport -->
+<script language="Javascript" for="WiseGrid" event="EndFileExport(filePath)">
+    alert("File Export");
+</script>
+
+
+
+<script>
+function init() {
+    var GridObj = document.WiseGrid;
+    setHeader(GridObj);
+}
+
+
+function setHeader(GridObj) {
+    GridObj.AddHeader("TEXT", "TEXT", "t_text", 256, 250, true);
+    GridObj.BoundHeader();
+    setData(GridObj);
+
+    //사용자가 헤더를 드래그해서 컬럼위치를 이동할수 없다.
+    GridObj.bHDMoving = false;
+
+    //헤더의 컬럼위치이동 콤보버튼을 비활성화 한다.
+    GridObj.bHDSwapping = false;
+
+    //로우 셀렉터를 WiseGrid에서 숨긴다,.
+    GridObj.bRowSelectorVisible = false;
+
+    //로우의 테두리에 아무것도 나타나지 않는다.
+    GridObj.strRowBorderStyle = "none";
+
+    //RowSpacing값을 정한다.
+    GridObj.nRowSpacing = 0;
+
+    //클릭한 컬럼의 셀을 선택가능하게 한다.
+    GridObj.strHDClickAction = "select";
+
+    //선택된 행의 배경색상을 설정한다.
+    GridObj.strActiveRowBgColor = "default";
+    GridObj.nAlphaLevel = 0
+//    GridObj.SetNumberFormat('NUMBER', "###%");
+
+}
+
+function setData(GridObj) {
+    for(var i=2; i<10; i++) {
+        GridObj.AddRow();
+        if(i>6) {
+            GridObj.SetCellValue('TEXT', GridObj.GetActiveRowIndex(), 15);
+        } else {
+            GridObj.SetCellValue('TEXT', GridObj.GetActiveRowIndex(), 5);
+        }
+    }
+}
+
+</script>
+</head>
+
+<body>
+<script>initWiseGrid("WiseGrid", "100%", "350");</script>
+</body>
+</html>

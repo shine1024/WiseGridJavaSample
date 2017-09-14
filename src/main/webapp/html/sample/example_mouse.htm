@@ -1,0 +1,289 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>기본예제 - 기본</title>
+<link rel='stylesheet' href='/css/wisegrid.css' type='text/css'>
+<script type='text/javascript' src='/js/WiseGrid_TAG.js'></script>
+<script type='text/javascript' src='/js/WiseGrid_Property.js'></script>
+<script type='text/javascript' src='/js/WiseGrid_Basic_Sample.js'></script>
+<!--
+	WiseGrid 오브젝트가 생성되고 초기화된 후 발생하는 
+	JavaScript Event인 Initialize()를 받아 그리드의 헤더를 셋팅한다.	
+-->
+<script language=javascript for="WiseGrid" event="Initialize()">
+	init();
+</script>
+
+<!--  	서버와의 통신이 정상적으로 완료되면 발생한다.   -->
+<script language=javascript for="WiseGrid" event="EndQuery()">
+	GridEndQuery();
+</script>
+<!--  이벤트 발생 데이터를 보여주기 위한 그리드 초기화  -->
+<script language=javascript for="WiseGrid2" event="Initialize()">
+	init2();
+</script>
+ 
+<!-- 그리드에 MouseOver, MouseOut  Event 적용 -->
+<script language=javascript for="WiseGrid" event="MouseOver(strType, strColumnKey, nRow)">
+	MouseOver(strType, strColumnKey, nRow);
+</script>
+
+<script language=javascript for="WiseGrid" event="MouseOut(strType, strColumnKey, nRow)">
+	MouseOut(strType, strColumnKey, nRow);
+</script>
+
+<script language="JavaScript"> 
+	
+/*  첫번재 그리드를 초기화 */
+function init() {
+	var GridObj = document.WiseGrid;
+	setHeader();
+	setProperty(GridObj);
+	GridObj.strBgImage = "/images/unipost_logo_white.gif";
+	GridObj.bStatusbarVisible  = false;	
+  	getdatetime();
+	doQuery();
+}
+
+/*  두번째 그리드를 초기화  */
+function init2() {	 
+	var GridObj2 = document.WiseGrid2;
+	setHeader2();
+	setProperty(GridObj2);
+	GridObj2.bRowSelectorIndex  = true;
+	GridObj2.nRowSpacing = 10;
+	GridObj2.bStatusbarVisible   = false;	
+	GridObj2.strScrollBars  = 'vertical' ;
+	
+	// Level 값을 설정
+	GridObj2.SetHDLevel(2);
+	
+	// 각 컬럼의 Level을 설정
+	GridObj2.SetColLevel('EVENT', 0);
+	GridObj2.SetColLevel('TYPE', 0);
+	
+	GridObj2.SetColLevel('COLUMN', 1);
+	GridObj2.SetColLevel('NROW', 1);
+		
+	// 각각의 컬럼을 Level위치에 맞게 컬럼 인덱스를 다시 설정
+	GridObj2.SetColIndex('EVENT', 0);
+	GridObj2.SetColIndex('TYPE', 1);
+	
+	GridObj2.SetColIndex('COLUMN', 0);
+	GridObj2.SetColIndex('NROW', 1);
+	
+	
+	// 각 컬럼의 Width를 맞게 다시 설정
+	GridObj2.SetColWidth('EVENT', 110);
+	GridObj2.SetColWidth('TYPE', 110);
+	GridObj2.SetColWidth('COLUMN', 110);
+	GridObj2.SetColWidth('NROW', 110);	
+	
+	GridObj2.strAlternateRowsBgColor = '209|246|241';
+	 
+}
+
+function setHeader() {		
+	 var GridObj = document.WiseGrid;
+	//그리드에 컬럼을 등록한다. 
+	GridObj.AddHeader("SELECTED",		"선택",			"t_checkbox", 	2, 		40,		true);	
+	GridObj.AddHeader("ITEM_FLAG", 		"자재구분",		"t_combo", 		10, 	90,		true);	
+	GridObj.AddHeader("VENDOR_NAME", 	"제조회사",		"t_text", 		50, 	80,		true);
+	GridObj.AddHeader("ITEM_CODE", 		"제품코드",		"t_imagetext", 	20, 	100,	false);
+	GridObj.AddHeader("ITEM_NAME", 		"제품명", 		"t_text", 		500, 	150,	true);	
+	GridObj.AddHeader("SPECIFICATION", 	"규격", 			"t_text", 		2000, 	200,	true);	
+	GridObj.AddHeader("UNIT", 			"단위",			"t_combo",		10, 	50,		true);
+	GridObj.AddHeader("PRICE", 			"출고가", 		"t_number", 	22.3, 	80,		true);	
+	GridObj.AddHeader("STOCK",			"재고량", 		"t_number", 	22,		60,		true);
+	GridObj.AddHeader("ADD_DATE",		"등록일", 		"t_date", 		8,		85,		true);	
+	GridObj.AddHeader("CHANGE_DATE",	"수정일", 		"t_date", 		8,		85,		true);	
+	GridObj.AddHeader("SEQ_NO",			"SEQ_NO", 		"t_text", 		8,		85,		true);	
+	
+	//AddHeader를 완료한 후 헤더를 그리드에 바인딩한다
+	GridObj.BoundHeader();	
+
+	GridObj.SetColHDCheckBoxValue("SELECTED", true);
+
+	// 스크롤 이동시에 툴팁에 보여줄 컬럼을 지정
+	GridObj.SetScrollTip("ITEM_NAME");
+	
+	//t_checkbox 타입의 컬럼에 체크를 전체적용한다.
+	GridObj.SetColHDCheckBoxVisible("SELECTED", true);
+	
+	//해당 컬럼을 숨긴다.
+	GridObj.SetColHide("SEQ_NO", true);
+	
+	//t_combo 타입의 컬럼에 Combo List 를 추가한다. 
+	GridObj.AddComboListValue("ITEM_FLAG", "프로세서", "CPU"); 
+	GridObj.AddComboListValue("ITEM_FLAG", "메모리", "MEM"); 
+	GridObj.AddComboListValue("ITEM_FLAG", "메인보드", "MAB"); 
+	GridObj.AddComboListValue("ITEM_FLAG", "그래픽카드", "VID"); 
+	GridObj.AddComboListValue("ITEM_FLAG", "모니터", "MOR");
+	GridObj.AddComboListValue("ITEM_FLAG", "하드디스크", "HDD");
+	GridObj.AddComboListValue("ITEM_FLAG", "CDROM", "CDR");
+	GridObj.AddComboListValue("ITEM_FLAG", "키보드", "KEY");
+	GridObj.AddComboListValue("ITEM_FLAG", "마우스", "MOU");
+
+	GridObj.AddComboListValue("UNIT", "EA", "EA");
+
+	//이미지리스트에 이미지 URL을 추가한다
+	GridObj.AddImageList("ITEM_CODE", "/images/bt_search.gif");
+
+	//셀의 글자색을 적용한다.
+	GridObj.SetColCellFgColor("ITEM_CODE", "0|0|255");	
+	
+	//t_number 타입의 컬럼을 포맷타입으로  지정한다.
+	GridObj.SetNumberFormat("PRICE", "#,##0.00"); 
+	GridObj.SetNumberFormat("STOCK", "#,##0"); 
+
+	//t_date 타입의 컬럼을 포맷타입으로  지정한다.
+	GridObj.SetDateFormat("ADD_DATE", "yyyy/MM/dd");
+	GridObj.SetDateFormat("CHANGE_DATE", "yyyy/MM/dd");
+}
+
+
+/*  이벤트가 발생한 데이터를 보여주기 위한 그리드 */
+function setHeader2() {	
+	 var GridObj2 = document.WiseGrid2;
+	//그리드에 컬럼을 등록한다. 	
+	GridObj2.AddHeader("EVENT", 	"EVENT", 		"t_text", 		100, 	100,	true);
+	GridObj2.AddHeader("TYPE", 		"TYPE", 		"t_text", 		100, 	100,	true);
+	GridObj2.AddHeader("COLUMN", 	"COLUMN", 		"t_text", 		100, 	120,	true);
+	GridObj2.AddHeader("NROW", 		"ROW", 			"t_text", 		100, 	100,	true);
+	
+	//AddHeader를 완료한 후 헤더를 그리드에 바인딩한다
+	GridObj2.BoundHeader();	
+}
+
+/* 조회 */
+function doQuery() {
+	var GridObj = document.WiseGrid;
+	var servlet_url = "/servlet/wisegrid.sample.ExampleSelect";
+	
+	//WiseGrid가 서버에 전송할 Param을 셋팅한다.
+	GridObj.SetParam("mode", "search");
+	GridObj.SetParam("from_date",document.form.from_date.value );
+	GridObj.SetParam("to_date",document.form.to_date.value);
+
+	//WiseGrid가 서버와 통신시에 데이터를 전달한다.
+	GridObj.DoQuery(servlet_url);
+}
+ 
+
+/* 서버와의 통신이 정상적으로 완료되면 발생한다. */
+function GridEndQuery() {
+	var GridObj = document.WiseGrid;
+	if(GridObj.GetStatus() == "false") 	{ // 서버에서 전송한 상태코드를 가져온다.
+		var error_msg = GridObj.GetMessage(); // 서버에서 전송한 상태코드값이 false라면 에러메세지를 가져온다.
+		alert(error_msg);			
+	}
+}
+
+function getdatetime()
+{
+	var today = new Date();
+	var year = today.getYear();
+	var month = today.getMonth() + 1;
+	var day = today.getDate();
+	
+	if(month < 10)
+		month = "0" + month;
+		
+	if(day < 10)
+		day = "0" + day;
+
+	document.form.to_date.value = year + "" + month + "" + day;
+}
+
+/*  MouseOver 이벤트 발생시 실행 메소드  */
+function MouseOver(strType, strColumnKey, nRow){ 
+	var GridObj2 = document.WiseGrid2;
+	 
+	/*
+	첫번째 그리드에 마우스 이벤트 발생시마다 두번째 그리드에 
+	이벤트 발생 내역을 보여준다. 
+	*/
+ 	GridObj2.AddRow();
+	var arow = GridObj2.GetActiveRowIndex();	
+	GridObj2.SetCellValue('EVENT',arow,'MouseOver');
+	GridObj2.SetCellValue('TYP' +
+	'E',arow,strType);
+	GridObj2.SetCellValue('COLUMN',arow,strColumnKey);	 
+	GridObj2.SetCellValue('NROW',arow,nRow);	
+}
+ /*  MouseOut 이벤트 발생시 실행 메소드  */
+function MouseOut(strType, strColumnKey, nRow){	 
+ 
+	var GridObj2 = document.WiseGrid2;	 
+	 
+	/*
+	첫번째 그리드에 마우스 이벤트 발생시마다 두번째 그리드에 
+	이벤트 발생 내역을 보여준다. 
+	*/
+	GridObj2.AddRow();
+	var arow = GridObj2.GetActiveRowIndex();	
+	GridObj2.SetCellValue('EVENT',arow,'MouseOut');
+	GridObj2.SetCellValue('TYPE',arow,strType);
+	GridObj2.SetCellValue('COLUMN',arow,strColumnKey);
+	GridObj2.SetCellValue('NROW',arow,nRow); 	
+}
+
+/*  그리드의 데이터를 모두 지운다. */
+function Clear(){
+	document.WiseGrid2.RemoveAllData() ;
+}
+</script>
+</head>
+
+<body>
+<form name="form">
+<input type='hidden' name='from_date' value='20070101'>
+<input type='hidden' name='to_date' value=''>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr height="20">
+    <td class="title1_k">
+    	&nbsp;기본예제<br><hr>
+    </td>
+  </tr>
+  <tr height="20">
+    <td class="title2_k">
+			&nbsp;&nbsp;&nbsp; 마우스 이벤트
+    </td>
+  </tr> 
+</table>
+<hr>
+<table width="100%" border="0" cellspacing="0" cellpadding="0"  class="title3">
+	<tr>
+		<td>
+		<table width="100%" border="0" cellpadding="2" cellspacing="0" >
+			<tr>
+				 
+				<td valign="top" align="right">
+					<table border=0 cellpadding="0" cellspacing="0">
+						<tr>
+							<td><script language="javascript">btn("Clear()","Clear")</script></td>							
+						</tr>
+					</table>
+				 </td>
+			</tr>
+		</table>
+	</td>
+	  </tr>
+</table>
+
+ <table width="100%" border="0" cellpadding="0" cellspacing="0" >
+	<tr> 
+		<td bgcolor="#00455d" height="3" colspan=2></td>
+	</tr>
+	<tr>
+		<td>
+			<script>initWiseGrid("WiseGrid", "100%", "500");</script>
+		</td>
+		<td width=250>
+			<script>initWiseGrid("WiseGrid2", "100%", "500");</script>
+		</td>
+	</tr>
+</table>
+</form>
+</body>
+</html>

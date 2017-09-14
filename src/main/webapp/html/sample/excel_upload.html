@@ -1,0 +1,48 @@
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>excel_upload.html</title>
+<script src="/js/WiseGrid_TAG.js"></script>
+<script for="WiseGrid" event="Initialize()">
+    init();
+</script>
+<script>
+    function init() {
+        var grid = document.WiseGrid;
+
+        grid.bHDMoving = false;
+        grid.bHDSwapping = false;
+        grid.nHDLines = 3;
+
+        grid.AddHeader("col1", "col1", "t_text", 150, 150, true);
+        grid.AddHeader("col2", "col2", "t_text", 150, 150, true);
+        grid.AddHeader("col3", "col3", "t_text", 150, 150, true);
+        grid.AddHeader("col4", "col4", "t_number", 10.3, 150, true);
+        grid.AddHeader("col5", "col5", "t_number", 10.3, 150, true);
+        grid.AddHeader("col6", "col6", "t_text", 150, 150, true);
+
+        grid.AddGroup("group1", "그룹헤더");
+        grid.AppendHeader("group1", "col3");
+        grid.AppendHeader("group1", "col4");
+        grid.BoundHeader();
+
+
+
+    }
+    function down(){
+        var grid=document.WiseGrid;
+        grid.ExcelExport("","", true, true, true);
+    }
+    function upload(){
+        var grid=document.WiseGrid;
+        grid.Excelimport("","","all", false, false);
+
+    }
+</script>
+</head>
+<body>
+<script>initWiseGrid("WiseGrid", "100%", "350");</script>
+<button onclick="down()">엑셀다운</button>
+<button onclick="upload()">엑셀업로드</button>
+</body>
+</html>

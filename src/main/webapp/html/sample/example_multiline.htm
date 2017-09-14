@@ -1,0 +1,158 @@
+<HTML>
+<HEAD>
+<TITLE>응용예제 - 줄바꿈</TITLE>
+<meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+<link rel='stylesheet' href='/css/wisegrid.css' type='text/css'>
+<script type='text/javascript' src='/js/WiseGrid_TAG.js'></script>
+<script type='text/javascript' src='/js/WiseGrid_Property.js'></script>
+<script type='text/javascript' src='/js/WiseGrid_Basic_Sample.js'></script>
+
+<!--
+	WiseGrid 오브젝트가 생성되고 초기화된 후 발생하는 
+	JavaScript Event인 Initialize()를 받아 그리드의 헤더를 셋팅한다.	
+-->
+<script language=javascript for='WiseGrid' event='Initialize()'>
+	init(document.WiseGrid);
+</script>
+
+<!--  	WiseGrid의 셀을 클릭했을때 발생하는 Javacript Event인 CellClick()을 받아 해당하는 작업을 진행한다.  -->
+<script language=javascript for="WiseGrid" event="CellClick(strColumnKey,nRow)">
+	GridCellClick(strColumnKey, nRow)
+</script> 
+
+<script language=javascript>
+function init(GridObj) {	
+	setHeader(GridObj);
+	setProperty(GridObj);
+
+	//투명도를 조절한다.
+	GridObj.nAlphaLevel = 230;
+
+	//DoQuery 이후 각각의 로우가 화면에 그려질때 로우의 셀 데이타 중 가장 큰 영역을 가진 셀 데이타 영역의 높이로 로우의 높이를 결정한다. 
+	//GridObj.strRowSizing = "autofree";
+
+	GridObj.strBgImage = "/images/unipost_logo_white.gif";
+	doQuery();
+}
+
+function setHeader(GridObj) {    
+	//그리드에 컬럼을 등록한다. 	
+	GridObj.AddHeader("NAME", 			"용어",		"t_imagetext", 	100, 	200,		true);
+	GridObj.AddHeader("SUMMATION", 		"요약", 		"t_text", 		1000,	500,		true);
+	GridObj.AddHeader("DESCRIPTION", 	"본문", 		"t_text", 		4000,	200,		true);	
+
+
+
+	//AddHeader를 완료한 후 헤더를 그리드에 바인딩한다
+	GridObj.BoundHeader();	
+
+	//해당 컬럼을 숨긴다.
+	GridObj.SetColHide("DESCRIPTION", true); 
+
+	//지정한 컬럼 셀에 멀티라인을 적용한다.
+	GridObj.SetColCellMultiLine("NAME", true);
+	GridObj.SetColCellMultiLine("SUMMATION", true);
+
+	//셀의 글자색을 적용한다.
+	GridObj.SetColCellFgColor("NAME", "0|0|255");
+}
+
+/* 조회 */
+function doQuery() {
+	var GridObj = document.WiseGrid;
+	var servlet_url = "/servlet/wisegrid.sample.ExampleMultiline";
+
+	//WiseGrid가 서버에 전송할 mode를 셋팅한다.
+	GridObj.SetParam("mode", "search");		
+
+	//WiseGrid가 서버와 통신시에 데이터를 전달한다.
+	GridObj.DoQuery(servlet_url);
+}
+
+/* 로우 사이즈 변경 */
+function changeRowSizing(str) {
+	var GridObj = document.WiseGrid;
+
+	//로우의 사이즈를 변경한다.
+	GridObj.strRowSizing = str;
+
+	doQuery();
+}
+
+/* WiseGrid의 셀을 클릭했을때 발생한다 */
+function GridCellClick(strColumnKey, nRow) {
+	var GridObj = document.WiseGrid;
+
+	if(strColumnKey == "NAME") {
+		var paramObject = {};
+
+		//지정한 셀의 값을 가져온다. 
+		paramObject.iname = GridObj.GetCellValue("NAME", nRow);
+		paramObject.summarion = GridObj.GetCellValue("SUMMATION", nRow);
+		paramObject.idesc = GridObj.GetCellValue("DESCRIPTION", nRow);
+
+		window.showModalDialog("example_multiline_pop.htm", paramObject, "dialogWidth:700px; dialogHeight:300px");
+	}
+}
+
+</script>
+
+</HEAD>
+<BODY bgcolor='#FFFFFF' text='#000000'>
+<form name="examForm">
+<input type="hidden" name="imageUrl" value="">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+	<tr height="20">
+		<td class="title1_k">
+			&nbsp;응용예제<br><hr>
+		</td>
+	</tr>
+	<tr height="20">
+		<td class="title2_k">
+				&nbsp;&nbsp;&nbsp; 줄바꿈
+		</td>
+	</tr> 
+</table>
+
+<hr>
+
+<table width="98%" border="0" cellspacing="0" cellpadding="0"  class="title3">
+	<tr>
+		<td width="80">strRowSizing</td>
+		<td width="100">
+			<select name="strRowSizing" onChange="changeRowSizing(this.value)">
+				<option value="fixed">fixed</option>
+				<option value="free">free</option>
+				<option value="sychronized">sychronized</option>
+				<option value="autofree" selected>autofree</option>
+				<option value="autofixed">autofixed</option>
+			</select>
+		</td>
+		<td>
+			<table width="100%" border="0" cellpadding="2" cellspacing="0" >
+				<tr>
+				  <td valign="top" align="right">
+					<table border=0 cellpadding="0" cellspacing="0">
+						<tr>
+							<td><script language="javascript">btn("doQuery()","조회")</script></td>
+						</tr>
+					</table>
+				  </td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+
+<table width="98%" border="0" cellpadding="0" cellspacing="0" >
+	<tr> 
+		<td bgcolor="#00455d" height="3"></td>
+	</tr>
+	<tr>
+		<td align='left'>
+			<script>initWiseGrid("WiseGrid", "100%", "350");</script>
+		</td>
+	</tr>
+</table>
+</form></BODY>
+</HTML>

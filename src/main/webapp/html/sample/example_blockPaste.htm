@@ -1,0 +1,183 @@
+<HTML>
+<HEAD>
+<TITLE>Basic Sample</TITLE>
+<meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+<link rel='stylesheet' href='/css/wisegrid.css' type='text/css'>
+<script type='text/javascript' src='/js/WiseGrid_TAG.js'></script>
+<script type='text/javascript' src='/js/WiseGrid_Property.js'></script>
+<script type='text/javascript' src='/js/WiseGrid_Basic_Sample.js'></script>
+
+<script language=javascript for='WiseGrid' event='Initialize()'>
+	setHeader(document.WiseGrid);
+	setProperty(document.WiseGrid);
+	getdatetime();
+	document.WiseGrid.strBlockPaste = 'gridareabase';
+</script>
+<script language=javascript for='WiseGrid' event='BeforeBlockPaste()'>
+	
+	
+	
+	
+	if(!confirm('해당데이터를 변경하시겠습니까?')){
+		document.WiseGrid.SetBlockPasteCancel(true);
+	}
+</script>
+<script language=javascript for='WiseGrid' event='BlockPaste(strStartColKey,nStartRowIndex,strEndColKey,nEndRowIndex,nErrorCellCount,nAddRowCount)'>
+	//handler();	
+</script>
+<script language=javascript for='WiseGrid' event='BlockPasteError(strStartColKey,nStartRowIndex,value,strErrorType,bAddRow,nBlockColIndex,nBlockRowIndex)'>
+	//handler();
+</script>
+
+<script language=javascript>
+function setHeader(GridObj) 
+{    
+	GridObj.AddHeader("SELECTED", 			"선택",				"t_checkbox", 	2, 		40,		true);	
+	GridObj.AddHeader("ITEM_FLAG", 			"자재구분",		"t_combo", 			10, 	90,		true);	
+	GridObj.AddHeader("VENDOR_NAME", 		"제조회사",		"t_text", 			50, 	80,	true);
+	GridObj.AddHeader("ITEM_CODE", 			"제품코드",		"t_imagetext", 	20, 	100,	true);
+	GridObj.AddHeader("ITEM_NAME", 			"제품명", 		"t_text", 			500, 	150,	true);	
+	GridObj.AddHeader("SPECIFICATION", 	"규격", 			"t_text", 			-1, 	200,	true);	
+	GridObj.AddHeader("UNIT", 					"단위",				"t_combo",			10, 	50,		true);
+	GridObj.AddHeader("PRICE", 					"출고가", 		"t_number", 		22.2, 	100,		true);	
+	GridObj.AddHeader("STOCK",					"재고량", 		"t_number", 		22,		60,		true);
+	GridObj.AddHeader("ADD_DATE",				"등록일", 		"t_date", 			8,		85,		true);	
+	GridObj.AddHeader("CHANGE_DATE",		"수정일", 		"t_date", 			8,		85,		true);	
+	GridObj.AddHeader("SEQ_NO",					"SEQ_NO", 		"t_text", 			8,		85,		true);	
+	GridObj.BoundHeader();	
+	
+	GridObj.SetScrollTip("ITEM_NAME");
+	
+	GridObj.SetColHDCheckBoxVisible("SELECTED", true);
+	
+	GridObj.SetColHide("SEQ_NO", true);
+
+	GridObj.AddComboListValue("ITEM_FLAG", "프로세서", "CPU"); 
+	GridObj.AddComboListValue("ITEM_FLAG", "메모리", "MEM"); 
+	GridObj.AddComboListValue("ITEM_FLAG", "메인보드", "MAB"); 
+	GridObj.AddComboListValue("ITEM_FLAG", "그래픽카드", "VID"); 
+	GridObj.AddComboListValue("ITEM_FLAG", "모니터", "MOR");
+	GridObj.AddComboListValue("ITEM_FLAG", "하드디스크", "HDD");
+	GridObj.AddComboListValue("ITEM_FLAG", "CDROM", "CDR");
+	GridObj.AddComboListValue("ITEM_FLAG", "키보드", "KEY");
+	GridObj.AddComboListValue("ITEM_FLAG", "마우스", "MOU");
+
+	GridObj.AddImageList("ITEM_CODE", "/images/bt_search.gif");
+	GridObj.SetColCellFgColor("ITEM_CODE", "0|0|255");
+	
+	GridObj.AddComboListValue("UNIT", "EA", "EA");
+
+ 	GridObj.SetNumberFormat("PRICE", "￦#,##0.00");
+ 	GridObj.SetNumberFormat("STOCK", "#,##0");
+ 	
+ 	GridObj.SetDateFormat("ADD_DATE", "yyyy/MM/dd");
+ 	GridObj.SetDateFormat("CHANGE_DATE", "yyyy/MM/dd");
+ 	
+ 	GridObj.SetExcelHeader("기본예제", 20, 15, "center");
+ 	GridObj.SetExcelFooter("Copyright 2014 UNIPOST CORP.", 15, 10, "right");
+}
+
+function doQuery()
+{
+	var GridObj = document.WiseGrid;
+	var FromDate = document.examForm.from_date.value;
+	var ToDate = document.examForm.to_date.value;
+	
+	GridObj.SetParam("mode", "search");
+	GridObj.SetParam("from_date",document.examForm.from_date.value );
+	GridObj.SetParam("to_date",document.examForm.to_date.value);
+		
+	GridObj.DoQuery("/servlet/wisegrid.sample.ExampleSelect");
+}
+
+
+function excelDown()
+{
+	var GridObj = document.WiseGrid;
+	GridObj.ExcelExport("", "", true, true);
+}
+
+function getdatetime()
+{
+	var today = new Date();
+	var year = today.getYear();
+	var month = today.getMonth() + 1;
+	var day = today.getDate();
+	
+	if(month < 10)
+		month = "0" + month;
+		
+	if(day < 10)
+		day = "0" + day;
+
+	document.examForm.to_date.value = year + "" + month + "" + day;
+}
+
+function pasteTypeChange(){
+	if(document.getElementById('pasteGridType').checked){
+		document.WiseGrid.strBlockPaste = 'gridareabase';
+	}else{
+		document.WiseGrid.strBlockPaste = 'clipboardareabase';
+	}
+}
+</script>
+
+</HEAD>
+<BODY bgcolor='#FFFFFF' text='#000000'>
+<form name="examForm">
+    <div id="headerArea">
+        <div class="title1_k">기본예제</div>
+		<hr>
+        <div class="title2_k" style="padding-left:20px;">붙여넣기</div>
+    </div>
+<hr>
+<div>
+	<div style="padding-left:20px;font-size:14px;font-weight:bold;">그리드에 그리드 데이터 또는 엑셀데이터를 붙여넣어 보세요.</div>
+	<div class="" style="padding-left:20px;margin-top:10px;">
+		그리드의 내용을 엑셀에 붙여넣거나, 엑셀의 내용을 그리드에 붙여넣기 할 수 있습니다.<br/>
+		strBlockPaste 속성으로 정의합니다.<br/>
+		- gridareabase : 그리드 영역 내에서만 붙여넣기하고 영역을 벗어나면 자르기 합니다.<br/>
+		- clipboardareabase : 그리드 영역을 벗어나 데이터가 붙여넣기할 경우 row를 추가합니다.
+	</div>
+	<br/>
+	<input type="radio" checked name="pasteType" id="pasteGridType" onclick="pasteTypeChange();">그리드 영역기반 
+	<input type="radio" name="pasteType" id="pasteClipboardType" onclick="pasteTypeChange();">클립보드 영역기반
+</div>
+	
+<table width="98%" border="0" cellspacing="0" cellpadding="0"  class="title3">
+  <tr>
+    <td width="80">등록일</td>
+    <td>
+    	<input type="text" name="from_date" size="10" value="20070101"> ~
+    	<input type="text" name="to_date" size="10" value="20070323">
+  	</td>
+    <td>
+		<table width="100%" border="0" cellpadding="2" cellspacing="0" >
+		    <tr>
+		      <td valign="top" align="right">
+		      	<table border=0 cellpadding="0" cellspacing="0">
+		      		<tr>
+		      			<td style="cursor:hand"><script language="javascript">btn("doQuery()","조회")</script></td>
+		      			<td style="cursor:hand"><script language="javascript">btn("excelDown()","Excel")</script></td>
+		      		</tr>
+		      	</table>
+		      </td>
+		   	</tr>
+		</table>
+	</td>
+  </tr>
+</table>
+<table width="98%" border="0" cellpadding="0" cellspacing="0" >
+	<tr> 
+		<td bgcolor="#00455d" height="3"></td>
+	</tr>
+	<tr>
+		<td align='left'>
+			<script>initWiseGrid("WiseGrid", "100%", "350");</script>
+		</td>
+	</tr>
+</table>
+
+</form>
+</BODY>
+</HTML>

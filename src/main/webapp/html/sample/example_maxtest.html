@@ -1,0 +1,100 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>기본예제 - 기본</title>
+    <link rel='stylesheet' href='/css/wisegrid.css' type='text/css'>
+    <script type='text/javascript' src='/js/WiseGrid_TAG.js'></script>
+    <script language=javascript for="WiseGrid" event="Initialize()">
+        init();
+    </script>
+
+    <script>
+        function init() {
+            var GridObj = document.WiseGrid;
+            setHeader(GridObj);
+            setDate(GridObj);
+        }
+
+        function setHeader(GridObj) {
+//            for (var i = 1; i < 258; i++) {
+            for (var i = 1; i < 10; i++) {
+                GridObj.AddHeader("TEXT" + i, "TEXT" + i, "t_text", 8, 85, true);
+            }
+            GridObj.BoundHeader();
+        }
+
+        function setDate(GridObj) {
+            GridObj.AddRow();
+//            for (var i = 1; i < 258; i++) {
+            for (var i = 1; i < 10; i++) {
+                GridObj.SetCellValue("TEXT" + i, 0, i);
+            }
+        }
+
+    </script>
+</head>
+<body>
+<form name="form">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr height="20">
+            <td class="title1_k">
+                &nbsp;기본예제<br><hr>
+            </td>
+        </tr>
+        <tr height="20">
+            <td class="title2_k">
+                &nbsp;&nbsp;&nbsp; 기본
+            </td>
+        </tr>
+    </table>
+    <hr>
+    <table width="98%" border="0" cellspacing="0" cellpadding="0"  class="title3">
+        <tr>
+            <table width="100%" border="0" cellpadding="2" cellspacing="0" >
+                <tr>
+                    <td width="80">등록일</td>
+                    <td>
+                        <input type="text" name="from_date" size="8" value="20070101"> ~
+                        <input type="text" name="to_date" size="8" value="">
+                    </td>
+                    <td valign="top" align="right">
+                        <table border=0 cellpadding="0" cellspacing="0">
+                            <tr>
+                                <!--<td><script language="javascript">btn("openModal()","모달창")</script></td>-->
+                                <!--<td><script language="javascript">btn("addFilter()","필터추가")</script></td>-->
+                                <td><script language="javascript">btn("doQuery()","조회")</script></td>
+                                <td><script language="javascript">btn("error()","전문오류")</script></td>
+                                <td><script language="javascript">btn("doInsert()","등록")</script></td>
+                                <td><script language="javascript">btn("doUpdata()","수정")</script></td>
+                                <td><script language="javascript">btn("doDelete()","삭제")</script></td>
+                                <td><script language="javascript">btn("doLineInsert()","행추가")</script></td>
+                                <td><script language="javascript">btn("excelDown()","EXCEL")</script></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </tr>
+    </table>
+    <div id="ds"></div>
+    <table width="100%" height="350" border="0" cellpadding="0" cellspacing="0" >
+        <tr>
+            <td bgcolor="#00455d" height="3"></td>
+        </tr>
+        <tr>
+            <td align='left'>
+                <script>initWiseGrid("WiseGrid", "100%", "350");</script>
+            </td>
+        </tr>
+    </table>
+    <br>
+    <!-- 등록, 수정, 삭제가 실행되면 발생한다.-->
+    <div id='message' style="display:none ">
+        <fieldset s>
+            <legend> [변경된 내용] </legend>
+            <textarea name="confirm" cols="101" rows="8" style="border:0px" scrolling="auto"/>
+        </fieldset>
+    </div>
+</form>
+</body>
+</html>

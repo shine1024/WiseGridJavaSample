@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>샘플</title>
+    <script type='text/javascript' src='/js/WiseGrid_TAG.js'></script>
+    <script  for="WiseGrid" event="Initialize()">
+        init();
+    </script>
+    <script>
+        function init() {
+            var GridObj = document.WiseGrid;
+
+            setHeader(GridObj)
+            setProperty(GridObj);
+
+        }
+
+        function setHeader(GridObj) {
+            GridObj.AddHeader("NUMBER_1",		"숫자타입_1",			"t_number", 	"12.6", 		200,		false);
+            GridObj.AddHeader("NUMBER_2",		"숫자타입_2",			"t_number", 	"12.6", 		200,		false);
+            GridObj.BoundHeader();
+        }
+
+        function setProperty(GridObj) {
+            GridObj.setNumberFormat('NUMBER_1', '#,###.######');
+            GridObj.setNumberFormat('NUMBER_2', '#,###.######');
+        }
+
+        function addRow() {
+            var GridObj = document.WiseGrid;
+            GridObj.addRow();
+        }
+
+        function doQuery() {
+            var GridObj = document.WiseGrid;
+            var number_text_type = "6.682283"
+            var number_number_type = 6.682283;
+
+            console.log('number_text_type : ' + number_text_type);
+            console.log('number_number_type : ' + number_number_type);
+
+            for(var n=0; n<10; n++) {
+                addRow();
+                GridObj.SetCellValue('NUMBER_1', n, number_text_type);
+                GridObj.SetCellValue('NUMBER_2', n, number_number_type);
+            }
+        }
+
+    </script>
+</head>
+<body>
+<input type="button" onclick="addRow();" value="행추가"/>
+<input type="button" onclick="doQuery();" value="조회"/>
+<script>initWiseGrid("WiseGrid", "100%", "350");</script>
+</body>
+</html>

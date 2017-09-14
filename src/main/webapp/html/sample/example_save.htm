@@ -1,0 +1,361 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>기본예제 - 저장&저장취소</title>
+<link rel='stylesheet' href='/css/wisegrid.css' type='text/css'>
+<script type='text/javascript' src='/js/WiseGrid_TAG.js'></script>
+<script type='text/javascript' src='/js/WiseGrid_Property.js'></script>
+<script type='text/javascript' src='/js/WiseGrid_Basic_Sample.js'></script>
+
+<!--
+	WiseGrid 오브젝트가 생성되고 초기화된 후 발생하는 
+	JavaScript Event인 Initialize()를 받아 그리드의 헤더를 셋팅한다.	
+-->
+<script language=javascript for="WiseGrid" event="Initialize()">
+	init();
+</script>
+
+<!--  	서버와의 통신이 정상적으로 완료되면 발생한다.   -->
+<script language=javascript for="WiseGrid" event="EndQuery()">
+	GridEndQuery();
+</script>
+
+<!--   	WiseGrid의 셀을 클릭했을때 발생하는 Javacript Event인 CellClick()을 받아 해당하는 작업을 진행한다.  -->
+<script language=javascript for="WiseGrid" event="CellClick(strColumnKey,nRow)">
+	GridCellClick(strColumnKey, nRow)
+</script>
+
+<!-- 
+	사용자 컨텍스트 메뉴를 클릭했을때에 컨텍스트 메뉴를 띄우기 이전 시점에 발생하는 이벤트 
+	컨텍스트 메뉴를 띄우기 이전시점에 특정 조건들을 체크해 조건별로 다른 컨텍스트 메뉴를 띄운다
+-->
+<script language=javascript for="WiseGrid" event="BeforeShowUserContextMenu(strMenuKey, strCol, nRow)">
+	if(strMenuKey == "MENU_CELL")
+		BeforeClickContextMenu(nRow);
+</script>
+
+<!--   	사용자 컨텍스트 메뉴를 클릭했을때에 발생하는 이벤트  -->
+<script language=javascript for="WiseGrid" event="UserContextMenuClick(strMenuKey, strMenuItemKey, strCol, nRow)">
+	if(strMenuKey == "MENU_CELL" && strMenuItemKey == "USER_MENU_SAVE_CANCEL")
+		CancelCRUDRow(nRow);
+</script>
+
+<script for="WiseGrid" event="ChangeCell(strColumnKey, nRow, vtOldValue, vtNewValue)">
+	changeCell(strColumnKey, nRow, vtOldValue, vtNewValue);
+</script>
+	<script language="JavaScript">
+
+function init() {
+	var GridObj = document.WiseGrid;
+	setHeader(GridObj);
+	setProperty(GridObj);
+	
+	// 그리드의 배경 이미지 지정
+	GridObj.strBgImage = "/images/unipost_logo_white.gif";
+
+	//사용자 컨텍스트메뉴를 사용한다.
+	GridObj.bUserContextMenu = true;
+
+	// 기본 컨텍스트 메뉴를 사용하지 않는다.
+	GridObj.bUseDefaultContextMenu = true;
+	
+	getdatetime();
+}
+
+function setHeader(GridObj) {		  
+	//그리드에 컬럼을 등록한다.	 
+	GridObj.AddHeader("CRUD",			"구분",			"t_text", 		8, 		40,		true);
+	GridObj.AddHeader("ITEM_FLAG", 		"자재구분",		"t_combo", 		10, 	90,		true);
+	GridObj.AddHeader("VENDOR_NAME", 	"제조회사",		"t_text", 		50, 	80,		true);
+	GridObj.AddHeader("ITEM_CODE", 		"제품코드",		"t_imagetext", 	20, 	100,	false);
+	GridObj.AddHeader("ITEM_NAME", 		"제품명", 		"t_text", 		500, 	150,	true);
+	GridObj.AddHeader("SPECIFICATION", 	"규격", 			"t_text", 		2000, 	200,	true);	
+	GridObj.AddHeader("UNIT", 			"단위",			"t_combo",		10, 	50,		true);
+	GridObj.AddHeader("PRICE", 			"출고가", 		"t_number", 	22.3, 	80,		true);	
+	GridObj.AddHeader("STOCK",			"재고량", 		"t_number", 	22,		60,		true);
+	GridObj.AddHeader("ADD_DATE",		"등록일", 		"t_date", 		8,		85,		true);	
+	GridObj.AddHeader("CHANGE_DATE",	"수정일", 		"t_date", 		8,		85,		true);	
+	GridObj.AddHeader("SEQ_NO",			"SEQ_NO", 		"t_text", 		8,		85,		true);	
+
+	//AddHeader를 완료한 후 헤더를 그리드에 바인딩한다
+	GridObj.BoundHeader();
+
+
+	GridObj.SetColCellCopyEnable('ITEM_FLAG', false);
+	GridObj.SetColCellCopyEnable('VENDOR_NAME', false);
+	GridObj.SetColCellCopyEnable('ITEM_CODE', false);
+	GridObj.SetColCellCopyEnable('ITEM_NAME', false);
+	GridObj.SetColCellCopyEnable('SPECIFICATION', false);
+	GridObj.SetColCellCopyEnable('UNIT', false);
+	GridObj.SetColCellCopyEnable('PRICE', false);
+	GridObj.SetColCellCopyEnable('STOCK', false);
+	GridObj.SetColCellCopyEnable('ADD_DATE', false);
+	GridObj.SetColCellCopyEnable('CHANGE_DATE', false);
+	GridObj.SetColCellCopyEnable('SEQ_NO', false);
+
+
+
+	//저장모드를 사용해 서버사이드와 통신한다. 	
+	GridObj.SetCRUDMode("CRUD", "생성", "수정", "삭제");
+	
+	//해당 컬럼을 숨긴다.
+	GridObj.SetColHide("SEQ_NO", true);
+
+	//t_combo 타입의 컬럼에 Combo List 를 추가한다. 
+	GridObj.AddComboListValue("ITEM_FLAG", "프로세서", "CPU"); 
+	GridObj.AddComboListValue("ITEM_FLAG", "메모리", "MEM"); 
+	GridObj.AddComboListValue("ITEM_FLAG", "메인보드", "MAB"); 
+	GridObj.AddComboListValue("ITEM_FLAG", "그래픽카드", "VID"); 
+	GridObj.AddComboListValue("ITEM_FLAG", "모니터", "MOR");
+	GridObj.AddComboListValue("ITEM_FLAG", "하드디스크", "HDD");
+	GridObj.AddComboListValue("ITEM_FLAG", "CDROM", "CDR");
+	GridObj.AddComboListValue("ITEM_FLAG", "키보드", "KEY");
+	GridObj.AddComboListValue("ITEM_FLAG", "마우스", "MOU");
+
+	GridObj.AddComboListValue("UNIT", "EA", "EA");
+
+	//이미지리스트에 이미지 URL을 추가한다.
+	GridObj.AddImageList("ITEM_CODE", "/images/bt_search.gif");
+
+	//셀의 글자색을 적용한다.
+	GridObj.SetColCellFgColor("ITEM_CODE", "0|0|255");	
+
+ 	//t_number 타입의 컬럼을 포맷타입으로  지정한다.
+	GridObj.SetNumberFormat("PRICE", "#,##0.00"); 
+	GridObj.SetNumberFormat("STOCK", "#,##0"); 
+
+	//t_date 타입의 컬럼을 포맷타입으로  지정한다.
+	GridObj.SetDateFormat("ADD_DATE", "yyyy/MM/dd");
+	GridObj.SetDateFormat("CHANGE_DATE", "yyyy/MM/dd");
+ 	
+}
+
+/*  일반조회 */
+function doQuery() {
+	var GridObj = document.WiseGrid;
+	var servlet_url = "/servlet/wisegrid.sample.ExampleSave";
+
+	//WiseGrid가 서버에 전송할 Param을 셋팅한다.
+	GridObj.SetParam("mode", "search");
+	GridObj.SetParam("from_date",document.form.from_date.value );
+	GridObj.SetParam("to_date",document.form.to_date.value);
+	
+	//WiseGrid가 서버와 통신시에 데이터를 전달한다.
+	GridObj.DoQuery(servlet_url);
+}
+
+/* 삭제 */
+function doDelete() {
+	var GridObj = document.WiseGrid;
+	// Active된 로우의 인덱스 위치의 행을 삭제한다. 
+	GridObj.DeleteRow(GridObj.GetActiveRowIndex());
+}
+
+/* 행추가 */
+function doLineInsert() {
+	var GridObj = document.WiseGrid;
+	
+	//그리드의 마지막 열에 빈 로우를 추가한다. 
+	GridObj.AddRow();	
+
+	//ITEM_CODE 셀의 이미지 리스트에서 Active된 로우의 인덱스에 이미지를 선택한다. 
+	GridObj.SetCellImage('ITEM_CODE', GridObj.GetActiveRowIndex(), 0);
+
+	//지정한 컬럼 셀 ITEM_CODE에 Active된 로우의 인덱스의 편집을 가능하게 한다.
+	GridObj.SetCellActivation("ITEM_CODE", GridObj.GetActiveRowIndex(), "edit");
+}
+
+/* 저장 */
+function doSave() {
+	var GridObj = document.WiseGrid;
+	var servlet_url = "/servlet/wisegrid.sample.ExampleSave";
+
+	//WiseGrid가 서버에 전송할 mode를 셋팅한다.
+	GridObj.SetParam("mode", "save");
+
+	//WiseGrid가 서버와 통신시에 데이터를 전달한
+	GridObj.DoQuery(servlet_url, "CRUD");
+}
+
+/* 저장모드에서 저장 플래그를 모두 삭제하고 초기 데이터로 롤백한다. */
+function doSaveCancel() {
+	var GridObj = document.WiseGrid;
+	
+	if(confirm("저장 플래그를 모두 초기화 합니다"))
+		GridObj.CancelCRUD();
+}
+
+/* 사용자 컨텍스트 메뉴를 클릭했을때에 컨텍스트 메뉴를 띄우기 이전 시점에 발생하는 이벤트 */
+function BeforeClickContextMenu(nRow) {
+	var GridObj = document.WiseGrid;
+	
+	//지정한 컬럼의 히든값을 가져온다.
+	var save_flag = GridObj.GetCellHiddenValue("CRUD", nRow);
+				
+	if(save_flag != "R") {
+		userItemContextMenuAdd();
+	} else {
+		defaultContextMenu();
+	}
+}
+
+/* 저장플래그가 "R"이 아닌경우 저장 취소 컨텍스트메뉴를 추가 */
+function userItemContextMenuAdd() {	
+	var GridObj = document.WiseGrid;
+	
+	//지정한 컨텍스트 메뉴의 사용자 메뉴를 모두 삭제한다. 
+	GridObj.RemoveAllContextMenuItem("MENU_CELL");
+
+	// 사용자 컨텍스트 메뉴에 Separator를 하나 추가한다.
+	GridObj.AddContextMenuSeparator("MENU_CELL");
+
+	//지정된 컨텍스트 메뉴에 사용자 메뉴를 추가한다. 
+	GridObj.AddUserContextMenuItem("MENU_CELL", "USER_MENU_SAVE_CANCEL", "저장취소");
+}
+
+/* 저장플래그가 "R"인 경우 기본컨텍스트 메뉴만 나오도록 사용자 컨텍스트 메뉴 삭제 */
+function defaultContextMenu() {
+	var GridObj = document.WiseGrid;
+	
+	//지정한 컨텍스트 메뉴의 사용자 메뉴를 모두 삭제한다. 
+	GridObj.RemoveAllContextMenuItem("MENU_CELL");
+}
+
+
+/* 서버와의 통신이 정상적으로 완료되면 발생한다. */
+function GridEndQuery() {
+	var GridObj = document.WiseGrid;
+	
+	//서버에서 mode로 셋팅한 파라미터를 가져온다.
+	var mode = GridObj.GetParam("mode");
+
+		if(mode == "search") { 
+		if(GridObj.GetStatus() == "true") 	{// 서버에서 전송한 상태코드를 가져온다.
+			//fieldset을 보이지 않게 한다.
+			document.all.message.style.display = "none";
+			//textarea값을 비운다.
+			document.form.confirm.value = null;
+		} else	{
+			var error_msg = GridObj.GetMessage(); // 서버에서 전송한 상태코드값이 false라면 에러메세지를 가져온다.
+			alert(error_msg);			
+		}
+	}	
+				
+	if(mode == "save") {
+		if(GridObj.GetStatus() == "true") 	{// 서버에서 전송한 상태코드를 가져온다.
+			//서버에서 saveData 셋팅한 파라미터를 가져온다.
+			var saveData = GridObj.GetParam("saveData");					
+			//fieldset을 보이게 한다.
+			document.all.message.style.display="";
+			//textarea에 서버에서 가져온 insert_data에 셋팅한 파라미터를 넣는다
+			document.form.confirm.value = saveData;
+		} else	{
+			var error_msg = GridObj.GetMessage(); // 서버에서 전송한 상태코드값이 false라면 에러메세지를 가져온다.
+			alert(error_msg);			
+		}
+	}	
+}
+
+function changeCell(key, nRow, oldV, newV){
+	console.log("old : "+oldV+" new : "+newV);
+}
+
+
+function getdatetime() {
+	var today = new Date();
+	var year = today.getYear();
+	var month = today.getMonth() + 1;
+	var day = today.getDate();
+	
+	if(month < 10)
+		month = "0" + month;
+		
+	if(day < 10)
+		day = "0" + day;
+
+	document.form.to_date.value = year + "" + month + "" + day;
+}
+
+</script>
+</head>
+
+<body>
+<form name="form">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr height="20">
+    <td class="title1_k">
+    	&nbsp;기본예제<br><hr>
+    </td>
+  </tr>
+  <tr height="20">
+    <td class="title2_k">
+			&nbsp;&nbsp;&nbsp; 저장 & 저장취소
+    </td>
+  </tr> 
+</table>
+<hr>
+<table width="98%" border="0" cellspacing="0" cellpadding="0"  class="title3">
+	<tr>
+		<table width="100%" border="0" cellpadding="2" cellspacing="0" >
+			<tr>
+				<td width="80">등록일 : </td>
+				<td width="200">
+					<input type="text" name="from_date" size="8" value="20150701"> ~
+					<input type="text" name="to_date" size="8" value="20150722">
+				</td>
+				<td width="80">자재선택 : </td>
+				<td width="200">
+					<select>
+						<option>전체</option>
+						<option>프로세서</option>
+						<option>메모리</option>
+						<option>메인보드</option>
+						<option>그래픽카드</option>
+						<option>모니터</option>
+						<option>하드디스크</option>
+						<option>CDROM</option>
+						<option>키보드</option>
+					</select>
+				</td>
+				<td width="80">제품명 검색 : </td>
+				<td width="250">
+					<input type="text" name="serachItemName">
+				</td>
+				<td valign="top" align="right">
+					<table border=0 cellpadding="0" cellspacing="0">
+						<tr>
+                            <td><script language="javascript">btn("doQuery()","조회")</script></td>
+							<td><script language="javascript">btn("doDelete()","삭제")</script></td>
+                            <td><script language="javascript">btn("doLineInsert()","행추가")</script></td>
+							<td><script language="javascript">btn("doSave()","저장")</script></td>
+							<td><script language="javascript">btn("doSaveCancel()","저장취소")</script></td>
+						</tr>
+					</table>
+				 </td>
+			</tr>
+		</table>
+	  </tr>
+</table>
+ <table width="100%" border="0" cellpadding="0" cellspacing="0" >
+	<tr> 
+		<td bgcolor="#00455d" height="3"></td>
+	</tr>
+	<tr>
+		<td align='left'>
+			<script>initWiseGrid("WiseGrid", "100%", "350");</script>
+		</td>
+	</tr>
+</table>
+
+<br>
+<!-- 조회, 삭제, 행추가 실행되면 발생한다.-->
+<div id='message' style="display:none">
+	<fieldset style="overflow:auto;">
+		<legend> [변경된 내용] </legend>
+		<textarea name="confirm" rows= "8" cols="101" style="border:0px" scrolling="auto"  />
+	</fieldset>
+</div>
+
+</form>
+</body>
+</html>

@@ -1,0 +1,188 @@
+<html>
+<head>
+<title>기본예제 - 엑셀들여오기</title>
+<meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+<link rel='stylesheet' href='/css/wisegrid.css' type='text/css'>
+<script type='text/javascript' src='/js/WiseGrid_TAG.js'></script>
+<script type='text/javascript' src='/js/WiseGrid_Property.js'></script>
+<script type='text/javascript' src='/js/WiseGrid_Basic_Sample.js'></script>
+<script type='text/javascript' src='/js/jquery/jquery-1.11.1.min.js'></script>
+<script language=javascript for='WiseGrid' event='Initialize()'>
+	init(document.WiseGrid);
+</script>
+
+<script language=javascript for="WiseGrid" event="CellClick(strColumnKey,nRow)">
+	GridCellClick(strColumnKey, nRow)
+</script>
+
+<script language=javascript for="WiseGrid" event="EndQuery()">
+	EndGridQuery()
+</script>
+
+<script language=javascript>
+function init(GridObj) {
+	setProperty(GridObj);
+
+	GridObj.bHDMoving = false;
+
+	GridObj.bHDSwapping = false;
+
+	GridObj.bRowSelectorVisible = false;
+
+	GridObj.strRowBorderStyle = "none";
+
+	GridObj.nRowSpacing = 0;
+
+	GridObj.strHDClickAction = "select";
+
+	GridObj.strActiveRowBgColor = "default";
+
+	GridObj.bExcelImportAllColumn = true; 
+	
+	setHeader(GridObj);	
+}
+
+function setHeader(GridObj) {
+	GridObj.AddHeader("ITEM_FLAG", 		"자재구분",		"t_combo", 		10, 	90,		true);
+	GridObj.AddHeader("VENDOR_NAME", 	"제조회사",		"t_text", 		50, 	80,		true);
+	GridObj.AddHeader("ITEM_CODE", 		"제품코드",		"t_imagetext", 	4000, 	100,	false);
+	GridObj.AddHeader("ITEM_NAME", 		"제품명", 		"t_text", 		500, 	150,	true);
+	GridObj.AddHeader("SPECIFICATION", 	"규격", 			"t_text", 		-1, 	200,	true);
+	GridObj.AddHeader("UNIT", 			"단위",			"t_combo",		10, 	50,		true);
+	GridObj.AddHeader("PRICE", 			"출고가", 		"t_number", 	-1, 	80,		true);
+	GridObj.AddHeader("STOCK",			"재고량", 		"t_number", 	30.5,		60,		true);
+	GridObj.AddHeader("ADD_DATE",		"등록일", 		"t_date", 		8,	150,		true);
+	GridObj.AddHeader("CHANGE_DATE",	"수정일", 		"t_date", 		8,	150,		true);
+	
+	GridObj.BoundHeader();
+
+	GridObj.AddComboListValue("ITEM_FLAG", "프로세서", "CPU");
+	GridObj.AddComboListValue("ITEM_FLAG", "메모리", "MEM");
+	GridObj.AddComboListValue("ITEM_FLAG", "메인보드", "MAB");
+	GridObj.AddComboListValue("ITEM_FLAG", "그래픽카드", "VID");
+	GridObj.AddComboListValue("ITEM_FLAG", "모니터", "MOR");
+	GridObj.AddComboListValue("ITEM_FLAG", "하드디스크", "HDD");
+	GridObj.AddComboListValue("ITEM_FLAG", "CDROM", "CDR");
+	GridObj.AddComboListValue("ITEM_FLAG", "키보드", "KEY");
+	GridObj.AddComboListValue("ITEM_FLAG", "마우스", "MOU");
+
+	GridObj.AddComboListValue("UNIT", "EA", "EA");
+	
+	//???????????? ????? URL?? ??????
+	GridObj.AddImageList("ITEM_CODE", "/images/bt_search.gif");
+
+	//???? ??????? ???????.
+	GridObj.SetColCellFgColor("ITEM_CODE", "0|0|255");	
+
+ 	//t_number ????? ?÷??? ???????????  ???????.
+	GridObj.SetNumberFormat("PRICE", "#,##0.000000000000000");
+	GridObj.SetNumberFormat("STOCK", "#,##0");
+
+	//t_date ????? ?÷??? ???????????  ???????.
+	GridObj.SetDateFormat("ADD_DATE", "yyyy/MM/dd");
+	GridObj.SetDateFormat("CHANGE_DATE", "yyyy/MM/dd"); 	
+}
+
+
+/* ExcelImport */
+function ExcelImport_TEST() {
+    var GridObj = document.WiseGrid;
+
+    if($('#file').val() === '') {
+        alert('파일을 선택해주세요.');
+		return;
+	}
+	var  filepath = $('#file').val().replace(/\\/g, "/");
+    GridObj.ExcelImport(filepath, 'importall','row', true, true)
+}
+function ExcelImport1() {
+	var GridObj = document.WiseGrid;
+	GridObj.strDefaultImportFileFilter = 'xls';
+	GridObj.ExcelImport('', 'importall','row', true, true)
+}
+
+/* ExcelImport */
+function ExcelImport2() {
+	var GridObj = document.WiseGrid;
+	GridObj.strDefaultImportFileFilter = 'xls';
+	// ExcelImport 
+	GridObj.ExcelImport('', 'importselectcolumn','row', true, true);
+}
+
+ 
+function Clear(){
+	document.WiseGrid.RemoveAllData()
+}
+
+function Down(){
+	document.location.href ='/file/wisegrid_import_sample.zip'
+}
+ 
+
+</script>
+
+</head>
+<body bgcolor='#FFFFFF' text='#000000'>
+<form name="examForm">
+<input type="hidden" name="imageUrl" value="">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr height="20">
+    <td class="title1_k">
+    	&nbsp;기본예제<br><hr>
+    </td>
+  </tr>
+  <tr height="20">
+    <td class="title2_k">
+			&nbsp;&nbsp;&nbsp; 엑셀 들여오기
+    </td>
+  </tr> 
+</table>
+<hr>
+
+<table width="98%" border="0" cellspacing="0" cellpadding="0"  class="title3"> 
+  <tr >
+    <td>엑셀 Import  </td>
+  </tr>
+  <tr>
+    <td>		
+		<script language="javascript">btn("Down()","엑셀다운로드")</script>
+	</td>
+	  <td>
+		  <input type="file" name="file" id="file"/>
+	  </td>
+  </tr>
+</table>
+
+<table width="98%" border="0" cellspacing="0" cellpadding="0"  class="title3"> 
+  <tr>
+    <td>
+		<table width="100%" border="0" cellpadding="2" cellspacing="0" >
+		    <tr>
+		      <td valign="top" align="right">
+		      	<table border=0 cellpadding="0" cellspacing="0">
+		      		<tr>		      
+		      			<td><script language="javascript">btn("ExcelImport_TEST()","selectedFileuploadTest")</script></td>
+		      			<td><script language="javascript">btn("ExcelImport1()","ExcelImportAll")</script></td>
+		      			<td><script language="javascript">btn("ExcelImport2()","ExcelImportDialog")</script></td>
+						<td><script language="javascript">btn("Clear()","화면Clear")</script></td>
+
+		      		</tr>
+		      	</table>
+		      </td>
+		   	</tr>
+		</table>
+	</td>
+  </tr>
+</table>
+<table width="98%" border="0" cellpadding="0" cellspacing="0" >
+	<tr> 
+		<td bgcolor="#00455d" height="3"></td>
+	</tr>
+	<tr>
+		<td align='left'>
+			<script>initWiseGrid("WiseGrid", "100%", "350");</script>
+		</td>
+	</tr>
+</table>
+</body>
+</html>

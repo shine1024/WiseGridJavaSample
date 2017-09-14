@@ -1,0 +1,222 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>기본예제 - 기본</title>
+<link rel='stylesheet' href='/css/wisegrid.css' type='text/css'>
+<script type='text/javascript' src='/js/WiseGrid_TAG.js'></script>
+<script type='text/javascript' src='/js/WiseGrid_Property.js'></script>
+<script type='text/javascript' src='/js/WiseGrid_Basic_Sample.js'></script>
+
+<!--
+	WiseGrid 오브젝트가 생성되고 초기화된 후 발생하는 
+	JavaScript Event인 Initialize()를 받아 그리드의 헤더를 셋팅한다.	
+-->
+<script language=javascript for="WiseGrid" event="Initialize()">
+	init();
+</script>
+<!-- 그리드에 MouseOver 적용 -->
+<script language=javascript for="WiseGrid" event="MouseOver(strType, strColumnKey, nRow)">
+	MouseOver(strType, strColumnKey, nRow);
+</script>
+
+<script language="JavaScript"> 
+function init() {
+	var GridObj = document.WiseGrid;
+	setHeader();
+	setProperty(GridObj);
+	GridObj.bStatusbarVisible  = false;		
+	GridObj.bRowSelectorVisible  = false;		
+	GridObj.nRowHeight  =29;
+	GridObj.nHDLineSize =27;
+	GridObj.strRowSizing  = 'fixed';
+	//GridObj.strScrollBars = 'none';	
+	AddGrid_Data();
+}
+
+/*  마우스 커서 모양 변경을 보여주기 위한 그리드  */
+function setHeader() {	
+	 var GridObj = document.WiseGrid;
+	//그리드에 컬럼을 등록한다. 	
+	GridObj.AddHeader("NAME", 		"커서", 			"t_imagetext", 			100, 		200,		true);
+	GridObj.AddHeader("IMAGE", 		"커서확인(마우스를 올려주세요)", 		"t_text", 			100, 		300,		true);
+				
+	//AddHeader를 완료한 후 헤더를 그리드에 바인딩한다
+	GridObj.BoundHeader();	
+	
+	// Cursor의 이미지 리스트 추가
+	GridObj.AddImageList("NAME", "/images/cursor/default.gif");
+	GridObj.AddImageList("NAME", "/images/cursor/arrow.gif");
+	GridObj.AddImageList("NAME", "/images/cursor/cross.gif");
+	GridObj.AddImageList("NAME", "/images/cursor/ibeam.gif");
+	GridObj.AddImageList("NAME", "/images/cursor/size.gif");
+	GridObj.AddImageList("NAME", "/images/cursor/sizenesw.gif");
+	GridObj.AddImageList("NAME", "/images/cursor/sizens.gif");
+	GridObj.AddImageList("NAME", "/images/cursor/sizenwse.gif");
+	GridObj.AddImageList("NAME", "/images/cursor/sizeew.gif");
+	GridObj.AddImageList("NAME", "/images/cursor/uparrow.gif");
+	GridObj.AddImageList("NAME", "/images/cursor/hourglass.gif");
+	GridObj.AddImageList("NAME", "/images/cursor/arrowquestion.gif");
+	GridObj.AddImageList("NAME", "/images/cursor/sizeall.gif");
+	GridObj.AddImageList("NAME", "/images/cursor/hand.gif");
+	GridObj.AddImageList("NAME", "/images/cursor/nodrop.gif");
+} 
+
+function AddGrid_Data(){
+	 var GridObj = document.WiseGrid;
+	 var nRow = 0;
+	
+	 // 그리드의 데이터 추가 
+	 GridObj.AddRow();
+	 nRow = GridObj.GetActiveRowIndex();
+	 GridObj.SetCellValue('NAME',nRow,'default');
+	 GridObj.SetCellImage ('NAME',nRow,0) ;
+	 GridObj.SetCellValue('IMAGE',nRow,'마우스를 올려주세요');
+	 
+	 GridObj.AddRow();
+	 nRow = GridObj.GetActiveRowIndex();
+	 GridObj.SetCellValue('NAME',nRow,'arrow');
+	 GridObj.SetCellImage ('NAME',nRow,1) ;
+	 GridObj.SetCellValue('IMAGE',nRow,'마우스를 올려주세요');
+	 
+	 GridObj.AddRow();
+	 nRow = GridObj.GetActiveRowIndex();
+	 GridObj.SetCellValue('NAME',nRow,'cross');
+	 GridObj.SetCellImage ('NAME',nRow,2) ;
+	 GridObj.SetCellValue('IMAGE',nRow,'마우스를 올려주세요');
+	 
+	 GridObj.AddRow();
+	 nRow = GridObj.GetActiveRowIndex();
+	 GridObj.SetCellValue('NAME',nRow,'ibeam');
+	 GridObj.SetCellImage ('NAME',nRow,3) ;
+	 GridObj.SetCellValue('IMAGE',nRow,'마우스를 올려주세요');
+	 
+	 GridObj.AddRow();
+	 nRow = GridObj.GetActiveRowIndex();
+	 GridObj.SetCellValue('NAME',nRow,'size');
+	 GridObj.SetCellImage ('NAME',nRow,4) ;
+	 GridObj.SetCellValue('IMAGE',nRow,'마우스를 올려주세요');
+	 
+	 GridObj.AddRow();
+	 nRow = GridObj.GetActiveRowIndex();
+	 GridObj.SetCellValue('NAME',nRow,'sizenesw');
+	 GridObj.SetCellImage ('NAME',nRow,5) ;
+	 GridObj.SetCellValue('IMAGE',nRow,'마우스를 올려주세요');
+	 
+	 GridObj.AddRow();
+	 nRow = GridObj.GetActiveRowIndex();
+	 GridObj.SetCellValue('NAME',nRow,'sizens');
+	 GridObj.SetCellImage ('NAME',nRow,6) ;
+	 GridObj.SetCellValue('IMAGE',nRow,'마우스를 올려주세요');
+	 
+	 GridObj.AddRow();
+	 nRow = GridObj.GetActiveRowIndex();
+	 GridObj.SetCellValue('NAME',nRow,'sizenwse');
+	 GridObj.SetCellImage ('NAME',nRow,7) ;
+	 GridObj.SetCellValue('IMAGE',nRow,'마우스를 올려주세요');
+	 
+	 GridObj.AddRow();
+	 nRow = GridObj.GetActiveRowIndex();
+	 GridObj.SetCellValue('NAME',nRow,'sizeew');
+	 GridObj.SetCellImage ('NAME',nRow,8) ;
+	 GridObj.SetCellValue('IMAGE',nRow,'마우스를 올려주세요');
+	 
+	 GridObj.AddRow();
+	 nRow = GridObj.GetActiveRowIndex();
+	 GridObj.SetCellValue('NAME',nRow,'uparrow');
+	 GridObj.SetCellImage ('NAME',nRow,9) ;
+	 GridObj.SetCellValue('IMAGE',nRow,'마우스를 올려주세요');
+	 
+	 GridObj.AddRow();
+	 nRow = GridObj.GetActiveRowIndex();
+	 GridObj.SetCellValue('NAME',nRow,'hourglass'); 
+	 GridObj.SetCellImage ('NAME',nRow,10) ;
+	 GridObj.SetCellValue('IMAGE',nRow,'마우스를 올려주세요');
+	  
+	 GridObj.AddRow();
+	 nRow = GridObj.GetActiveRowIndex();
+	 GridObj.SetCellValue('NAME',nRow,'arrowquestion');
+	 GridObj.SetCellImage ('NAME',nRow,11) ;
+	 GridObj.SetCellValue('IMAGE',nRow,'마우스를 올려주세요');
+	 
+	 GridObj.AddRow();
+	 nRow = GridObj.GetActiveRowIndex();
+	 GridObj.SetCellValue('NAME',nRow,'sizeall');
+	 GridObj.SetCellImage ('NAME',nRow,12) ;
+	 GridObj.SetCellValue('IMAGE',nRow,'마우스를 올려주세요');
+	 
+	 GridObj.AddRow();
+	 nRow = GridObj.GetActiveRowIndex();
+	 GridObj.SetCellValue('NAME',nRow,'hand');
+	 GridObj.SetCellImage ('NAME',nRow,13) ;
+	 GridObj.SetCellValue('IMAGE',nRow,'마우스를 올려주세요');
+	 
+	 GridObj.AddRow();
+	 nRow = GridObj.GetActiveRowIndex();
+	 GridObj.SetCellValue('NAME',nRow,'nodrop');	 	
+	 GridObj.SetCellImage ('NAME',nRow,14) ;
+	 GridObj.SetCellValue('IMAGE',nRow,'마우스를 올려주세요');
+	 
+	 // Name 컬럼에 ImageText의 커서를 화살표로 변경
+	 GridObj.SetImagetextCursor('NAME',false);
+	 
+	 // Image 컬럼의 폰트 색을 파란색으로 지정
+	 GridObj.SetColCellFgColor('IMAGE','0|0|255');	  
+	 
+	 // Image 컬럼의 데이터에 언더라인을 지정
+	 GridObj.SetColCellFontULine ('IMAGE', 'true' ) ;
+	 
+	 // Name 컬럼의 font size 를 12로 지정
+	 GridObj.SetColCellFontSize  ('NAME',12) ;
+	 
+	 // Image 컬럼을 가운데 정렬
+	 GridObj.SetColCellAlign('IMAGE', 'center');
+	 
+	 // Name 컬럼의  이벤트를 false로 지정
+	 GridObj.SetColEvent('NAME',false);
+	 
+}
+
+
+
+/*  MouseOver 이벤트 발생시 실행 메소드  */
+function MouseOver(strType, strColumnKey, nRow){ 
+	 var GridObj = document.WiseGrid;	 
+	  if(strType == 'cell' && strColumnKey == 'IMAGE'){
+	  		var cursor_name = GridObj.GetCellValue('NAME',nRow);
+	 		GridObj.SetCellCursor('IMAGE', nRow, cursor_name);
+		}
+	}
+
+</script>
+</head>
+
+<body>
+<form name="form">
+<input type='hidden' name='from_date' value='20070101'>
+<input type='hidden' name='to_date' value=''>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr height="20">
+    <td class="title1_k">
+    	&nbsp;기본예제<br><hr>
+    </td>
+  </tr>
+  <tr height="20">
+    <td class="title2_k">
+			&nbsp;&nbsp;&nbsp; 마우스 커서 모양 변경
+    </td>
+  </tr> 
+</table>
+<hr>
+<table width="100%" border="0" cellpadding="0" cellspacing="0" >
+	<tr> 
+		<td bgcolor="#00455d" height="3" ></td>
+	</tr>
+	<tr>
+		<td width=67%>
+			<script>initWiseGrid("WiseGrid", "100%", "500");</script>
+		</td>		 
+	</tr>
+</table>
+</form>
+</body>
+</html>

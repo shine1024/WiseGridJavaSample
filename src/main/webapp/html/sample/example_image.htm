@@ -1,0 +1,133 @@
+<HTML>
+<HEAD>
+<TITLE>Basic Sample</TITLE>
+<meta http-equiv='Content-Type' content='text/html; charset=euc-kr'>
+<link rel='stylesheet' href='/css/wisegrid.css' type='text/css'>
+<script type='text/javascript' src='/js/WiseGrid_TAG.js'></script>
+<script type='text/javascript' src='/js/WiseGrid_Property.js'></script>
+<script type='text/javascript' src='/js/WiseGrid_Basic_Sample.js'></script>
+<script src="/js/jquery/jquery-1.11.1.min.js"></script>
+<script for='WiseGrid' event='Initialize()'>
+	init(document.WiseGrid);
+</script>
+<script for="WiseGrid" event="CellClick(strColumnKey,nRow)">
+	GridCellClick(document.WiseGrid, strColumnKey,nRow);
+</script>
+<script  for="WiseGrid" event="EndQuery()">
+  EndQuery();
+</script>
+<script>
+function init(GridObj){
+	setHeader(GridObj);
+	setProperty(GridObj);
+	GridObj.bRowSelectorVisible = false;
+	GridObj.bHDVisible = true;
+	GridObj.nRowHeight = "25";
+	// AreaMerge 시 반드시 필요한 메소드
+	GridObj.strRowBorderStyle = "none";
+	GridObj.strHDClickAction = "select";
+	// 헤더를 움직이지 못하도록 지정
+	GridObj.bHDMoving = false;
+	// 헤더 옆의 콤보 리스트 비활성화
+	GridObj.bHDSwapping = false;	
+	// RowSize를 변화할수없도록 지정
+	//GridObj.strRowSizing = 'fixed';
+	GridObj.strLanguagePack = "EN";
+
+	doQuery();
+}
+
+function setHeader(GridObj) {
+	GridObj.AddHeader("IMAGE", 			"IMAGE",			"t_imagetext",		200, 	300,	false);
+	GridObj.AddHeader("COLUMN_NAME", 	"COLUMN_NAME",		"t_text",			200, 	120,	false);
+	GridObj.AddHeader("VALUE", 			"VALUE",			"t_text",			200, 	200,	false);
+	GridObj.AddHeader("I_NO", 			"I_NO",				"t_text",			200, 	200,	false);
+	GridObj.BoundHeader();
+	
+	// 컬럼을 숨김
+	GridObj.SetColHide("I_NO",false);
+		
+	GridObj.SetColCellBgColor("COLUMN_NAME", "95|177|206");
+	GridObj.SetColCellFgColor("COLUMN_NAME", "255|255|255");
+	GridObj.SetColCellFont ("COLUMN_NAME", "돋움", 10, true, false, false, false);
+	GridObj.SetColCellAlign ("COLUMN_NAME", "center");
+}
+
+function GridCellClick(GridObj, colKey, nRow) {
+	if(colKey!='IMAGE')return;
+	else
+	var setImgRow = nRow/9;
+	var url = "/html/popup/select_img.html";
+	var options =  "width=600, height=500, left=300, top=200, resizable=no, scrollbars=no, status=no;";
+	var win = window.open(url, "popup", options);
+	win.onbeforeunload   = function () {
+		//alert($('#imageUrl').val());
+		GridObj.SetParam("MODE",$('#imageUrl').val());
+		GridObj.DoQuery("/servlet/wisegrid.sample.ExampleImage");
+	}
+}
+
+function doQuery(){
+	var GridObj = document.WiseGrid;
+	GridObj.SetParam("MODE", "CATEGORY_EX");
+	GridObj.DoQuery("/servlet/wisegrid.sample.ExampleImage");
+}
+
+function EndQuery(){
+	GridObj = document.WiseGrid;
+	if(GridObj.GetStatus() == 'true'){
+				 
+		var count = Math.floor(GridObj.GetRowCount()/9); 
+		
+		// 지정한 컬럼을 Merge 시킨다.
+		// 본 예제는 각 item 에 해당하는 설명을 하나로 묶어
+		// 이미지를 보이도록 했다.
+		for(var  i =0 ; i <count ; i++){
+			GridObj.AddAreaMerge ('MERGE'+i.toString(), 'IMAGE', i*9,'IMAGE',(i*9)+8 , 'IMAGE',i*9 ); 					 				 
+		}
+	}
+}
+
+</script>
+</HEAD>
+<BODY bgcolor='#FFFFFF' text='#000000'>
+<input type="text" id="imageUrl">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr height="20">
+    <td class="title1_k">
+    	&nbsp;응용예제<br><hr>
+    </td>
+  </tr>
+  <tr height="20">
+    <td class="title2_k">&nbsp;&nbsp;&nbsp; 제품카테고리 예제</td>
+  </tr>
+</table>
+<hr>
+
+	<table width="98%" border="0" cellspacing="0" cellpadding="0"  class="title3">
+  <tr>
+    <td>
+		<table width="100%" border="0" cellpadding="2" cellspacing="0" >
+		    <tr>
+		      <td valign="top" align="right">
+		      	<table border=0 cellpadding="0" cellspacing="0">
+		      		<tr>
+		      			<td><script language="javascript">btn("doQuery()","조회")</script></td>
+		      		</tr>
+		      	</table>
+		      </td>
+		   	</tr>
+		</table>
+	</td>
+  </tr>
+</table>
+	<hr>
+<table width="98%" border="0" cellpadding="0" cellspacing="0" >
+<tr>
+	<td align='left'>
+		<script>initWiseGrid("WiseGrid", "100%", "440");</script>
+	</td>
+</tr>
+</table>	
+</BODY>
+</HTML>

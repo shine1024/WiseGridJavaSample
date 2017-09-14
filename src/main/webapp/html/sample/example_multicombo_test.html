@@ -1,0 +1,55 @@
+<HTML>
+<HEAD>
+<TITLE>기본예제 - 멀티 콤보 </TITLE>
+<meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+<link rel='stylesheet' href='/css/wisegrid.css' type='text/css'>
+<script type='text/javascript' src='/js/WiseGrid_TAG.js'></script>
+<script type='text/javascript' src='/js/WiseGrid_Property.js'></script>
+<script type='text/javascript' src='/js/WiseGrid_Basic_Sample.js'></script>
+<script language=javascript for='WiseGrid' event='Initialize()'>
+    init(document.WiseGrid);
+</script>
+<script for="WiseGrid" event="changeCombo(strKey, nRow, oldIndex, newIndex)">
+chsngeCombo(strKey, nRow);
+</script>
+    <script>
+function init(){
+    var grid = document.WiseGrid;
+    grid.AddHeader("COMBO1", "COMBO1", "t_combo", 100, 100, true);
+    grid.AddHeader("COMBO2", "COMBO2", "t_combo", 100, 100, true);
+    grid.BoundHeader();
+
+    //grid.AddComboList("COMBO1", "C1");
+    grid.AddComboListValue("COMBO1", "VALUE1", "CC1");
+    grid.AddComboListValue("COMBO1", "VALUE2", "CC2");
+
+    grid.AddComboList("COMBO2", "CC1");
+    grid.AddComboList("COMBO2", "CC2");
+
+}
+
+function chsngeCombo(colKey, nRow){
+    alert(colKey, nRow);
+}
+
+function addRow(){
+    var grid = document.WiseGrid;
+    grid.AddRow();
+}
+</script>
+</HEAD>
+<BODY bgcolor='#FFFFFF' text='#000000'>
+<button onclick="addRow()">행추가</button>
+    <table width="98%" border="0" cellpadding="0" cellspacing="0" >
+        <tr>
+            <td bgcolor="#00455d" height="3"></td>
+        </tr>
+        <tr>
+            <td align='left'>
+                <script>initWiseGrid("WiseGrid", "100%", "350");</script>
+            </td>
+        </tr>
+    </table>
+
+</BODY>
+</HTML>

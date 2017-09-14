@@ -1,0 +1,254 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>기본예제 - 기본</title>
+<link rel='stylesheet' href='/css/wisegrid.css' type='text/css'>
+<script type='text/javascript' src='/js/WiseGrid_TAG.js'></script>
+<script type='text/javascript' src='/js/WiseGrid_Property.js'></script>
+<!--<script language=javascript for="WiseGrid" event="CellDblClick(strColumnKey, nRow)">-->
+        <!--alert('Grid 1 이벤트');-->
+<!--</script>-->
+
+<!--<script language=javascript for="WiseGrid2" event="CellDblClick(strColumnKey, nRow)">-->
+    <!--alert('Grid 2 이벤트');-->
+<!--</script>-->
+
+<script language=javascript for="WiseGrid" event="Initialize()">
+    init();
+</script>
+
+
+<script language=javascript for="WiseGrid2" event="Initialize()">
+    init2();
+</script>
+
+
+<script>
+function init() {
+    var GridObj = document.WiseGrid;
+    setHeader(GridObj);
+//    document.WiseGrid.nCellFontSize=9;
+
+//    setProperty(GridObj);
+//    GridObj.SetColCellMultiLine('TEXT', true);
+    GridObj.nRowHeight = 70;
+    GridObj.strRowSizing = 'autofree';
+//    GridObj.strRowSizing = 'free';
+    query();
+}
+
+
+function init2() {
+    var GridObj = document.WiseGrid2;
+    setHeader(GridObj);
+//    setProperty(GridObj);
+//    query2();
+}
+
+
+function setHeader(GridObj) {
+
+    GridObj.AddHeader("TEXT",               'TEXT',             "t_text",      500,   "250",   true);
+    GridObj.AddHeader("DATE",               'DATE',             "t_date",      100,   "250",   true);
+    GridObj.AddHeader("NUMBER",               'NUMBER',             "t_number",      100,   "250",   true);
+    GridObj.AddHeader("CHECK",               'CHECK',             "t_checkbox",      100,   "250",   true);
+    GridObj.AddHeader("COMBO",               'COMBO',             "t_combo",      100,   "250",   true);
+    GridObj.BoundHeader();
+
+    GridObj.AddComboListValue("COMBO", "COMBO_1", "CPU");
+    GridObj.AddComboListValue("COMBO", "COMBO_2", "MEM");
+    GridObj.AddComboListValue("COMBO", "COMBO_3", "MAB");
+
+
+}
+
+function query() {
+
+    var GridObj = document.WiseGrid;
+    var servlet_url = "/servlet/wisegrid.sample.ExampleTest";
+
+    GridObj.DoQuery(servlet_url);
+}
+
+function query2() {
+    var GridObj = document.WiseGrid2;
+    var servlet_url = "/servlet/wisegrid.sample.ExampleTest";
+
+    GridObj.DoQuery(servlet_url);
+}
+
+
+
+
+function save() {
+
+    var GridObj = document.WiseGrid;
+    var servlet_url = "/servlet/wisegrid.sample.ExampleTest";
+
+    GridObj.SetParam("mode"                  , "MTP_save");
+    GridObj.SetParam("mtp_pid"               , "MTP000000002041");
+    GridObj.SetParam("job_pid"               , "test1");
+    GridObj.SetParam("mtp_ver1"              , "test1");
+    GridObj.SetParam("mtp_ver2"              , "test1");
+    GridObj.SetParam("create_date"           , "test1");
+    GridObj.SetParam("mtp_note"              , "test1");
+    GridObj.SetParam("gsm_release"           , "test1");
+    GridObj.SetParam("wcdma_release"         , "test1");
+    GridObj.SetParam("lte_release"           , "test1");
+    GridObj.SetParam("doc_issue_no"          , "test1");
+
+
+    // 사용자 버전 설정 기능으로 인하여 추가
+    GridObj.SetParam("new_mtp_cust_ver"      , "test1");
+    GridObj.SetParam("new_mtp_ver1"       , "test1");
+    GridObj.SetParam("new_mtp_ver2"       , "test1");
+
+    // 현재 Master Test Pland 적용된 NAPRD03 & GCF-CC Version
+    GridObj.SetParam("gcfcc_pid"             , "test1");
+    GridObj.SetParam("naprd_pid"             , "test1");
+    GridObj.SetParam("gcfcc_ver"             , "test1");
+    GridObj.SetParam("naprd_ver"             , "test1");
+
+    // Test Request 최종 Confirm Version에 적용된 NAPRD03 & GCF-CC Version
+    GridObj.SetParam("req_naprd_ver"       , "test1");
+    GridObj.SetParam("req_gcfcc_ver"       , "test1");
+    GridObj.SetParam("req_pid"      , "test1");
+    GridObj.SetParam("req_ver"      , "test1");
+    GridObj.SetParam("last_req_ver"    , "test1");
+    GridObj.SetParam("new_req_ver_apply_YN"  , "test1");
+    GridObj.SetParam("new_pics_ver_apply_YN" , "test1");
+    GridObj.SetParam("req_pics_pid"       , "test1");
+    GridObj.SetParam("last_req_pics_pid"     , "test1");
+
+    GridObj.SetParam('aBand_TCS0001'  , 'BND0001/BND0002/BND0003/BND0004/BND0005/BND0007');
+    GridObj.SetParam('gBand_TCS0001'  , 'BND0002/BND0003/BND0005');
+    GridObj.SetParam('nBand_TCS0001'  , 'BND0001/BND0004/BND0005');
+
+    GridObj.SetParam('aBand_TCS0002'  , 'BND0008/BND0009/BND0010/BND0011/BND0012/BND0021/BND0062');
+    GridObj.SetParam('gBand_TCS0002'  , 'BND0008/BND0021/BND0012/BND0062');
+    GridObj.SetParam('nBand_TCS0002'  , 'BND0009/BND0010/BND0011');
+
+    GridObj.SetParam('aBand_TCS0003'  , 'BND0008/BND0009/BND0010/BND0011/BND0012/BND0021/BND0062/BND0090/BND0091/BND0092/BND0102/BND0103/BND0093');
+    GridObj.SetParam('gBand_TCS0003'  , 'BND0008/BND0021/BND0012/BND0062/BND0090/BND0091/BND0092/BND0102/BND0103/BND0093');
+    GridObj.SetParam('nBand_TCS0003'  , 'BND0009/BND0010/BND0011');
+
+    GridObj.SetParam('aBand_TCS0004'  , 'BND0008/BND0009/BND0010/BND0011/BND0012/BND0021/BND0062/BND0090/BND0091/BND0092/BND0102/BND0103/BND0093');
+    GridObj.SetParam('gBand_TCS0004'  , 'BND0008/BND0021/BND0012/BND0062/BND0090/BND0091/BND0092/BND0102/BND0103/BND0093');
+    GridObj.SetParam('nBand_TCS0004'  , 'BND0008/BND0009/BND0010/BND0011');
+
+    GridObj.SetParam('aBand_TCS0006'  , 'BND0008/BND0009/BND0010/BND0011/BND0012/BND0021/BND0062/BND0013/BND0041/BND0042/BND0014/BND0043/BND0015/BND0048/BND0016/BND0017/BND0049/BND0018/BND0052/BND0053/BND0054/BND0055/BND0059/BND0064/BND0065/BND0101/BND0083/BND0045/BND0063/BND0019/BND0060/BND0020/BND0061');
+    GridObj.SetParam('gBand_TCS0006'  , 'BND0008/BND0021/BND0012/BND0062/BND0013/BND0041/BND0042/BND0014/BND0043/BND0015/BND0048/BND0016/BND0017/BND0049/BND0052/BND0053/BND0054/BND0055/BND0059/BND0045/BND0063/BND0064/BND0065/BND0083/BND0019/BND0060/BND0020/BND0061');
+    GridObj.SetParam('nBand_TCS0006'  , 'BND0009/BND0010/BND0011/BND0041/BND0014/BND0043/BND0015/BND0016/BND0017/BND0018/BND0049/BND0059/BND0101/BND0061');
+
+    GridObj.SetParam('aBand_TCS0007'  , 'BND0008/BND0009/BND0010/BND0011/BND0012/BND0021/BND0062');
+    GridObj.SetParam('gBand_TCS0007'  , 'BND0008/BND0021/BND0012/BND0062');
+    GridObj.SetParam('nBand_TCS0007'  , 'BND0009/BND0010/BND0011');
+
+    GridObj.SetParam('aBand_TCS0008'  , 'BND9999');
+    GridObj.SetParam('gBand_TCS0008'  , 'BND9999');
+    GridObj.SetParam('nBand_TCS0008'  , 'BND9999');
+
+    GridObj.SetParam('aBand_TCS0009'  , 'BND9999');
+    GridObj.SetParam('gBand_TCS0009'  , 'BND9999');
+    GridObj.SetParam('nBand_TCS0009'  , 'BND9999');
+
+    GridObj.SetParam('aBand_TCS0011'  , 'BND0013/BND0041/BND0042/BND0014/BND0043/BND0015/BND0048/BND0016/BND0017/BND0049/BND0018/BND0052/BND0053/BND0054/BND0055/BND0059/BND0064/BND0065/BND0101/BND0083/BND0045/BND0063');
+    GridObj.SetParam('gBand_TCS0011'  , 'BND0013/BND0041/BND0042/BND0014/BND0043/BND0015/BND0048/BND0016/BND0017/BND0049/BND0052/BND0053/BND0054/BND0055/BND0059/BND0064/BND0065/BND0083/BND0045/BND0063');
+    GridObj.SetParam('nBand_TCS0011'  , 'BND0041/BND0014/BND0043/BND0015/BND0016/BND0017/BND0018/BND0049/BND0059/BND0101');
+
+    GridObj.SetParam('aBand_TCS0012'  , 'BND0013/BND0041/BND0042/BND0014/BND0043/BND0015/BND0048/BND0016/BND0017/BND0049/BND0018/BND0052/BND0053/BND0054/BND0055/BND0059/BND0064/BND0065/BND0101/BND0083/BND0045/BND0063');
+    GridObj.SetParam('gBand_TCS0012'  , 'BND0013/BND0041/BND0042/BND0014/BND0043/BND0015/BND0048/BND0016/BND0017/BND0049/BND0052/BND0053/BND0054/BND0055/BND0059/BND0064/BND0065/BND0083/BND0045/BND0063');
+    GridObj.SetParam('nBand_TCS0012'  , 'BND0041/BND0014/BND0043/BND0015/BND0016/BND0017/BND0018/BND0049/BND0059/BND0101');
+
+    GridObj.SetParam('aBand_TCS0013'  , 'BND0013/BND0041/BND0042/BND0014/BND0043/BND0015/BND0048/BND0016/BND0017/BND0049/BND0018/BND0052/BND0053/BND0054/BND0055/BND0059/BND0064/BND0065/BND0101/BND0083/BND0045/BND0063');
+    GridObj.SetParam('gBand_TCS0013'  , 'BND0013/BND0041/BND0042/BND0014/BND0043/BND0015/BND0048/BND0016/BND0017/BND0049/BND0052/BND0053/BND0054/BND0055/BND0059/BND0064/BND0065/BND0083/BND0045/BND0063');
+    GridObj.SetParam('nBand_TCS0013'  , 'BND0041/BND0014/BND0043/BND0015/BND0016/BND0017/BND0018/BND0049/BND0059/BND0101');
+
+    GridObj.SetParam('aBand_TCS0014'  , 'BND0019/BND0060/BND0020/BND0061/BND0116');
+    GridObj.SetParam('gBand_TCS0014'  , 'BND0019/BND0060/BND0020/BND0061/BND0116');
+    GridObj.SetParam('nBand_TCS0014'  , 'BND0061');
+
+    GridObj.SetParam('aBand_TCS0015'  , 'BND0019/BND0060/BND0020/BND0061/BND0116');
+    GridObj.SetParam('gBand_TCS0015'  , 'BND0019/BND0060/BND0020/BND0061/BND0116');
+    GridObj.SetParam('nBand_TCS0015'  , 'BND0061');
+
+    GridObj.SetParam('aBand_TCS0016'  , 'BND0019/BND0060/BND0020/BND0061/BND0116');
+    GridObj.SetParam('gBand_TCS0016'  , 'BND0019/BND0060/BND0020/BND0061/BND0116');
+    GridObj.SetParam('nBand_TCS0016'  , 'BND0061');
+
+    GridObj.SetParam('aBand_TCS0018'  , 'BND0106/BND0066/BND0104/BND0107/BND0067/BND0068/BND0069/BND0100/BND0096/BND0097/BND0084/BND0113/BND0117/BND0070/BND0085/BND0098/BND0114/BND0086/BND0105/BND0099/BND0108/BND0087/BND0094/BND0115/BND0071/BND0095/BND0072/BND0073/BND0088/BND0074/BND0075/BND0109/BND0076/BND0077/BND0120/BND0089/BND0078/BND0079/BND0110/BND0080/BND0081/BND0082/BND0111/BND0112/BND0121');
+    GridObj.SetParam('gBand_TCS0018'  , 'BND0106/BND0066/BND0104/BND0107/BND0067/BND0068/BND0069/BND0100/BND0096/BND0097/BND0084/BND0113/BND0117/BND0076/BND0070/BND0085/BND0098/BND0114/BND0080/BND0086/BND0105/BND0099/BND0108/BND0087/BND0094/BND0115/BND0071/BND0095/BND0072/BND0073');
+    GridObj.SetParam('nBand_TCS0018'  , 'BND0088/BND0074/BND0075/BND0109/BND0076/BND0077/BND0120/BND0089/BND0078/BND0079/BND0110/BND0080/BND0081/BND0082/BND0111/BND0112/BND0121');
+
+    GridObj.SetParam('aBand_TCS0017'  , 'BND9999');
+    GridObj.SetParam('gBand_TCS0017'  , 'BND9999');
+    GridObj.SetParam('nBand_TCS0017'  , 'BND9999');
+
+
+    GridObj.DoQuery(servlet_url, "CRUD");
+}
+
+
+
+/* EXCEL 내보내기 */
+function excelDown() {
+    var GridObj = document.WiseGrid;
+    GridObj.ExcelExport("", "", true, true);
+
+}
+
+/* Excel 시트별 생성 다운로드*/
+function excelSheetDown() {
+
+    document.WiseGrid.strDefaultExportFileFilter = 'xlsx';
+
+    if(document.WiseGrid.SetExcelFilePath('')) {
+        var savePath = document.WiseGrid.GetExcelFilePath();
+        var ext = savePath.substring(savePath.lastIndexOf(".")+1);
+
+        /* 시트1 */
+        document.WiseGrid.ClearExcelInfo();
+        document.WiseGrid.AddExcelLine("[Confidential]", 20, 12, "left", "255|0|0", "255|255|255");
+        document.WiseGrid.AddExcelLine("Test Plan", 40, 15, "center", "0|0|0", "240|240|240");
+
+        document.WiseGrid.bExcelExecuteMsgVisible = false;
+        document.WiseGrid.bExcelAutoExecute       = false;
+        document.WiseGrid.strDefaultTempFileExt = ext;
+        document.WiseGrid.ExcelExport("INTERNET_TEMPORARY_FILES", "", true, true);
+        document.WiseGrid.AddExcelSheet("Information", document.WiseGrid.GetExportFileName());
+
+        /* 시트2 */
+        document.WiseGrid2.ClearExcelInfo();
+        document.WiseGrid2.AddExcelLine("[Confidential]", 20, 12, "left", "255|0|0", "255|255|255");
+        document.WiseGrid2.AddExcelLine("Test Plan", 40, 15, "center", "0|0|0", "240|240|240");
+        document.WiseGrid2.bExcelExecuteMsgVisible = false;
+        document.WiseGrid2.bExcelAutoExecute       = false;
+        document.WiseGrid2.strDefaultTempFileExt = ext;
+        document.WiseGrid2.ExcelExport("INTERNET_TEMPORARY_FILES", "", true, true);
+        document.WiseGrid.AddExcelSheet("ETC", document.WiseGrid2.GetExportFileName());
+
+        document.WiseGrid.CreateExcelFile(false, true);
+    }
+}
+
+function fireEvent() {
+    FireGridEvent('CellClick', 1, 1);
+}
+
+
+</script>
+</head>
+
+<body>
+<script language="javascript">btn("query()","조회")</script></td>
+<script language="javascript">btn("save()","저장")</script></td>
+<script language="javascript">btn("excelDown()","엑셀다운")</script></td>
+<script language="javascript">btn("excelSheetDown()","엑셀ALL다운")</script></td>
+<script language="javascript">btn("fireEvent()","이벤트호출")</script></td>
+<!--<script>initUniWiseGrid("WiseGrid", "100%", "350");</script>-->
+<script>initWiseGrid("WiseGrid", "100%", "350");</script>
+<script language="javascript">btn("query2()","조회")</script></td>
+<!--<script>initWiseGrid("WiseGrid2", "100%", "350");</script>-->
+<script>initWiseGrid("WiseGrid2", "100%", "350");</script>
+</body>
+</html>

@@ -1,0 +1,178 @@
+<HTML>
+<HEAD>
+	<TITLE>응용예제 - 헤더별그룹</TITLE>
+	<meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+	<link rel='stylesheet' href='/css/wisegrid.css' type='text/css'>
+	<script type='text/javascript' src='/js/WiseGrid_TAG.js'></script>
+	<script type='text/javascript' src='/js/WiseGrid_Property.js'></script>
+	<script type='text/javascript' src='/js/WiseGrid_Basic_Sample.js'></script>
+
+	<!--
+        WiseGrid 오브젝트가 생성되고 초기화된 후 발생하는
+        JavaScript Event인 Initialize()를 받아 그리드의 헤더를 셋팅한다.
+    -->
+	<script language=javascript for='WiseGrid' event='Initialize()'>
+		init(document.WiseGrid);
+	</script>
+
+	<script language=javascript for="WiseGrid" event="ChangeCell(strColumnKey, nRow, vtOldValue, vtNewValue)">
+		GridChangeCell(strColumnKey, nRow);
+	</script>
+
+	<!--  	서버와의 통신이 정상적으로 완료되면 발생한다.   -->
+	<script language=javascript for="WiseGrid" event="EndQuery()">
+		GridEndQuery();
+	</script>
+
+	<script language=javascript>
+		function init(GridObj)  {
+			setProperty(GridObj);
+
+			//사용자가 헤더를 드래그해서 컬럼위치를 이동할수 없다.
+			GridObj.bHDMoving = false;
+
+			//헤더의 컬럼위치이동 콤보버튼을 비활성화 한다.
+			GridObj.bHDSwapping = false;
+
+			//헤더의 라인수를 설정한다.
+			GridObj.nHDLines = 4;
+
+			//투명도를 조절한다.
+			//GridObj.nAlphaLevel = 230;
+			GridObj.strBgImage = "/images/icompia_logo_white.gif";
+
+			// 동적헤더를 사용하도록 설정한다.
+			GridObj.bDoQueryDynamic = true;
+
+			setHeader(GridObj);
+			//doQuery();
+		}
+
+		function setHeader(GridObj) {
+			//그리드에 컬럼을 등록한다.
+			GridObj.AddHeader("SELECTED", "", "t_text", 2, 0, true);
+
+			//AddHeader를 완료한 후 헤더를 그리드에 바인딩한다
+			GridObj.BoundHeader();
+		}
+
+		/* 조회 */
+		function doQuery() {
+			var GridObj = document.WiseGrid;
+			var search_con = document.examForm.search_con.value;
+			var servlet_url = "/servlet/wisegrid.sample.ExampleDynamic";
+
+			//WiseGrid가 서버에 전송할 mode를 셋팅한다.
+			GridObj.SetParam("MODE", search_con);
+
+			//WiseGrid가 서버와 통신시에 데이터를 전달한다.
+			GridObj.DoQuery(servlet_url);
+		}
+
+		/* 조회 */
+		function Modify() {
+			var GridObj = document.WiseGrid;
+			var search_con = document.examForm.Flag.value;
+			var servlet_url = "/servlet/wisegrid.sample.ExampleDynamic";
+
+			//WiseGrid가 서버에 전송할 mode를 셋팅한다.
+			GridObj.SetParam("MODE", "U_"+search_con);
+
+			//WiseGrid가 서버와 통신시에 데이터를 전달한다.
+			GridObj.DoQuery(servlet_url,"SELECTED");
+		}
+
+		function GridEndQuery() {
+			var GridObj = document.WiseGrid;
+			if(GridObj.GetStatus() == "true"){
+
+				var mode = GridObj.GetParam("MODE");
+
+				if(mode == "U_COM"   ||  mode == "U_TERM"){
+
+					//서버에서 update_data 셋팅한 파라미터를 가져온다.
+					var update_data = GridObj.GetParam("update_data");
+					//fieldset을 보이게 한다.
+					document.all.message.style.display="";
+					//textarea에 서버에서 가져온 update_data 셋팅한 파라미터를 넣는다.
+					document.examForm.confirm.value = update_data;
+				}else if(mode == "COM"   ||  mode == "TERM" ){
+					document.examForm.Flag.value=mode;
+					GridObj.strRowSizing = "autofree";
+				}
+			}
+		}
+
+		function GridChangeCell(strColumnKey, nRow) {
+			if(strColumnKey != "SELECTED")
+				document.WiseGrid.SetCellValue("SELECTED", nRow, "1");
+		}
+	</script>
+
+</HEAD>
+<BODY bgcolor='#FFFFFF' text='#000000'>
+<form name="examForm">
+	<input type="hidden" name="Flag" value="">
+	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+		<tr height="20">
+			<td class="title1_k">
+				&nbsp;응용예제<br><hr>
+			</td>
+		</tr>
+		<tr height="20">
+			<td class="title2_k">
+				&nbsp;&nbsp;&nbsp;  동적헤더생성예제
+			</td>
+		</tr>
+	</table>
+
+	<hr>
+
+	<table width="98%" border="0" cellpadding="2" cellspacing="0" >
+		<tr>
+			<td width="80">조회 조건</td>
+			<td  width="100">
+				<select name="search_con" >
+					<option value="COM">컴퓨터</option>
+					<option value="TERM">용어사전</option>
+				</select>
+			</td>
+			<td colspan="5">
+			</td>
+		</tr>
+
+		<tr>
+			<td valign="top" align="right" colspan=7 >
+				<table border=0 cellpadding="0" cellspacing="0">
+					<tr>
+						<td><script language="javascript">btn("doQuery()","조회")</script></td>
+						<td><script language="javascript">btn("Modify()","수정")</script></td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+
+	<table width="98%" border="0" cellpadding="0" cellspacing="0" >
+		<tr>
+			<td bgcolor="#00455d" height="3"></td>
+		</tr>
+		<tr>
+			<td align='left'>
+				<script>initWiseGrid("WiseGrid", "100%", "350");</script>
+			</td>
+		</tr>
+	</table>
+
+
+	<div id='message' style="display:none ">
+		<fieldset >
+			<legend> [변경된 내용] </legend>
+			<textarea name="confirm" cols="101" rows="8" style="border:0px" scrolling="auto"  />
+		</fieldset>
+	</div>
+
+</form>
+
+</BODY>
+</HTML>

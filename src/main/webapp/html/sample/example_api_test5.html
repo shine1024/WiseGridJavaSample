@@ -1,0 +1,53 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>기본예제 - 기본</title>
+<script type='text/javascript' src='../../js/WiseGrid_TAG.js'></script>
+<script language="javascript" for="WiseGrid" event="Initialize()">
+    initGrid();
+</script>
+
+    <script for="WiseGrid" event="KeyPress(code)">
+        console.log("code : "+ code);
+        //code.Value = 0;
+        console.log("code : "+ code);
+
+        if(code == 13) WiseGrid.SetEditCellSelectionRange(2,3);
+
+</script>
+
+
+<script>
+function initGrid() {
+
+    var gridObj = document.WiseGrid;
+
+    gridObj.AddHeader("COLUMN1", "컬럼1", "t_text", 100, 100, true);
+    gridObj.AddHeader("COLUMN2", "컬럼2", "t_number", 100, 100, true);
+    gridObj.AddHeader("COLUMN3", "컬럼3", "t_text", 100, 100, true);
+    gridObj.AddHeader("COLUMN4", "컬럼4", "t_text", 100, 100, true);
+    gridObj.BoundHeader();
+    setData();
+}
+
+function setData() {
+
+    var gridObj = document.WiseGrid;
+    for(var i=0; i<6; i++) {
+        gridObj.AddRow();
+        gridObj.SetCellValue("COLUMN1", i, "text"+i);
+        gridObj.SetCellValue("COLUMN2", i, i*100000);
+        gridObj.SetCellValue("COLUMN3", i, i*(i*i*i*i*10000));
+    }
+}
+</script>
+</head>
+
+<body>
+    <h2>KeyDown() 이벤트</h2>
+    <h4>1. 두번째 매개변수가 EndIndex 값으로 전달받았지만<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;문자 개수로 적용되는것으로 보임.</h4>
+    <h4>2. 컬럼3에서 엔터를 누르면 블록지정 확인가능.</h4>
+    <script>initWiseGrid("WiseGrid", "100%", "400");</script>
+</body>
+</html>

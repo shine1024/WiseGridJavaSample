@@ -1,0 +1,98 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>콤보리스트 예제</title>
+<script type='text/javascript' src='/js/WiseGrid_TAG.js'></script>
+<script type='text/javascript' src='/js/WiseGrid_Property.js'></script>
+<script type="text/javascript" for="WiseGrid" event="Initialize()">
+  init(document.WiseGrid);
+</script>
+<script type="text/javascript" for="WiseGridComboData" event="Initialize()">
+	initWiseGridComboData();
+</script>
+
+
+<script for="WiseGrid" event="ChangeCombo(strColumnKey, nRow, nOldIndex, nNewIndex)">
+  comboChange(strColumnKey, nRow, document.WiseGrid);
+</script>
+
+ 
+<script type="text/javascript">
+var gridObj;
+var gridObjComboData; 
+function init(grid) {
+	gridObj = document.WiseGrid;	
+	grid.AddHeader("combo1", "대분류", "t_combo", 20, 150, true);
+	grid.AddHeader("combo2", "중분류", "t_combo", 20, 150, true);
+	grid.BoundHeader();
+}
+function initWiseGridComboData(){
+	gridObjComboData = document.WiseGridComboData;
+	gridObjComboData.AddHeader("value", "value", "t_text", 20, 150, true);
+	gridObjComboData.AddHeader("hiddenValue", "hiddenValue", "t_text", 20, 150, true);
+	gridObjComboData.BoundHeader();
+}
+
+function doQuery(){
+	var grid = document.WiseGrid;
+	addComboList(grid);
+	setData(grid);
+}
+
+function addComboList(grid){
+
+	 grid.AddComboListValue("combo1", "", "");
+	 grid.AddComboListValue("combo1", "상의", "C1");
+	 grid.AddComboListValue("combo1", "하의", "C2");
+	 grid.AddComboListValue("combo1", "기타", "C3");
+
+}
+
+function setData(grid) {
+	for(var i=0;i<3;i++){
+		grid.AddRow();
+	}
+}
+
+function comboChange(colKey, nRow, grid){
+	if(colKey !== 'combo1') return;
+	var selectedParentValue = gridObj.GetCellHiddenValue(colKey, nRow);
+	if(selectedParentValue === ''){
+		gridObj.ClearComboList("combo2");
+		return;
+	}
+	if(gridObj.HasComboList('combo2', selectedParentValue) == true) {		
+		gridObj.SetComboSelectedIndex("combo2", nRow, -1,selectedParentValue);
+		return;
+	}
+
+	gridObjComboData.SetParam('selectedParentValue', selectedParentValue);
+	gridObjComboData.DoQuery('/servlet/test.combo.ExamComboDemo', 'WISEGRIDDATA_ALL', false);
+	// 하위콤보리스트 그룹키
+	gridObj.AddComboList('combo2', selectedParentValue);
+	
+	for(var i=0,len=gridObjComboData.GetRowCount();i<len;i++){		
+		var value = gridObjComboData.GetCellValue('value', i);
+		var hiddenValue = gridObjComboData.GetCellValue('hiddenValue', i);
+		gridObj.AddComboListValue("combo2", hiddenValue, hiddenValue, selectedParentValue);
+	}
+	gridObj.SetComboSelectedIndex("combo2", nRow, -1,selectedParentValue);
+}
+
+// 행추가
+function addRow(){
+	var grid = document.WiseGrid;
+	if(grid.GetComboListCount("combo1")==0) addComboList(grid);
+	grid.addRow();
+}
+
+</script>
+</head>
+<body>
+<button onclick="doQuery()">조회</button>
+<button onclick="addRow()">행추가</button>
+<script>initWiseGrid("WiseGrid", "100%", "350");</script>
+<script>initWiseGrid("WiseGridComboData", "100%", "100");</script>
+
+</body>
+</html>

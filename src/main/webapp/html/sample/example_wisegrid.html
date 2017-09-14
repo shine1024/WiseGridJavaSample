@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+<meta charset="UTF-8">
+<title>xlib_test</title>
+<script src="/include/WiseGridTag.js"></script>
+<script for="WiseGrid" event="Initialize()" >
+    init();
+</script>
+<script>
+function init(){
+    var grid = document.WiseGrid;
+    grid.AddHeader("TEXT1" , "TEXT1", "t_text", 150, 150, true);
+    grid.AddHeader("TEXT2" , "TEXT2", "t_text", 150, 150, true);
+    grid.BoundHeader();
+}
+function queryTest() {
+    var grid = document.WiseGrid;
+    var url = "/wisegrid/sample";
+    grid.SetParam("mode", "test");
+    grid.doQuery(url);
+}
+</script>
+</head>
+<body>
+<script>initWiseGrid("WiseGrid", "100%", "350")</script>
+<h1>하하하</h1>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>기본예제 - 기본</title>
+<link rel='stylesheet' href='/css/wisegrid.css' type='text/css'>
+<!--<link rel='stylesheet' href='/css/jquery-ui.css' type='text/css'>-->
+<!--<script type='text/javascript' src='/js/jquery/jquery-1.11.1.min.js'></script>-->
+<!--<script type='text/javascript' src='/js/jquery/jquery-ui.js'></script>-->
+<script type='text/javascript' src='/js/WiseGrid_TAG.js'></script>
+<!--<script type='text/javascript' src='/js/WiseGrid_Property.js'></script>-->
+<!--<script type='text/javascript' src='/js/WiseGrid_Basic_Sample.js'></script>-->
+<script for="WiseGrid" event="Initialize()">
+	init();
+</script>
+<!--
+<script  for="WiseGrid" event="EndQuery()">
+	GridEndQuery();
+</script>
+-->
+
+
+
+<script>
+function init() {
+	var GridObj = document.WiseGrid;
+	setHeader(GridObj);
+//	doQuery();
+}
+
+function setHeader(GridObj) {
+	GridObj.AddHeader("PRICE", 			"출고가", 		"t_number", 	"12.6", 	"200",		"true");
+	GridObj.AddHeader("NUMBER", 			"숫자", 		"t_number", 	"12.6", 	"200",		"true");
+	GridObj.BoundHeader();
+
+    GridObj.setNumberFormat('NUMBER', '#,###.#####');
+}
+
+/* 조회 */
+function doQuery() {
+	var GridObj = document.WiseGrid;
+	var servlet_url = "/servlet/wisegrid.sample.ExampleSelect";
+	GridObj.SetParam("mode", "search");
+	GridObj.SetParam("from_date",document.form.from_date.value);
+	GridObj.SetParam("to_date",document.form.to_date.value);
+	GridObj.DoQuery(servlet_url,'SELECTED');
+
+}
+
+
+function GridEndQuery() {
+	var GridObj = document.WiseGrid;
+	var mode = GridObj.GetParam("mode");
+	GridObj.SetActiveRowIndex(-1);
+
+	if(mode == "search") {
+		if(GridObj.GetStatus() == "true") {
+			document.all.message.style.display="none";
+			document.form.confirm.value =null;
+		} else	{
+			var error_msg = GridObj.GetMessage();
+			alert(error_msg);
+		}
+	} else if(mode == "insert") {
+		if(GridObj.GetStatus() == "true") {
+			var insert_data = GridObj.GetParam("insert_data");
+			document.all.message.style.display="";
+			document.form.confirm.value = insert_data;
+
+		} else	{
+			var error_msg = GridObj.GetMessage();
+			alert(error_msg);
+		}
+	} else if(mode == "update") {
+		if(GridObj.GetStatus() == "true") {// 서버에서 전송한 상태코드를 가져온다.
+			var update_data = GridObj.GetParam("update_data");
+			document.all.message.style.display="";
+			document.form.confirm.value = update_data;
+		} else	{
+			var error_msg = GridObj.GetMessage();
+			alert(error_msg);
+		}
+	} else if(mode == "delete") {
+		if(GridObj.GetStatus() == "true") {// 서버에서 전송한 상태코드를 가져온다.
+			var delete_data = GridObj.GetParam("delete_data");
+			document.all.message.style.display="";
+			document.form.confirm.value = delete_data;
+			for( i = 0 ; i < document.WiseGrid.GetRowCount(); i ++) {
+				if(document.WiseGrid.GetCellValue('SELECTED',i) == 1) {
+					document.WiseGrid.DeleteRow(i);
+					i--;
+				}
+			}
+		} else {
+			var error_msg = GridObj.GetMessage();
+			alert(error_msg);
+		}
+	}
+}
+
+
+
+
+
+
+
+
+</script>
+</head>
+<body>
+<form name="form">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr height="20">
+    <td class="title1_k">
+    	&nbsp;기본예제<br><hr>
+    </td>
+  </tr>
+  <tr height="20">
+    <td class="title2_k">
+			&nbsp;&nbsp;&nbsp; 기본
+    </td>
+  </tr>
+</table>
+<hr>
+	<table width="100%" border="0" cellspacing="0" cellpadding="0"  class="title3">
+	<tr>
+		<table width="100%" border="0" cellpadding="2" cellspacing="0" >
+			<tr>
+				<td valign="top" align="right">
+					<table border=0 cellpadding="0" cellspacing="0">
+						<tr>
+							<td><script language="javascript">btn("doQuery()","조회")</script></td>
+						</tr>
+					</table>
+				 </td>
+			</tr>
+		</table>
+	</tr>
+	</table>
+	<br><br>
+	<div id="ds" class="div-area"></div>
+	<!-- 그리드1 -->
+	<table  width="100%" height="350" border="0" cellpadding="0" cellspacing="0" >
+		<tr>
+			<td bgcolor="#00455d" height="3"></td>
+		</tr>
+		<tr>
+			<td align='left'>
+				<script>initWiseGrid("WiseGrid", "100%", "350");</script>
+			</td>
+		</tr>
+	</table>
+	<br>
+	<!-- 등록, 수정, 삭제가 실행되면 발생한다.-->
+	<div id='message' style="display:none ">
+		<fieldset s>
+			<legend> [변경된 내용] </legend>
+			<textarea name="confirm" cols="101" rows="8" style="border:0px" scrolling="auto"/>
+		</fieldset>
+	</div>
+</form>
+</body>
+</html>

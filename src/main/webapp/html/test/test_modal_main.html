@@ -1,0 +1,39 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>ActiveRowBgColor , Modal 창 테스트</title>
+    <script for="WiseGrid" event="Initialize()">
+        initialize();
+    </script>
+    <script  for="WiseGrid" event="CellClick(strColumnKey, nRow)">
+        /*
+        *  ActiveRowBgColor 적용된 그리드를  Modal로 띄울 시 폅집Cell 내부의 색상까지 적용이되는 현상.
+        * */
+//        window.open('/html/test/test_modal_sub.html','target_name','scrollbars=yes,toolbar=yes,resizable=yes,width=100,height=100,left=0,top=0');
+        window.showModalDialog('/html/test/test_modal_sub.html', null, "dialogWidth:320px; dialogHeight:200px; center:yes; help:no;     status:no; scroll:no; resizable:no");
+    </script>
+    <script type='text/javascript' src='/js/WiseGrid_TAG.js'></script>
+</head>
+<body>
+<script>initWiseGrid("WiseGrid", "100%", "350")</script>
+<script>
+    var gridObj = document.WiseGrid;
+
+    function initialize() {
+        setHeader();
+        setGridData();
+    }
+
+
+    function setHeader() {
+        gridObj.AddHeader("ETC", "모달창 과 팝업창 비교", "t_text", 10, 400, true);
+        gridObj.boundHeader();
+    }
+
+    function setGridData() {
+        gridObj.AddRow();
+        gridObj.SetCellValue('ETC', 0 , 'Cell 클릭');
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,207 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>기본예제 - 기본</title>
+<link rel='stylesheet' href='../../css/wisegrid.css' type='text/css'>
+<script type='text/javascript' src='../../js/WiseGrid_TAG.js'></script>
+<script type='text/javascript' src='../../js/example_setting.js'></script>
+<script type='text/javascript' src='../../js/example_Data.js'></script>
+
+    <script language=javascript for="WiseGrid" event="Initialize()">
+    init();
+</script>
+
+<script language=javascript for="WiseGrid" event="ChangeCell(strColumnKey,nRow,nOldValue,nNewValue)">
+    GridChangeCell(strColumnKey, nRow);
+</script>
+
+<script language="javascript" for="WiseGrid" event="KeyPress(code)">
+
+    var activeColKey = WiseGrid.GetActiveColKey,
+          activeRowIndex = WiseGrid.GetActiveRowIndex();
+
+    /* (+) 키 입력시 천단위 000 입력기능 */
+    if(code == 43 && activeColKey === 'PRICE') {
+
+        var newValue = 0, oldValue = 0, bEditMode = WiseGrid.IsEditMode(); code.Value = 0;
+
+        if(bEditMode) {
+            oldValue = WiseGrid.GetEditCellText();
+            WiseGrid.SetEditCellText(oldValue+ '000');
+            WiseGrid.SetEditCellSelectionRange(-1, newValue.length);
+        } else {
+            oldValue = WiseGrid.GetCellValue(activeColKey, activeRowIndex);
+            newValue = oldValue+ '000';
+            WiseGrid.SetCellValue(activeColKey, activeRowIndex, newValue)
+        }
+    }
+
+    /* 엔터 눌렀을 경우 셀에 나타난 데이터 맨끝으로 마우스 커서 이동 */
+    if(code == 13 && activeColKey === 'PRICE') {
+        var value = WiseGrid.GetCellValue(activeColKey, activeRowIndex);
+        WiseGrid.SetEditCellSelectionRange(-1, value.length);
+    }
+
+</script>
+
+<!-- 탭키 이벤트 -->
+<script language="javascript" for="WiseGrid" event="KeyDown(keyCode, option)">
+
+    var rowIndex = WiseGrid.GetActiveRowIndex(),
+         endIndex = WiseGrid.GetRowCount();
+
+    if(keyCode == 9 && option&1) {
+        keyCode.Value = 0;
+        if(WiseGrid.GetActiveColKey === 'ITEM_NAME') {
+            rowIndex--;
+            if(rowIndex === -1) rowIndex = endIndex-1;
+            WiseGrid.SetCellFocus('PRICE', rowIndex, false);
+        } else if(WiseGrid.GetActiveColKey === 'PRICE') {
+            WiseGrid.SetCellFocus('ITEM_NAME', rowIndex, false);
+        }
+    }  else if(keyCode == 9) {
+        keyCode.Value = 0;
+        if(WiseGrid.GetActiveColKey === 'ITEM_NAME') {
+            WiseGrid.SetCellFocus('PRICE', rowIndex, false);
+        } else if(WiseGrid.GetActiveColKey === 'PRICE') {
+            rowIndex++;
+            if(rowIndex === endIndex) rowIndex = 0;
+            WiseGrid.SetCellFocus('ITEM_NAME', rowIndex, false);
+        }
+    }
+</script>
+
+
+<script>
+    /* 초기화 */
+    function init() {
+        var GridObj = document.WiseGrid;
+        setHeader(GridObj);
+        setProperty(GridObj);
+    }
+
+    /* 데이터 셋팅 */
+    function setData(GridObj) {
+        GridObj.RemoveAllData();
+        for(var i= 0, len=sample_data.length; i<len; i++) {
+            GridObj.AddRow();
+            GridObj.SetComboSelectedHiddenValue('ITEM_FLAG', GridObj.GetActiveRowIndex(), sample_data[i][0]);
+            GridObj.SetCellValue('ITEM_CODE', GridObj.GetActiveRowIndex(), sample_data[i][2]);
+            GridObj.SetCellValue('VENDOR_NAME', GridObj.GetActiveRowIndex(), sample_data[i][1]);
+            GridObj.SetCellValue('SPECIFICATION', GridObj.GetActiveRowIndex(), sample_data[i][4]);
+            GridObj.SetCellValue('STOCK', GridObj.GetActiveRowIndex(), sample_data[i][7]);
+            GridObj.SetCellValue('ADD_DATE', GridObj.GetActiveRowIndex(), sample_data[i][8]);
+            GridObj.SetCellValue('SEQ_NO', GridObj.GetActiveRowIndex(), sample_data[i][10]);
+        }
+    }
+
+    /* 조회 */
+    function doQuery() {
+        var GridObj = document.WiseGrid;
+        setData(GridObj);
+    }
+
+    /* 삭제 */
+    function doDelete() {
+        var GridObj = document.WiseGrid;
+        if(!chkSelected()) {
+            alert("선택된 건이 없습니다.");
+            return;
+        } else {
+            for(var i= GridObj.GetRowCount()-1, len=0; i>=len; i--) {
+                if(GridObj.GetCellValue('SELECTED', i) === '1') GridObj.DeleteRow(i);
+            }
+        }
+    }
+
+    /* 로우 체크확인 */
+    function chkSelected() {
+        var GridObj = document.WiseGrid;
+        chkCount = 0;
+        for(i = 0; i < GridObj.GetRowCount(); i++) {
+            if(GridObj.GetCellValue("SELECTED", i) == "1")
+                chkCount = chkCount + 1;
+        }
+        if(chkCount == 0) {
+            return false;
+        }
+        return true;
+    }
+
+    /* 행 추가 */
+    function doLineInsert() {
+        var GridObj = document.WiseGrid;
+        GridObj.AddRow();
+        GridObj.SetCellValue("SELECTED",GridObj.GetActiveRowIndex(), "1");
+        GridObj.SetCellValue("VENDOR_NAME",GridObj.GetActiveRowIndex(), "Intel");
+        GridObj.SetCellValue("STOCK",GridObj.GetActiveRowIndex(), "10");
+        GridObj.SetCellValue("ADD_DATE", GridObj.GetActiveRowIndex(), getDate());
+        GridObj.SetCellValue("ITEM_CODE", GridObj.GetActiveRowIndex(), "IT20061207020");
+        GridObj.SetCellValue("SPECIFICATION", GridObj.GetActiveRowIndex(), "1GB (512MBx2개) 듀얼채널 DDR2 PC2-6400 (800Mhz)");
+    }
+
+    /* 셀 변경 */
+    function GridChangeCell(strColumnKey, nRow) {
+        var GridObj = document.WiseGrid;
+        if(strColumnKey != "SELECTED") {
+            GridObj.SetCellValue("SELECTED", nRow, "1");
+        }
+    }
+
+    /* 날짜 */
+    function getDate() {
+        var date = new Date();
+        var year, month, day;
+        year = date.getFullYear();
+        month = date.getMonth() + 1;
+        if(month < 10)  month = '0' + month;
+        day = date.getDate();
+        return year+month+day;
+    }
+</script>
+</head>
+
+<body>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr height="20">
+            <td class="title2_k">&nbsp;&nbsp;&nbsp;[후성HDS]&nbsp; 키 &nbsp;&nbsp;이벤트 &nbsp;&nbsp;예제 </td>
+        </tr>
+        <tr height="20">
+            <td class="title1_k">
+                1.  TAB 또는  TAB + SHIFT 키를 이용하여 컬럼별 이동기능. ( 예제의 경우 "제품명"  <-- --> "출고가"  이동을 구현.  ) <br><hr>
+                2.  "출고가" 컬럼 셀 편집 또는 셀 선택 시 (+) 키를 이용하여 천단위 000 입력기능.
+            </td>
+        </tr>
+    </table>
+    <hr>
+    <table width="98%" border="0" cellspacing="0" cellpadding="0"  class="title3">
+        <tr>
+            <table width="100%" border="0" cellpadding="2" cellspacing="0" >
+                <tr>
+                    <td valign="top" align="right">
+                        <table border=0 cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td><script language="javascript">btn("doQuery()","조회")</script></td>
+                                <td><script language="javascript">btn("doDelete()","삭제")</script></td>
+                                <td><script language="javascript">btn("doLineInsert()","행추가")</script></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </tr>
+    </table>
+    <div id="ds"></div>
+    <table width="100%" height="500" border="0" cellpadding="0" cellspacing="0" >
+        <tr>
+            <td bgcolor="#00455d" height="3"></td>
+        </tr>
+        <tr>
+            <td align='left'>
+                <script>initWiseGrid("WiseGrid", "100%", "100%");</script>
+            </td>
+        </tr>
+    </table>
+    <br>
+</body>
+</html>

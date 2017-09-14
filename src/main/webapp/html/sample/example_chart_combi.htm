@@ -1,0 +1,289 @@
+<HTML>
+<HEAD>
+<TITLE>FusionCharts Sample</TITLE>
+<meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+<link rel='stylesheet' href='/css/wisegrid.css' type='text/css'>
+<script type='text/javascript' src='/js/WiseGrid_TAG.js'></script>
+<script type='text/javascript' src='/js/WiseGrid_Property.js'></script>
+<script type='text/javascript' src='/js/WiseGrid_Basic_Sample.js'></script>
+<script language="JavaScript" src="/docs/fusion_chart/JSClass/FusionCharts.js"></script>
+<script language="JavaScript" src="/docs/fusion_chart/JSClass/FusionChartsStyler.js"></script>
+
+<script language=javascript for='WiseGrid' event='Initialize()'>
+	init(document.WiseGrid);
+</script>
+
+
+<script language=javascript for='WiseGrid' event='EndQuery()'>
+	document.WiseGrid.AddRow();
+	GridCellClick1("OPER_NAME", 0);
+</script>
+
+<script language=javascript for="WiseGrid" event="CellClick(strColumnKey,nRow)">
+	GridCellClick1(strColumnKey, nRow)
+</script>
+
+<script language=javascript>
+function init(GridObj)
+{
+	setProperty(GridObj);
+	GridObj.nHDLines = 3;
+	GridObj.bNullValueNumberFormat = false;
+	GridObj.bHDSwapping = false;
+	GridObj.bHDMoving = false;
+	GridObj.strHDClickAction = "select";
+	GridObj.strSelectedCellBgColor = "250|200|200";
+	GridObj.nAlphaLevel = 230;	
+	GridObj.strBgImage = "/images/unipost_logo_white.gif";
+	
+	setHeader(GridObj);
+	
+	doQuery();
+}
+
+function setHeader(GridObj) 
+{    
+	GridObj.AddHeader("OPER_NAME", 		"사업부",		"t_imagetext", 		100, 	150,	false);	
+	GridObj.AddHeader("SAWON", 				"사원",			"t_number", 			22.1, 50,		false);
+	GridObj.AddHeader("DAERI", 				"대리", 		"t_number", 			22.1, 50,		false);	
+	GridObj.AddHeader("KWAJANG", 			"과장",			"t_number",				22.1, 50,		false);
+	GridObj.AddHeader("BUJANG", 			"부장", 		"t_number", 			22.1, 50,		false);	
+	GridObj.AddHeader("SILJUCK1",			"2005년", 	"t_number", 			22,		100,	false);
+	GridObj.AddHeader("SILJUCK2",			"2006년", 	"t_number", 			22,		100,	false);	
+	GridObj.AddHeader("SILJUCK3",			"2007년", 	"t_number", 			22,		100,	false);	
+	GridObj.AddHeader("SEQ_NO",				"SEQ_NO", 	"t_text", 				8,		100,	false);	
+
+	GridObj.AddGroup("INSA", "인력구성");
+	GridObj.AppendHeader("INSA", "SAWON");
+	GridObj.AppendHeader("INSA", "DAERI");
+	GridObj.AppendHeader("INSA", "KWAJANG");
+	GridObj.AppendHeader("INSA", "BUJANG");
+	
+	GridObj.AddGroup("SILJUCK", "실적");
+	GridObj.AppendHeader("SILJUCK", "SILJUCK1");
+	GridObj.AppendHeader("SILJUCK", "SILJUCK2");
+	GridObj.AppendHeader("SILJUCK", "SILJUCK3");
+	GridObj.BoundHeader();	
+		
+	GridObj.SetTreeMode("OPER_NAME", "*", ","); 
+	GridObj.AddImageList("OPER_NAME", "/images/drildown01.gif");
+	GridObj.AddImageList("OPER_NAME", "/images/drildown03.gif");
+	GridObj.AddImageList("OPER_NAME", "/images/drildown02.gif");
+	
+	GridObj.SetNumberFormat("SAWON", "#,##0.0%");
+	GridObj.SetNumberFormat("DAERI", "#,##0.0%");
+	GridObj.SetNumberFormat("KWAJANG", "#,##0.0%");
+	GridObj.SetNumberFormat("BUJANG", "#,##0.0%");
+	
+	GridObj.SetNumberFormat("SILJUCK1", "#,##0 원");
+	GridObj.SetNumberFormat("SILJUCK2", "#,##0 원");
+	GridObj.SetNumberFormat("SILJUCK3", "#,##0 원");
+	
+	GridObj.SetColHide("SEQ_NO", true);
+	GridObj.SetTreeClickAction(false);
+}
+
+function doQuery()
+{
+	var GridObj = document.WiseGrid;
+	var servlet_url = "/servlet/wisegrid.sample.ExampleChart";
+	
+	GridObj.SetParam("MODE", "S");		
+
+	GridObj.DoQuery(servlet_url);
+}
+
+function GridCellClick1(strColumnKey, nRow)
+{
+	var GridObj = document.WiseGrid;
+	
+	if(strColumnKey == "OPER_NAME")
+	{		
+		viewCombiChart(strColumnKey, nRow);
+	}	
+}
+
+function viewCombiChart(strColumnKey, nRow)
+{
+	var GridObj = document.WiseGrid;
+	var title_name = GridObj.GetCellValue(strColumnKey, nRow);
+	
+	// 두번째 Chart..
+	var label2 = new Array(3);
+	label2[0] = "SILJUCK1";
+	label2[1] = "SILJUCK2";
+	label2[2] = "SILJUCK3";
+
+	var rows2 = [];
+	rows2[0] = nRow;
+
+	
+	GridObj.ClearChartAttribute();
+	GridObj.AddChartAttribute("caption",  "사업부별 실적 현황");
+	GridObj.AddChartAttribute("subCaption",  "(" + title_name + ")");
+	GridObj.AddChartAttribute("useRoundEdges", "1");
+	GridObj.AddChartAttribute("baseFont", "굴림");
+	GridObj.AddChartAttribute("baseFontSize", "11");
+	GridObj.AddChartAttribute("baseFontColor", "333333");
+	GridObj.AddChartAttribute("formatNumberScale", "0");
+	GridObj.AddChartAttribute("numberSuffix", "원");
+	GridObj.AddChartAttribute("rotateValues", "1");
+	GridObj.AddChartAttribute("showvalues", "0");
+	GridObj.AddChartAttribute("placeValuesInside", "1");
+	GridObj.AddChartAttribute("chartTopMargin", "20");
+	GridObj.AddChartAttribute("divLineDecimalPrecision", "1");
+	GridObj.AddChartAttribute("PYAxisName", "Amount");
+	GridObj.AddChartAttribute("SYAxisName", "Quantity");
+	GridObj.AddChartAttribute("SYAxisMaxValue", "20000000");
+	
+	xmlDom = GridObj.GetChartXMLDOM("multiB" , label2, rows2, "");
+	
+	
+	// FusionCharts 스타일 적용 클래스 호출
+	var chartStyler = new FusionChartsStyler(xmlDom);
+	/**
+	 * addDataSetAttribute
+	 * param @{String} id
+	 * param @{String} attributeName
+	 * param @{String} attributeValue
+	 * 
+	 * <dataset> 엘리먼트 중에서 첫번째 인자(id)를 가진 노드에
+	 * attributeName(2번째 인자)과 attributeValue(3번째 인자)를 추가합니다.
+	 * 
+	 */
+	
+	
+	chartStyler.addDataSetAttribute('SILJUCK1', 'parentYAxis','P');
+	chartStyler.addDataSetAttribute('SILJUCK1', 'renderAs',document.getElementById('chartType').value);
+	chartStyler.addDataSetAttribute('SILJUCK2', 'parentYAxis','S');
+	chartStyler.addDataSetAttribute('SILJUCK2', 'renderAs',document.getElementById('chartType').value);
+	chartStyler.addDataSetAttribute('SILJUCK3', 'renderAs',document.getElementById('chartType').value);
+	
+	/**
+	 * DOM Element에 <style>에 관련된 태그들을 초기 셋팅
+	 */
+	chartStyler.addStyleElement("myCationFont,myShadow", "Caption");
+	
+	/**
+	 * addStyleAttribute
+	 * <style>에 Attribute를 추가
+	 */
+	chartStyler.addStyleAttribute("myCationFont", "type", "font");
+	chartStyler.addStyleAttribute("myCationFont", "font", "돋움");
+	chartStyler.addStyleAttribute("myCationFont", "size", "15");
+	chartStyler.addStyleAttribute("myCationFont", "color", "1B74A9");
+	chartStyler.addStyleAttribute("myCationFont", "bold", "1");
+	chartStyler.addStyleAttribute("myCationFont", "underline", "1");
+	chartStyler.addStyleAttribute("myShadow", "type", "Shadow");
+	chartStyler.addStyleAttribute("myShadow", "color", "999999");
+	chartStyler.addStyleAttribute("myShadow", "angle", "45");
+	chartStyler.addStyleElement("myGlow", "DataLabels");
+	chartStyler.addStyleAttribute("myGlow", "type", "Glow");
+	chartStyler.addStyleAttribute("myGlow", "color", "999999");
+	
+	/**
+	 * TrendLine을 추가
+	 */
+	chartStyler.addTrendLines("startValue", "13000000");
+	chartStyler.addTrendLines("endValue", "13000000");
+	chartStyler.addTrendLines("color", "009933");
+	chartStyler.addTrendLines("displayvalue", "Target");
+	
+	chartStyler.addStyleElement("Anim1,Anim2", "TRENDLINES");
+	chartStyler.addStyleAttribute("Anim1", "type", "animation");
+	chartStyler.addStyleAttribute("Anim1", "param", "_xScale");
+	chartStyler.addStyleAttribute("Anim1", "start", "0");
+	chartStyler.addStyleAttribute("Anim1", "dutation", "1");
+	chartStyler.addStyleAttribute("Anim2", "type", "animation");
+	chartStyler.addStyleAttribute("Anim2", "param", "_alpha");
+	chartStyler.addStyleAttribute("Anim2", "start", "0");
+	chartStyler.addStyleAttribute("Anim2", "dutation", "1");
+	
+	chartStyler.addStyleElement("myCaptionAnim", "Caption");
+	chartStyler.addStyleAttribute("myCaptionAnim", "type", "Animation");
+	chartStyler.addStyleAttribute("myCaptionAnim", "param", "_y");
+	chartStyler.addStyleAttribute("myCaptionAnim", "easing", "Bounce");
+	chartStyler.addStyleAttribute("myCaptionAnim", "start", "0");
+	chartStyler.addStyleAttribute("myCaptionAnim", "duration", "1");
+ 
+	
+	chart_url = "/docs/fusion_chart/Charts/MSCombiDY2D.swf";
+		
+	var chart1 = new FusionCharts(chart_url, "ChartId", "100%", "250", "0", "0");
+	chart1.setDataDOM(chartStyler.getXmlDom());
+	document.getElementById('debug').value = chartStyler.getXmlStr();
+	chart1.render("chartdiv_insa_singleA_bar");
+	
+}
+
+function selPieChart()
+{
+	var GridObj = document.WiseGrid;
+	viewPieChart("OPER_NAME", GridObj.GetActiveRowIndex());
+}
+
+function selOtherChart()
+{
+	var GridObj = document.WiseGrid;
+	viewOtherChart("OPER_NAME", GridObj.GetActiveRowIndex());
+}
+
+function excelDown()
+{
+	var GridObj = document.WiseGrid;
+	GridObj.ExcelExport("", "", true, true);
+}
+
+</script>
+
+</HEAD>
+<BODY bgcolor='#FFFFFF' text='#000000'>
+<form name="examForm"> 
+<input type="hidden" name="imageUrl" value="">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr height="20">
+    <td class="title1_k">
+    	&nbsp;와이즈그리드 FusionCharts 응용예제<br>
+    </td>
+  </tr>
+</table>
+<hr>
+<table width="98%" border="0" cellpadding="0" cellspacing="0" >
+	<tr>
+		<td width="40%">
+			<table width="100%" cellpadding="0" cellspacing="0">
+				<tr>
+					<td height="250" valign="top"><fieldset><legend>Other Chart Sample</legend>
+					<div>
+						<select name="chartType" id="chartType" onchange="">
+							<option value="LINE" selected="selected">LINE</option>
+							<option value="COLUMN">COLUMN</option>
+							<option value="AREA">AREA</option>
+						</select>
+						
+					</div>
+					<div id="chartdiv_insa_singleA_bar" align="center"> 사업부를 클릭해주십시오. </div></fieldset></td>
+				</tr>
+			</table>
+		</td>
+		<td width="1%"></td>
+		<td width="59%" valign="top">
+			<table width="98%" border="0" cellpadding="0" cellspacing="0" >
+				<tr> 
+					<td bgcolor="#00455d" height="3"></td>
+				</tr>
+				<tr>
+					<td align='left'>
+						<script>initWiseGrid("WiseGrid", "100%", "600");</script>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+<textarea id="debug" cols="200" rows="20"></textarea> 
+</form>
+</BODY>
+</HTML>
+
+ 

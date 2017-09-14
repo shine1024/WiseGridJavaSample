@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+<meta charset="UTF-8">
+<title>example_image_serverSet.html</title>
+<script type='text/javascript' src='/js/WiseGrid_TAG.js'></script>
+<script for="WiseGrid" event="Initialize()">setHeader(document.WiseGrid);</script>
+<script for="WiseGrid" event="EndQuery()">endQuery(document.WiseGrid);</script>
+<script>
+function setHeader(grid){
+    grid.AddHeader("NUMBER", "숫자", "t_number", 10, 60, true);
+    grid.AddHeader("IMAGE_TEXT", "이미지", "t_imagetext", 20, 300, true);
+    grid.AddHeader("IMAGE_URL", "이미지URL", "t_text", 100, 250, true);
+    grid.BoundHeader();
+    grid.nRowHeight = 50;
+    grid.SetImageListSize('IMAGE_TEXT', 150, 50);
+}
+
+function doQuery(grid){
+    grid.DoQuery("/servlet/wisegrid.sample.ImageListNavigate");
+}
+
+function next(grid){
+    if(grid.IsNavigateMode()) grid.NextNavigate();
+    else alert("데이터가 존재하지 않습니다.");
+}
+
+function endQuery(grid){
+    console.log("imagelistCount : "+grid.GetImageListCount('IMAGE_TEXT'));
+}
+
+</script>
+</head>
+<body>
+    <button onclick="doQuery(document.WiseGrid)">조회</button>
+    <button onclick="next(document.WiseGrid)">다음</button>
+    <table width="800" height="400" cellspacing="0" cellpadding="0" border="0">
+        <tr>
+            <td><script>initWiseGrid("WiseGrid", "100%", "350");</script></td>
+        </tr>
+    </table>
+</body>
+</html>

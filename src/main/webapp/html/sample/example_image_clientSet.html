@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+<meta charset="UTF-8">
+<title></title>
+<script type='text/javascript' src='/js/WiseGrid_TAG.js'></script>
+<script language="JavaScript" for="WiseGrid" event="Initialize()">
+    init();
+</script>
+<script>
+    function init() {
+        var GridObj = document.WiseGrid;
+        GridObj.AddHeader("IMAGETEXT", "IMAGETEXT_COLUMN", "t_imagetext", "30", "200", true);
+        GridObj.AddHeader("TEXT", "TEXT_COLUMN", "t_text", "30", "200", true);
+        GridObj.AddHeader("IMAGETEXT_ALL", "IMAGETEXT_ALL", "t_imagetext", "30", "200", true);
+        GridObj.BoundHeader();
+
+        GridObj.nRowHeight = 100;
+        GridObj.SetImagetextAlign("IMAGETEXT", "center");
+
+        // 해당컬럼 이미지사이즈 조정
+        GridObj.SetImageListSize('IMAGETEXT', 150, 50);
+        // 해당컬럼 이미지리스트에 이미지url 등록
+        GridObj.AddImageList("IMAGETEXT", "/images/prod/IT20061207001.jpg");
+        GridObj.AddImageList("IMAGETEXT", "/images/prod/IT20061207002.jpg");
+
+
+        // 와이즈그리드 전체에 적용되는 이미지사이즈 조정.
+        GridObj.SetGridImageListSize(150,50);
+        // 와이즈그리드 전체 이미지리스트에 이미지url 등록
+        GridObj.AddGridImageList("/images/prod/IT20061207008.jpg");
+        GridObj.AddGridImageList("/images/prod/IT20061207009.jpg");
+        // 컬럼에 와이즈그리드 이미지리스트의 이미지 등록.
+        GridObj.SetColCellGridImageList("IMAGETEXT_ALL", true);
+
+
+        GridObj.AddRow();
+        GridObj.AddRow();
+
+
+        GridObj.SetCellValue("TEXT", 0, "TEXT1");
+        GridObj.SetCellValue("TEXT", 1, "TEXT2");
+
+        // 해당컬럼에 이미지 셋팅
+        GridObj.SetCellImage("IMAGETEXT", 0, 0);
+        GridObj.SetCellImage("IMAGETEXT", 1, 1);
+
+        GridObj.SetCellImage("IMAGETEXT_ALL", 0, 0);
+        GridObj.SetCellImage("IMAGETEXT_ALL", 1, 1);
+
+
+
+        console.log("imagelistCount : "+GridObj.GetImageListCount("IMAGETEXT"));
+
+
+    }
+
+    function deleteImage(){
+        var GridObj =  document.WiseGrid;
+        //GridObj.RemoveImageList("IMAGETEXT", 0);
+        GridObj.ClearImageList('IMAGETEXT');
+        console.log("delete after imagelistCount : "+GridObj.GetImageListCount("IMAGETEXT"));
+    }
+
+</script>
+</head>
+<body>
+<button onclick="deleteImage()";>이미지리스트_지우기</button>
+<script>initWiseGrid("WiseGrid", "100%", "350");</script>
+</body>
+</html>

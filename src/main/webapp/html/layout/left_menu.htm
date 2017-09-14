@@ -1,0 +1,120 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=euc-kr">
+<title>메뉴</title>
+<script language="javascript" src="/js/WiseGrid_TAG.js"></script>
+<script language="javascript" src="/js/WiseGrid_Property.js"></script>
+<script language='JavaScript' src='/js/WiseGrid_Basic_Sample.js'></script>
+
+<script language=javascript for="WiseGrid" event="Initialize()">
+	init();
+</script>
+
+<script language=javascript for="WiseGrid" event="TreeNodeClick(strTreeKey, strArea)">
+	GridClickMenu(strTreeKey, strArea);
+</script>
+
+<script language="JavaScript">
+
+function init() {
+	var GridObj = document.WiseGrid;
+
+	setProperty(GridObj);
+
+	// DrilDown을 사용하기 위해서는 strHDClickAction = "select"로 지정해야합니다.
+	GridObj.strHDClickAction = "select";
+
+	// 메뉴처럼 보이기 위해 헤더와 로우셀렉터, 스테이터스바를 숨깁니다.
+	GridObj.bHDVisible  =false;
+	GridObj.bStatusbarVisible = false;
+	GridObj.bRowSelectorVisible = false;
+	GridObj.strScrollBars = "vertical";
+	GridObj.strRowSizing ='fixed';
+	GridObj.bHDMoving = false; 
+	GridObj.bMultiRowMenuVisible = false; 
+
+	// 메뉴처럼 보이기 위해 보더를 모두 안보이게 설정합니다.
+	GridObj.strCellBorderStyle = "none";
+	GridObj.strGridBorderStyle = "none";
+	GridObj.strRowBorderStyle = "none";	
+	GridObj.strHDBorderStyle = "none";
+	
+	GridObj.strSelectedCellBgColor = "255|255|255";
+	
+	setHeader(GridObj);
+	doQuery(GridObj);	
+}
+
+function setHeader(GridObj) {	
+	GridObj.AddHeader("TREE_NODE",	"트리 노드",	"t_imagetext",	80, 220, false);
+	GridObj.AddHeader("MENU_URL", "target", "t_text", 100, 400, false);
+	 
+	GridObj.BoundHeader();
+
+	GridObj.SetTreeMode("TREE_NODE", "*", ","); 		
+	GridObj.AddImageList("TREE_NODE", "/images/menu/ftv2folderclosed.gif");
+	GridObj.AddImageList("TREE_NODE", "/images/menu/ftv2folderopen.gif");
+	GridObj.AddImageList("TREE_NODE", "/images/menu/ftv2doc.gif");
+
+	// Tree의 셀을 클릭해도 Expand되거나 Collapse되지 않게 한다.
+	// TreeNodeClick 이벤트로 signbox를 클릭했을때만 Expand되도록 작업하기 위해
+	// Tree를 움직이지 않게 한다.
+	GridObj.SetTreeClickAction(false);
+	
+	//컴럼을 숨긴다.
+	GridObj.SetColHide("MENU_URL", true);
+}
+
+// 일반조회
+function doQuery(GridObj) {
+	var servlet_url = "/servlet/wisegrid.menu.LeftMenu";
+	GridObj.DoQuery(servlet_url);
+}
+
+ 
+function GridClickMenu(strTreeKey, strArea) {	
+	var GridObj = document.WiseGrid;
+
+	var menu_flag = GridObj.GetCellImage("TREE_NODE", GridObj.GetRowIndexFromTreeKey(strTreeKey));
+	if(strArea == "signbox") {
+		if(GridObj.IsTreeNodeExpand(strTreeKey)) { //해당 트리 노드가 열려있다면
+			GridObj.CollapseTreeNode(strTreeKey); // 해당 트리 노드를 닫는다.
+			if(menu_flag == "1") //노드의 이미지가 open image 이면
+				GridObj.SetCellImage("TREE_NODE", GridObj.GetRowIndexFromTreeKey(strTreeKey), "0"); //노드의 이미지를 close image
+		} else {
+			GridObj.ExpandTreeNode(strTreeKey, false);  // 해당 트리노드를 연다.
+			if(menu_flag == "0")// 노드의 이미지가 close image이면
+				GridObj.SetCellImage("TREE_NODE", GridObj.GetRowIndexFromTreeKey(strTreeKey), "1"); //노드의 이미지를 close image
+		}
+	}
+	else if(strArea == "text" || strArea == "image")	{
+		if(menu_flag == "2") { //실제 Item 일때만 링크설정		
+			var menu_url = GridObj.GetCellValue("MENU_URL", GridObj.GetRowIndexFromTreeKey(strTreeKey));	
+			
+			//target 설정
+			parent.rightFrame.document.location.href = menu_url;
+		}
+	}
+}
+
+</script>
+</head> 
+ 
+<body  background="img/loveplants_22.gif" style=" background-position: center;width:100%"  >
+  
+<form name="mainform" action="">
+<input type="hidden" name="seq_no" value="">
+<input type="hidden" name="parent_code" value="">
+<input type="hidden" name="tree_code" value="">
+<table width="400" height="1500" border="0" cellpadding="0" cellspacing="0" >
+	<tr>
+		<td align='left'>		
+			<script>initWiseGrid("WiseGrid", "100%", "100%");</script>
+		</td>
+	</tr>
+</table>
+</form> 
+
+</body>
+</html>

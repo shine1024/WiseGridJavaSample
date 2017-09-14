@@ -1,0 +1,75 @@
+<HTML>
+<HEAD>
+    <TITLE>기본예제 - 멀티 콤보 </TITLE>
+    <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+    <link rel='stylesheet' href='/css/wisegrid.css' type='text/css'>
+    <script type='text/javascript' src='/js/WiseGrid_TAG.js'></script>
+    <script type='text/javascript' src='/js/WiseGrid_Property.js'></script>
+    <script type='text/javascript' src='/js/WiseGrid_Basic_Sample.js'></script>
+    </HEAD>
+<BODY>
+<script language="JavaScript" for="WiseGrid" event="Initialize()">
+    setProperty();
+    setHeader();
+</script>
+<script>
+    function setProperty(){
+        // Cell Font Setting
+        document.WiseGrid.strCellFontName = "돋움";
+        document.WiseGrid.nCellFontSize = 10;
+
+        // Header Font Setting
+        document.WiseGrid.strHDFontName = "돋움";
+        document.WiseGrid.nHDFontSize = 10;
+        document.WiseGrid.bHDFontBold = true;
+
+        // Header Color
+        document.WiseGrid.strHDBgColor = "95|177|206";
+        document.WiseGrid.strHDFgColor = "255|255|255";
+
+        // Cell Color
+        document.WiseGrid.strGridBgColor ="255|255|255";
+        document.WiseGrid.strCellBgColor ="255|255|255";
+        document.WiseGrid.strCellFgColor ="51|51|51";
+
+        // Border Style
+        document.WiseGrid.strGridBorderColor = "204|204|204";
+        document.WiseGrid.strGridBorderStyle = "solidline";
+        document.WiseGrid.strHDBorderStyle = "solidline";
+        document.WiseGrid.strCellBorderStyle = "solidline";
+
+        // ETC Color
+        document.WiseGrid.strSelectedCellBgColor = "241|231|221";
+        document.WiseGrid.strSelectedCellFgColor = "51|51|51";
+        document.WiseGrid.strStatusbarBgColor = "243|243|243";
+        document.WiseGrid.strStatusbarFgColor = "101|101|101";
+        document.WiseGrid.strProgressbarColor = "0|126|174";
+
+        // ETC
+        document.WiseGrid.bMultiRowMenuVisible = true;
+        document.WiseGrid.bRowSelectorVisible = true;
+        document.WiseGrid.bHDSwapping = true;
+        document.WiseGrid.nAlphaLevel = 0;
+        document.WiseGrid.nRowHeight = 22;
+    }
+
+    function setHeader(){
+        document.WiseGrid.AddHeader("CHECK", "체크박스", "t_checkbox", 2, 40, true);
+        document.WiseGrid.AddHeader("TEXT", "텍스트", "t_text", 20, 80, true);
+        document.WiseGrid.AddHeader("NUMBER", "숫자", "t_number", 10, 60, true);
+        document.WiseGrid.AddHeader("DATE", "날짜", "t_date", 10, 60, true);
+        document.WiseGrid.AddHeader("COMBO1", "콤보1", "t_combo", 3, 60, true);
+        document.WiseGrid.AddHeader("COMBO2", "콤보2", "t_combo", 3, 60, true);
+        document.WiseGrid.AddHeader("IMAGETEXT", "이미지", "t_imagetext", 20, 100, true);
+
+        document.WiseGrid.BoundHeader();
+    }
+</script>
+<table width="100%">
+    <tr>
+        <td><script>initWiseGrid("WiseGrid", "100%", "350");</script></td>
+    </tr>
+</table>
+
+</BODY>
+</HTML>

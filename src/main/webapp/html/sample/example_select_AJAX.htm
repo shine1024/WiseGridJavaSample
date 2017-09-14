@@ -1,0 +1,227 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>기본예제 - 기본</title>
+<link rel='stylesheet' href='/css/wisegrid.css' type='text/css'>
+<script type='text/javascript' src='/js/WiseGrid_TAG.js'></script>
+<script type='text/javascript' src='/js/WiseGrid_Property.js'></script>
+<script type='text/javascript' src='/js/WiseGrid_Basic_Sample.js'></script>
+
+<!--
+	WiseGrid 오브젝트가 생성되고 초기화된 후 발생하는 
+	JavaScript Event인 Initialize()를 받아 그리드의 헤더를 셋팅한다.	
+-->
+<script language=javascript for="WiseGrid" event="Initialize()">
+	init();
+</script>
+
+<!--  	서버와의 통신이 정상적으로 완료되면 발생한다.   -->
+<script language=javascript for="WiseGrid" event="EndQuery()">
+	GridEndQuery();
+	
+</script>
+
+
+<script language="JavaScript">
+
+function init() {
+	var GridObj = document.WiseGrid;
+	setHeader(GridObj);
+	setProperty(GridObj);
+	GridObj.strBgImage = "/images/unipost_logo_white.gif";
+	GridObj.bUserContextMenu = true;
+}
+
+function setHeader(GridObj) {		
+	//그리드에 컬럼을 등록한다. 
+	GridObj.AddHeader("SELECTED",		"선택",			"t_checkbox", 	2, 		40,		true);	
+	GridObj.AddHeader("ITEM_FLAG", 		"자재구분",		"t_combo", 		10, 	90,		true);	
+	GridObj.AddHeader("VENDOR_NAME", 	"제조회사",		"t_text", 		50, 	80,		true);
+	GridObj.AddHeader("ITEM_CODE", 		"제품코드",		"t_imagetext", 	20, 	100,	false);
+	GridObj.AddHeader("ITEM_NAME", 		"제품명", 		"t_text", 		500, 	150,	true);	
+	GridObj.AddHeader("SPECIFICATION", 	"규격", 			"t_text", 		2000, 	200,	true);	
+	GridObj.AddHeader("UNIT", 			"단위",			"t_combo",		10, 	50,		true);
+	GridObj.AddHeader("PRICE", 			"출고가", 		"t_number", 	22.3, 	80,		true);	
+	GridObj.AddHeader("STOCK",			"재고량", 		"t_number", 	22,		60,		true);
+	GridObj.AddHeader("ADD_DATE",		"등록일", 		"t_date", 		8,		85,		true);	
+	GridObj.AddHeader("CHANGE_DATE",	"수정일", 		"t_date", 		8,		85,		true);	
+	GridObj.AddHeader("SEQ_NO",			"SEQ_NO", 		"t_text", 		8,		85,		true);	
+	
+	//AddHeader를 완료한 후 헤더를 그리드에 바인딩한다
+	GridObj.BoundHeader();	
+
+	GridObj.SetColHDCheckBoxValue("SELECTED", true);
+
+	// 스크롤 이동시에 툴팁에 보여줄 컬럼을 지
+	GridObj.SetScrollTip("ITEM_NAME");
+	
+	//t_checkbox 타입의 컬럼에 체크를 전체적용한다.
+	GridObj.SetColHDCheckBoxVisible("SELECTED", true);
+	
+	//해당 컬럼을 숨긴다.
+	GridObj.SetColHide("SEQ_NO", true);
+	 
+	//t_combo 타입의 컬럼에 Combo List 를 추가한다. 
+	GridObj.AddComboListValue("ITEM_FLAG", "프로세서", "CPU"); 
+	GridObj.AddComboListValue("ITEM_FLAG", "메모리", "MEM"); 
+	GridObj.AddComboListValue("ITEM_FLAG", "메인보드", "MAB"); 
+	GridObj.AddComboListValue("ITEM_FLAG", "그래픽카드", "VID"); 
+	GridObj.AddComboListValue("ITEM_FLAG", "모니터", "MOR");
+	GridObj.AddComboListValue("ITEM_FLAG", "하드디스크", "HDD");
+	GridObj.AddComboListValue("ITEM_FLAG", "CDROM", "CDR");
+	GridObj.AddComboListValue("ITEM_FLAG", "키보드", "KEY");
+	GridObj.AddComboListValue("ITEM_FLAG", "마우스", "MOU");
+
+	GridObj.AddComboListValue("UNIT", "EA", "EA");
+
+	//이미지리스트에 이미지 URL을 추가한다
+	GridObj.AddImageList("ITEM_CODE", "/images/bt_search.gif");
+
+	//셀의 글자색을 적용한다.
+	GridObj.SetColCellFgColor("ITEM_CODE", "0|0|255");	
+	
+	//t_number 타입의 컬럼을 포맷타입으로  지정한다.
+	GridObj.SetNumberFormat("PRICE", "#,##0.00"); 
+	GridObj.SetNumberFormat("STOCK", "#,##0"); 
+
+	//t_date 타입의 컬럼을 포맷타입으로  지정한다.
+	GridObj.SetDateFormat("ADD_DATE", "yyyy/MM/dd");
+	GridObj.SetDateFormat("CHANGE_DATE", "yyyy/MM/dd");
+ 	
+	//엑셀로 Export할때 상단에 헤더를 추가한다. 
+	GridObj.SetExcelHeader("기본예제", 20, 15, "center");
+
+	//엑셀로 Export할때 하단에 Footer를 추가한다.
+ 	GridObj.SetExcelFooter("Copyright 2014 UNIPOST CORP.", 15, 10, "right");
+}
+
+/* 조회 */
+function doQuery() {
+	var GridObj = document.WiseGrid;
+	var servlet_url = "/servlet/wisegrid.sample.ExampleSelect";
+	
+	//WiseGrid가 서버에 전송할 Param을 셋팅한다.
+	GridObj.SetParam("mode", "search");
+	GridObj.SetParam("from_date",document.form.from_date.value );
+	GridObj.SetParam("to_date",document.form.to_date.value);
+
+	//WiseGrid가 서버와 통신시에 데이터를 전달한다.
+	//GridObj.DoQuery(servlet_url);
+	doPost();
+}
+   var http_request = false;
+   function makePOSTRequest(url, parameters) {
+      http_request = false;
+      if (window.XMLHttpRequest) { // Mozilla, Safari,...
+         http_request = new XMLHttpRequest();
+         if (http_request.overrideMimeType) {
+         	// set type accordingly to anticipated content type
+            //http_request.overrideMimeType('text/xml');
+            http_request.overrideMimeType('text/html');
+         }
+      } else if (window.ActiveXObject) { // IE
+         try {
+            http_request = new ActiveXObject("Msxml2.XMLHTTP");
+         } catch (e) {
+            try {
+               http_request = new ActiveXObject("Microsoft.XMLHTTP");
+            } catch (e) {}
+         }
+      }
+      if (!http_request) {
+         alert('Cannot create XMLHTTP instance');
+         return false;
+      }
+      
+      http_request.onreadystatechange = alertContents;
+      http_request.open('POST', url, true);
+      http_request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+      http_request.setRequestHeader("Content-length", parameters.length);
+      http_request.setRequestHeader("Connection", "close");
+      http_request.send(parameters);
+   }
+
+   function alertContents() {
+      if (http_request.readyState == 4) {
+         if (http_request.status == 200) {
+            //alert(http_request.responseText);
+            document.getElementById('result').innerHTML = http_request.responseText;            
+         } else {
+            alert('There was a problem with the request.');
+         }
+      }
+   }
+   function doPost(obj) {
+      var poststr = "WISEGRID_DATA=mode%2CP%3Dsearch%7F%7Cfrom%5Fdate%2CP%3D20070101%7F%7Cto%5Fdate%2CP%3D20100107%7F%7CWISEGRID%5FMESSAGE%2CM%3D%7F%7CWISEGRID%5FSTATUS%2CU%3D%7F%7CWISEGRID%5FNAVIGATE%2CV%3D%2D1%2C%7F%7CSELECTED%2CC%3D%7F%7CITEM%5FFLAG%2CL%3D%ED%94%84%EB%A1%9C%EC%84%B8%EC%84%9C%7F%3ACPU%7F%3A%EB%A9%94%EB%AA%A8%EB%A6%AC%7F%3AMEM%7F%3A%EB%A9%94%EC%9D%B8%EB%B3%B4%EB%93%9C%7F%3AMAB%7F%3A%EA%B7%B8%EB%9E%98%ED%94%BD%EC%B9%B4%EB%93%9C%7F%3AVID%7F%3A%EB%AA%A8%EB%8B%88%ED%84%B0%7F%3AMOR%7F%3A%ED%95%98%EB%93%9C%EB%94%94%EC%8A%A4%ED%81%AC%7F%3AHDD%7F%3ACDROM%7F%3ACDR%7F%3A%ED%82%A4%EB%B3%B4%EB%93%9C%7F%3AKEY%7F%3A%EB%A7%88%EC%9A%B0%EC%8A%A4%7F%3AMOU%7F%3A%7F%7E%7F%7CVENDOR%5FNAME%2CT%3D%7F%7CITEM%5FCODE%2CI%3D%2Fimages%2Fbt%5Fsearch%2Egif%7F%3A%7F%7E%7F%7CITEM%5FNAME%2CT%3D%7F%7CSPECIFICATION%2CT%3D%7F%7CUNIT%2CL%3DEA%7F%3AEA%7F%3A%7F%7E%7F%7CPRICE%2CN%3D%7F%7CSTOCK%2CN%3D%7F%7CADD%5FDATE%2CD%3D%7F%7CCHANGE%5FDATE%2CD%3D%7F%7CSEQ%5FNO%2CT%3D%7F%7C";
+      makePOSTRequest('/servlet/wisegrid.sample.ExampleSelect', poststr);
+   }
+</script>
+</head>
+
+<body>
+<form name="form">
+	
+<div id="result"></div>
+	
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr height="20">
+    <td class="title1_k">
+    	&nbsp;기본예제<br><hr>
+    </td>
+  </tr>
+  <tr height="20">
+    <td class="title2_k">
+			&nbsp;&nbsp;&nbsp; 기본
+    </td>
+  </tr> 
+</table>
+<hr>
+<table width="98%" border="0" cellspacing="0" cellpadding="0"  class="title3">
+	<tr>
+		<table width="100%" border="0" cellpadding="2" cellspacing="0" >
+			<tr>
+				<td width="80">등록일</td>
+				<td>
+					<input type="text" name="from_date" size="8" value="20070101"> ~
+					<input type="text" name="to_date" size="8" value="">
+				</td>
+				<td valign="top" align="right">
+					<table border=0 cellpadding="0" cellspacing="0">
+						<tr>
+							<td><script language="javascript">btn("doQuery()","조회")</script></td>	
+							<td><script language="javascript">btn("doInsert()","등록")</script></td>	
+							<td><script language="javascript">btn("doUpdata()","수정")</script></td>
+							<td><script language="javascript">btn("doDelete()","삭제")</script></td>
+							<td><script language="javascript">btn("doLineInsert()","행추가")</script></td>
+							<td><script language="javascript">btn("excelDown()","EXCEL")</script></td>
+						</tr>
+					</table>
+				 </td>
+			</tr>
+		</table>
+	  </tr>
+</table>
+<div id="ds"></div>
+ <table width="100%" height="350" border="0" cellpadding="0" cellspacing="0" >
+	<tr> 
+		<td bgcolor="#00455d" height="3"></td>
+	</tr>
+	<tr>
+		<td align='left'>
+			<script>initWiseGrid("WiseGrid", "100%", "100%");</script>
+		</td>
+	</tr>
+</table>
+
+<br>
+<!-- 등록, 수정, 삭제가 실행되면 발생한다.-->
+<div id='message' style="display:none ">
+	<fieldset >
+		<legend> [변경된 내용] </legend>
+		<textarea name="confirm" cols="101" rows="8" style="border:0px" scrolling="auto"  />
+	</fieldset>
+</div>
+
+</form>
+</body>
+</html>

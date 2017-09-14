@@ -1,0 +1,48 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>기본예제 - 기본</title>
+<script type='text/javascript' src='../../js/WiseGrid_TAG.js'></script>
+<script language="javascript" for="WiseGrid" event="Initialize()">
+    initGrid();
+</script>
+
+<script for="WiseGrid" event="KeyDown(keyCode, option)">
+    console.log("keyCode : "+ keyCode + " option : "+option);
+    keyCode.Value = 0;
+    console.log("keyCode : "+ keyCode + " option : "+option);
+</script>
+
+
+<script>
+function initGrid() {
+
+    var gridObj = document.WiseGrid;
+
+    gridObj.AddHeader("COLUMN1", "컬럼1", "t_text", 100, 100, true);
+    gridObj.AddHeader("COLUMN2", "컬럼2", "t_number", 100, 100, true);
+    gridObj.AddHeader("COLUMN3", "컬럼3", "t_text", 100, 100, true);
+    gridObj.AddHeader("COLUMN4", "컬럼4", "t_text", 100, 100, true);
+    gridObj.BoundHeader();
+    setData();
+}
+
+function setData() {
+
+    var gridObj = document.WiseGrid;
+    for(var i=0; i<5; i++) {
+        gridObj.AddRow();
+        gridObj.SetCellValue("COLUMN1", i, "text"+i);
+        gridObj.SetCellValue("COLUMN2", i, i*100000);
+    }
+}
+</script>
+</head>
+
+<body>
+    <h2>KeyDown() 이벤트</h2>
+    <h4>1. F1, F3, F5, Prt/sr keyCode값이 찍히지 않음.</h4>
+    <h4>2. keyCode.Value=0; 설정 시  숫자, 문자, 특수문자 입력취소가 되지않음.  <br>&nbsp;&nbsp;&nbsp;&nbsp;keyCode값은 설정한 0으로 찍힘.  </h4>
+    <script>initWiseGrid("WiseGrid", "100%", "400");</script>
+</body>
+</html>

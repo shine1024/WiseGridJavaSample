@@ -1,0 +1,319 @@
+﻿<html>
+<head>
+<TITLE>WiseGrid Sample</TITLE>
+ 
+<link rel='stylesheet' href="/css/wisegrid.css" type='text/css' charset="utf-8"/>
+<script type="text/javascript" src="/js/WiseGrid_TAG.js" charset="utf-8"></script>
+<script type="text/javascript" src="/js/WiseGrid_Property.js" charset="utf-8"></script>
+<script type="text/javascript" src="/js/WiseGrid_Basic_Sample.js" charset="utf-8"></script>
+
+<!--
+	WiseGrid Initialize() Event Handler 등록
+	WiseGrid 오브젝트가 생성되고 초기화된 후 발생
+-->
+<script type="text/javascript" for='WiseGrid' event='Initialize()'>
+	Init(document.WiseGrid);
+</script>
+
+<!--
+    WiseGrid CellClick() Event Handler 등록
+    WiseGrid의 셀을 클릭 했을 때 발생
+-->
+<script type="text/javascript" for="WiseGrid" event="CellClick(strColumnKey,nRow)">
+	GridCellClick(strColumnKey, nRow);
+</script>
+
+<!--  
+    WiseGrid EndQuery() Event Handler 등록
+    서버와의 통신이 정상적으로 완료되면 발생
+-->
+<script type="text/javascript" for="WiseGrid" event="EndQuery()">
+	EndGridQuery();
+</script>
+
+
+<script type="text/javascript" for='WiseGrid2' event='Initialize()'>
+	Init2(document.WiseGrid2);
+</script>
+
+
+<script type="text/javascript">
+function Init(GridObj) {
+	setProperty(GridObj);
+
+	//사용자가 헤더를 드래그해서 컬럼위치를 이동할수 없다.
+	GridObj.bHDMoving = false;
+
+	//사용자가 헤더를 드래그해서 컬럼위치를 이동할수 없다.
+	GridObj.bHDSwapping = false;
+
+	//로우 셀렉터를 WiseGrid에서 숨긴다.
+	GridObj.bRowSelectorVisible = false;
+
+	//로우의 테두리에 아무것도 나타나지 않는다.
+	GridObj.strRowBorderStyle = "none";
+
+	//RowSpacing값을 정한다. 
+	GridObj.nRowSpacing = 0;
+
+	//클릭한 컬럼의 셀을 선택가능하게 한다.
+	GridObj.strHDClickAction = "select";
+
+	//클릭한 컬럼의 모든 셀을 선택한다 
+	GridObj.strActiveRowBgColor = "default";	 
+
+	GridObj.bExcelImportAllColumn = true; 
+	
+	setHeader(GridObj);	
+}
+
+function Init2(GridObj) {
+	setProperty(GridObj);
+
+	//사용자가 헤더를 드래그해서 컬럼위치를 이동할수 없다.
+	GridObj.bHDMoving = false;
+
+	//사용자가 헤더를 드래그해서 컬럼위치를 이동할수 없다.
+	GridObj.bHDSwapping = false;
+
+	//로우 셀렉터를 WiseGrid에서 숨긴다.
+	GridObj.bRowSelectorVisible = false;
+
+	//로우의 테두리에 아무것도 나타나지 않는다.
+	GridObj.strRowBorderStyle = "none";
+
+	//RowSpacing값을 정한다. 
+	GridObj.nRowSpacing = 0;
+
+	//클릭한 컬럼의 셀을 선택가능하게 한다.
+	GridObj.strHDClickAction = "select";
+
+	//클릭한 컬럼의 모든 셀을 선택한다 
+	GridObj.strActiveRowBgColor = "default";	 
+
+	GridObj.bExcelImportAllColumn = true; 
+	
+	setHeader2(GridObj);	
+}
+
+
+function setHeader(GridObj) {    
+	//그리드에 컬럼을 등록한다. 
+    var row = 5;
+    var col = 6;	
+	for(var icol = 0 ; icol < col ; icol++){
+	    GridObj.AddHeader("COL"+icol, 	"텍스트"+icol,		"t_text", 		50, 	80,		true);
+	}
+	
+	//AddHeader를 완료한 후 헤더를 그리드에 바인딩한다
+	GridObj.BoundHeader();
+	
+    for(var irow = 0 ;irow < row ; irow++){
+        GridObj.AddRow();
+    	for(var icol = 0 ; icol < col ; icol++){
+	        GridObj.SetCellValueIndex(icol,irow,"val"+icol+','+irow);
+	    }
+    }
+}
+
+function setHeader2(GridObj) {    
+	//그리드에 컬럼을 등록한다. 
+    var row = 5;
+    var col = 300;	
+	for(var icol = 0 ; icol < col ; icol++){
+	    GridObj.AddHeader("COL"+icol, 	"텍스트"+icol,		"t_text", 		50, 	80,		true);
+	}
+	
+	//AddHeader를 완료한 후 헤더를 그리드에 바인딩한다
+	GridObj.BoundHeader();
+	
+    for(var irow = 0 ;irow < row ; irow++){
+        GridObj.AddRow();
+    	for(var icol = 0 ; icol < col ; icol++){
+	        GridObj.SetCellValueIndex(icol,irow,"val"+icol+','+irow);
+	    }
+    }
+}
+
+
+function setHeader4(GridObj) {    
+	//그리드에 컬럼을 등록한다. 
+	//GridObj.AddHeader("SELECTED",				"선택",				"t_checkbox", 	2, 			40,		true);	
+	GridObj.AddHeader("ITEM_FLAG", 		"자재구분",		"t_combo", 		10, 	90,		true);	
+	GridObj.AddHeader("VENDOR_NAME", 	"제조회사",		"t_text", 		50, 	80,		true);
+	GridObj.AddHeader("ITEM_CODE", 		"제품코드",		"t_imagetext", 	20, 	100,	false);
+	GridObj.AddHeader("ITEM_NAME", 		"제품명", 		"t_text", 		500, 	150,	true);	
+	GridObj.AddHeader("SPECIFICATION", 	"규격", 		"t_text", 		2000, 	200,	true);	
+	GridObj.AddHeader("UNIT", 			"단위",			"t_combo",		10, 	50,		true);
+	GridObj.AddHeader("PRICE", 			"출고가", 		"t_number", 	22.3, 	80,		true);	
+	GridObj.AddHeader("STOCK",			"재고량", 		"t_number", 	22,		60,		true);
+	GridObj.AddHeader("ADD_DATE",		"등록일", 		"t_date", 		8,		85,		true);	
+	GridObj.AddHeader("CHANGE_DATE",	"수정일", 		"t_date", 		8,		85,		true);	
+	GridObj.AddHeader("SEQ_NO",			"SEQ_NO", 		"t_text", 		8,		85,		true);	
+	
+	//AddHeader를 완료한 후 헤더를 그리드에 바인딩한다
+	GridObj.BoundHeader();
+
+	//t_combo 타입의 컬럼에 Combo List 를 추가한다. 
+	GridObj.AddComboListValue("ITEM_FLAG", "프로세서", "CPU"); 
+	GridObj.AddComboListValue("ITEM_FLAG", "메모리", "MEM"); 
+	GridObj.AddComboListValue("ITEM_FLAG", "메인보드", "MAB"); 
+	GridObj.AddComboListValue("ITEM_FLAG", "그래픽카드", "VID"); 
+	GridObj.AddComboListValue("ITEM_FLAG", "모니터", "MOR");
+	GridObj.AddComboListValue("ITEM_FLAG", "하드디스크", "HDD");
+	GridObj.AddComboListValue("ITEM_FLAG", "CDROM", "CDR");
+	GridObj.AddComboListValue("ITEM_FLAG", "키보드", "KEY");
+	GridObj.AddComboListValue("ITEM_FLAG", "마우스", "MOU");
+
+	GridObj.AddComboListValue("UNIT", "EA", "EA");
+	
+	//이미지리스트에 이미지 URL을 추가한다
+	GridObj.AddImageList("ITEM_CODE", "../../images/bt_search.gif");
+
+	//셀의 글자색을 적용한다.
+	GridObj.SetColCellFgColor("ITEM_CODE", "0|0|255");	
+
+ 	//t_number 타입의 컬럼을 포맷타입으로  지정한다.
+	GridObj.SetNumberFormat("PRICE", "\#,##0.00"); 
+	GridObj.SetNumberFormat("STOCK", "#,##0"); 
+
+	//t_date 타입의 컬럼을 포맷타입으로  지정한다.
+	GridObj.SetDateFormat("ADD_DATE", "yyyy/MM/dd");
+	GridObj.SetDateFormat("CHANGE_DATE", "yyyy/MM/dd"); 	
+}
+
+
+/* ExcelImport */
+function ExcelImport1() {
+	var GridObj = document.WiseGrid; 
+
+	// AddHeader 한 순서로 ColumnList를 작성해 Import 한다.
+	GridObj.ExcelImport('', 'importall','row', true, true)
+}
+
+/* ExcelImport */
+function ExcelImport2() {
+	var GridObj = document.WiseGrid;	
+	
+	// ExcelImport 
+	// 컬럼 선택 다이얼로그 박스를 띄어 컬럼 선택 및 위치 변경이 가능
+	GridObj.ExcelImport('', 'importselectcolumn','row', true, true);
+}
+
+ 
+function Clear(){
+  var GridObj = document.WiseGrid;	
+	// 그리드의 데이터를 모두 삭제한다.
+	GridObj.RemoveAllData() 
+}
+
+function Down(){
+
+	// 엑셀 import 예제 실행을 위한 파일 다운 
+	document.location.href ='../../file/wisegrid_import_sample.zip'
+}
+function AllExcelExport(){
+
+    if (document.WiseGrid.SetExcelFilePath('')) {
+
+		// 추가 : document.WiseGrid.GetExcelFilePath(); 저장할 엑셀파일 경로를 가져온다.
+        var savePath = document.WiseGrid.GetExcelFilePath();
+        var ext = savePath.substring(savePath.lastIndexOf(".")+1);
+        if(ext == "xls"){
+            alert("xlsx 타입으로 저장하여 주십시오.");
+            return;
+        }
+        
+        document.WiseGrid.bExcelExecuteMsgVisible = false;
+        document.WiseGrid.bExcelAutoExecute       = false;
+        document.WiseGrid.strDefaultTempFileExt = ext;              // 추가
+        document.WiseGrid.ExcelExport("INTERNET_TEMPORARY_FILES", "", true, true);
+		console.log(document.WiseGrid.GetExportFileName());
+        document.WiseGrid.AddExcelSheet("Information", document.WiseGrid.GetExportFileName());
+        
+        document.WiseGrid2.bExcelExecuteMsgVisible = false;
+        document.WiseGrid2.bExcelAutoExecute       = false;
+        document.WiseGrid2.strDefaultTempFileExt = ext;
+        document.WiseGrid2.ExcelExport("INTERNET_TEMPORARY_FILES", "", true, true);
+        document.WiseGrid.AddExcelSheet("test", document.WiseGrid2.GetExportFileName());
+        
+        document.WiseGrid.CreateExcelFile(false, true);
+    }
+}
+
+</script>
+
+</head>
+<body bgcolor='#FFFFFF' text='#000000'>
+<form name="examForm">
+<input type="hidden" name="imageUrl" value="">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr height="20">
+    <td class="title1_k">
+    	&nbsp;기본예제<br/><hr/>
+    </td>
+  </tr>
+  <tr height="20">
+    <td class="title2_k">
+			&nbsp;&nbsp;&nbsp; 엑셀 들여오기
+    </td>
+  </tr> 
+</table>
+<hr/>
+
+<table width="98%" border="0" cellspacing="0" cellpadding="0"  class="title3"> 
+  <tr >
+    <td>엑셀 Import 예제 파일 다운 </td>
+  </tr>
+  <tr>
+    <td>		
+		<table border=0 cellpadding="0" cellspacing="0">
+			<tr>
+				<td><script type="text/javascript">btn("Down()","다운")</script></td>				 
+			</tr>
+		</table>
+	</td>
+  </tr>
+</table>
+
+<table width="98%" border="0" cellspacing="0" cellpadding="0"  class="title3"> 
+  <tr>
+    <td>
+		<table width="100%" border="0" cellpadding="2" cellspacing="0" >
+		    <tr>
+		      <td valign="top" align="right">
+		      	<table border=0 cellpadding="0" cellspacing="0">
+		      		<tr>		      
+		      			<td><script type="text/javascript">btn("AllExcelExport()","allexport")</script></td>
+		      			
+		      		</tr>		      				      	
+		      		<tr>		      
+		      			<td><script type="text/javascript">btn("ExcelImport1()","ExcelImportAll")</script></td>
+		      			<td><script type="text/javascript">btn("ExcelImport2()","ExcelImportDialog")</script></td>
+						<td><script type="text/javascript">btn("Clear()","화면Clear")</script></td>					
+		      		</tr>
+		      		<tr>		      
+		      			<td><script type="text/javascript">btn("ExcelExport1()","ExcelExport1")</script></td>
+		      			<td><script type="text/javascript">btn("ExcelExport2()","ExcelExport2")</script></td>
+						<td><script type="text/javascript">btn("ExcelExport3()","ExcelExport3")</script></td>					
+		      		</tr>		      		
+		      	</table>
+		      </td>
+		   	</tr>
+		</table>
+	</td>
+  </tr>
+</table>
+<table width="98%" border="0" cellpadding="0" cellspacing="0" >
+	<tr> 
+		<td bgcolor="#00455d" height="3"></td>
+	</tr>
+	<tr>
+		<td align='left'>
+			<script type="text/javascript">initWiseGrid("WiseGrid", "100%", "350");</script>
+			<script type="text/javascript">initWiseGrid("WiseGrid2", "100%", "350");</script>
+		</td>
+	</tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Popup Modal Cell DbClick Test</title>
+</head>
+<script>
+    window.onload = function () {
+        var $btn = document.getElementById('modal');
+
+        $btn.addEventListener('click', function () {
+            var url = '/error_test/example_grid.html';
+            var popOptions = "dialogWidth: 600px; dialogHeight: 400px; center: yes; resizable: yes; status: no; scroll: no;";
+            window.showModalDialog(url, window, popOptions);
+        });
+    }
+</script>
+<body>
+<button id="modal">openModal</button>
+</body>
+</html>

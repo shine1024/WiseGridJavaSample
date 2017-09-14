@@ -1,0 +1,81 @@
+<html>
+<head>
+<title>응용예제 - 드릴다운</title>
+<meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+<link rel='stylesheet' href='/css/wisegrid.css' type='text/css'>
+<script type='text/javascript' src='/js/WiseGrid_TAG.js'></script>
+<script type='text/javascript' src='/js/WiseGrid_Property.js'></script>
+<script type='text/javascript' src='example_drilldown_contextMenu.js'></script>
+
+<!--
+	WiseGrid 오브젝트가 생성되고 초기화된 후 발생하는 
+	JavaScript Event인 Initialize()를 받아 그리드의 헤더를 셋팅한다.	
+-->
+<script language=javascript for='WiseGrid' event='Initialize()'>
+	var GridObj = document.WiseGrid;
+	setProperty(GridObj);
+	GridObj.bNullValueNumberFormat = false;			//t_number 타입의 셀에 값이 NULL 일경우 빈값을 표시한다.
+	GridObj.bHDSwapping = false;					//t_number 타입의 셀에 값이 NULL 일경우 데이터의 표시방법을 결정한다
+	GridObj.strHDClickAction = "select";			//클릭한 컬럼의 셀을 선택한다
+	GridObj.strSelectedCellBgColor = "250|200|200";	//Drag로 선택된 셀의 배경색상을 변경한다.
+	GridObj.nAlphaLevel = 230;						//투명도를 조절한다.
+	GridObj.strBgImage = "/images/unipost_logo_white.gif";//WiseGrid의 배경으로 이미지를 넣는다.
+	setHeader(GridObj);
+	getData();
+	setContextMenu();
+	
+</script>
+
+<!--  서버와의 통신이 정상적으로 완료되면 발생한다.   -->
+<script language=javascript for="WiseGrid" event="EndQuery()">
+	GridEndQuery()
+</script>
+<script language=javascript for="WiseGrid" event="UserContextMenuClick(strMenuKey, strMenuItemKey, strColumnKey, nRow)">
+	treeNodeHandler(strMenuKey, strMenuItemKey, strColumnKey, nRow);
+</script>
+
+</HEAD>
+<BODY bgcolor='#FFFFFF' text='#000000'>
+<form name="examForm">
+<input type="hidden" name="imageUrl" value="">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr height="20">
+<td class="title1_k">
+	&nbsp;응용예제<br><hr>
+</td>
+</tr>
+<tr height="20">
+<td class="title2_k">
+		&nbsp;&nbsp;&nbsp; 드릴다운 & 사용자 ContextMenu
+</td>
+</tr>
+
+</table>
+<hr>
+<table width="98%" border="0" cellspacing="0" cellpadding="0"  class="title3">
+	<tr>
+		<td>
+			<table width="100%" border="0" cellpadding="2" cellspacing="0" >
+				<tr>
+				  <td valign="top" align="right">
+					<table border=0 cellpadding="0" cellspacing="0">
+						<tr>
+							<td><script language="javascript">btn("getData()","조회")</script></td>
+							<td><script language="javascript">btn("document.WiseGrid.ExpandTreeAll()","전체열기")</script></td>
+							<td><script language="javascript">btn("document.WiseGrid.CollapseTreeAll()","전체닫기")</script></td>
+						</tr>
+					</table>
+				  </td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+
+<div style="background-color:#00455d;height:3px;font-size:0px;"></div>
+<div>
+	<script>initWiseGrid("WiseGrid", "100%", "350");</script>
+</div>
+</form>
+</BODY>
+</HTML>

@@ -1,0 +1,147 @@
+<HTML>
+<HEAD>
+<TITLE>기본예제 - 다국어</TITLE>
+<meta http-equiv='Content-Type' content='text/html; charset=euc-kr'>
+<link rel='stylesheet' href='/css/wisegrid.css' type='text/css'>
+<script type='text/javascript' src='/js/WiseGrid_TAG.js'></script>
+<script type='text/javascript' src='/js/WiseGrid_Property.js'></script>
+<script type='text/javascript' src='/js/WiseGrid_Basic_Sample.js'></script>
+
+<!--
+	WiseGrid 오브젝트가 생성되고 초기화된 후 발생하는 
+	JavaScript Event인 Initialize()를 받아 그리드의 헤더를 셋팅한다.	
+-->
+<script language=javascript for='WiseGrid' event='Initialize()'>
+	init(document.WiseGrid);
+</script>
+
+<!--  서버와의 통신이 정상적으로 완료되면 발생한다.  -->
+<script language=javascript for="WiseGrid" event="EndQuery()">
+	EndGridQuery();
+</script>
+
+<!--  	WiseGrid의 셀을 클릭했을때 발생하는 Javacript Event인 CellClick()을 받아 해당하는 작업을 진행한다.  -->
+<script language=javascript for="WiseGrid" event="CellClick(strColumnKey,nRow)">
+	GridCellClick(strColumnKey, nRow);
+</script>
+
+<script language=javascript>
+
+function init(GridObj) {
+setProperty(GridObj);
+setGroupMergeProperty(GridObj);
+setHeader1(GridObj);
+GridObj.strBgImage = "/images/unipost_logo_white.gif";
+}
+
+
+function setGroupMergeProperty(GridObj) {
+	//사용자가 헤더를 드래그해서 컬럼위치를 이동할수 없다.
+	GridObj.bHDMoving = false;
+
+	//헤더의 컬럼위치이동 콤보버튼을 비활성화 한다.
+	GridObj.bHDSwapping = false;
+
+	//로우 셀렉터를 WiseGrid에서 숨긴다.
+	GridObj.bRowSelectorVisible = false;
+
+	//로우의 테두리에 아무것도 나타나지 않는다.
+	GridObj.strRowBorderStyle = "none";
+
+	//RowSpacing값을 정한다. 
+	GridObj.nRowSpacing = 0;
+
+	//클릭한 컬럼의 모든 셀을 선택가능하게 한다 
+	GridObj.strHDClickAction = "select";
+}
+
+function setHeader1(GridObj) {
+	//그리드에 컬럼을 등록한다. 
+	GridObj.AddHeader("NATION", 	"언어",		"t_text", 	1000, 	70,	true);
+	GridObj.AddHeader("LANG", 		"인사말",	"t_text", 	1000, 	450,	true);
+	GridObj.AddHeader("BIGO", 		"비고",		"t_text", 	1000, 	150,	true);
+
+	//AddHeader를 완료한 후 헤더를 그리드에 바인딩한다
+	GridObj.BoundHeader(); 
+	
+	//모든 로우의 높이를 설정한다.
+	GridObj.nRowHeight = 30;
+
+	//투명도를 설정한다.
+	GridObj.nAlphaLevel = 230;
+	GridObj.strBgImage = "/images/unipost_logo_white.gif";
+
+	//지정한 컬럼의 폰트 사이즈를 설정한다.
+	GridObj.SetColCellFontSize("LANG", 11);
+
+	//셀에 설정된 텍스트의 정렬상태를 조정한다.
+	GridObj.SetColCellAlign("NATION", "center");
+}
+/* 조회 */
+function doQuery() {
+	var GridObj = document.WiseGrid;
+	var servlet_url = "/servlet/wisegrid.sample.ExampleUnicode";
+
+	//WiseGrid가 서버에 전송할 mode를 셋팅한다.
+	GridObj.SetParam("mode", "search");
+		
+	//WiseGrid가 서버와 통신시에 데이터를 전달한다.
+	GridObj.DoQuery(servlet_url);
+}
+
+/* 서버와의 통신이 정상적으로 완료되면 발생한다. */
+function EndGridQuery() {
+	var GridObj = document.WiseGrid;
+
+	//지정한 컬럼들을 컬럼 단위로 Merge한다. 
+	GridObj.SetGroupMerge("NATION");
+}
+
+
+function scrollEvent(nFirstVisibleRowIndex, nEndVisibleRowIndex){
+	console.log(nFirstVisibleRowIndex+" "+nEndVisibleRowIndex);
+}
+
+
+</script>
+
+</HEAD>
+<BODY bgcolor='#FFFFFF' text='#000000'>
+<form name="examForm">
+<input type="hidden" name="imageUrl" value="">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+	<tr height="20">
+		<td class="title1_k">&nbsp;기본예제<br><hr></td>
+	</tr>
+	 <tr height="20">
+		<td class="title2_k">&nbsp;&nbsp;&nbsp; 다국어</td>
+	</tr>
+</table>
+<hr>
+<table width="98%" border="0" cellspacing="0" cellpadding="0"  class="title3">
+	<tr>
+		<td>
+			<table width="100%" border="0" cellpadding="2" cellspacing="0" >
+				<tr>
+				  <td valign="top">
+					<div align="right"><script language="javascript">btn("doQuery()","조회")</script></div>
+				  </td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+
+<table width="98%" border="0" cellpadding="0" cellspacing="0" >
+<tr> 
+	<td bgcolor="#00455d" height="3"></td>
+</tr>
+<tr>
+	<td align='left'>
+		<script>initUniWiseGrid("WiseGrid", "100%", "350");</script>
+	</td>
+</tr>
+</table>
+</form>
+</body>
+</HTML>

@@ -1,0 +1,297 @@
+<HTML>
+<HEAD>
+<TITLE>응용예제 - 드릴다운 메뉴</TITLE>
+<meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+<link rel='stylesheet' href='/css/wisegrid.css' type='text/css'>
+<script type='text/javascript' src='/js/WiseGrid_TAG.js'></script>
+<script type='text/javascript' src='/js/WiseGrid_Property.js'></script>
+<script type='text/javascript' src='/js/WiseGrid_Basic_Sample.js'></script>
+
+<!--
+	WiseGrid 오브젝트가 생성되고 초기화된 후 발생하는 
+	JavaScript Event인 Initialize()를 받아 그리드의 헤더를 셋팅한다.	
+-->
+<script language=javascript for='WiseGrid' event='Initialize()'>
+	init(document.WiseGrid);
+</script>
+
+<!--  	WiseGrid의 Tree Node를 클릭했을때 발생한다.   -->
+<script language=javascript for="WiseGrid" event="TreeNodeClick(strTreeKey, strArea)">
+	GridClickMenu(strTreeKey, strArea);
+</script>
+
+<!-- 
+	사용자 컨텍스트 메뉴를 클릭했을때에 컨텍스트 메뉴를 띄우기 이전 시점에 발생하는 이벤트 
+	컨텍스트 메뉴를 띄우기 이전시점에 특정 조건들을 체크해 조건별로 다른 컨텍스트 메뉴를 띄운다
+-->
+<script language=javascript for="WiseGrid" event="BeforeShowUserContextMenu(strMenuKey, strCol, nRow)">
+	if(strMenuKey == "MENU_CELL")
+		BeforeClickContextMenu(nRow);
+</script>
+
+<!--   	사용자 컨텍스트 메뉴를 클릭했을때에 발생하는 이벤트  -->
+<script language=javascript for="WiseGrid" event="UserContextMenuClick(strMenuKey, strMenuItemKey, strCol, nRow)">
+if(strMenuKey == "MENU_CELL")
+	GridClickContextMenu(strMenuItemKey, nRow);
+</script>
+
+<script language=javascript>
+var globalTreeNodeNo = 1000;
+
+function init(GridObj) {	
+	setProperty(GridObj);
+
+	//클릭한 컬럼의 셀을 선택한다 
+	GridObj.strHDClickAction = "select";
+
+	//헤더를 WiseGrid에서 숨긴다.
+	GridObj.bHDVisible = false;
+
+	//Statusbar를 WiseGrid에서 숨긴다.
+	GridObj.bStatusbarVisible = false;
+	
+	//로우 셀렉터를 WiseGrid에서 숨긴다.
+	GridObj.bRowSelectorVisible = false;
+
+	//셀의 테두리에 아무것도 나타나지 않는다.
+	GridObj.strCellBorderStyle = "none";
+
+	//그리드의의 테두리에 아무것도 나타나지 않는다.
+	GridObj.strGridBorderStyle = "none";
+
+	//로우의 테두리에 아무것도 나타나지 않는다.
+	GridObj.strRowBorderStyle = "none";
+
+	//사용자 컨텍스트메뉴를 사용한다.
+	GridObj.bUserContextMenu = true;
+
+	// 기본 컨텍스트 메뉴를 사용하지 않는다.
+	GridObj.bUseDefaultContextMenu = false;
+
+	//Drag로 선택된 셀의 배경색상을 변경할 수 있다 
+	GridObj.strSelectedCellBgColor = "255|255|255";	
+	
+	setHeader(GridObj);
+
+	doQuery();
+}
+
+function setHeader(GridObj) {    
+	//그리드에 컬럼을 등록한다.	 
+	GridObj.AddHeader("MENU_ID", 		"메뉴",		"t_imagetext", 		100, 	195,	false);	
+	GridObj.AddHeader("MENU_URL", 		"주소",		"t_text", 			100, 	200,	false);	
+
+	//AddHeader를 완료한 후 헤더를 그리드에 바인딩한다
+	GridObj.BoundHeader();	
+
+	//WiseGrid에 트리모드를 설정한다. 
+	GridObj.SetTreeMode("MENU_ID", "*", ","); 
+
+	//이미지리스트에 이미지 URL을 추가한다.
+	GridObj.AddImageList("MENU_ID", "/images/menu_favorite.gif");
+	GridObj.AddImageList("MENU_ID", "/images/menu_folder_closed.gif");
+	GridObj.AddImageList("MENU_ID", "/images/menu_folder_opened.gif");
+	GridObj.AddImageList("MENU_ID", "/images/menu_ie.gif");
+
+	// Tree의 셀을 클릭해도 Expand되거나 Collapse되지 않게 한다.
+	// TreeNodeClick 이벤트로 signbox를 클릭했을때만 Expand되도록 작업하기 위해
+	// Tree를 움직이지 않게 한다.
+	GridObj.SetTreeClickAction(false);
+
+	//해당 컬럼을 숨긴다.
+	GridObj.SetColHide("MENU_URL", true);
+}
+
+function userRootContextMenu(){
+	var GridObj = document.WiseGrid;
+
+	//모든 사용자 컨텍스트 메뉴를 삭제한다.
+	GridObj.RemoveAllContextMenuItem("MENU_CELL");
+
+	//사용자 컨텍스트 메뉴를 추가한다.
+	GridObj.AddUserContextMenuItem("MENU_CELL", "USER_MENU_FAVORITE_ITEM_ADD", "즐겨찾기 추가\t(&C)");
+	GridObj.AddUserContextMenuItem("MENU_CELL", "USER_MENU_FAVORITE_FOLDER_ADD", "폴더 추가\t(&F)");
+}
+
+function userFolderContextMenu() {
+	var GridObj = document.WiseGrid;
+	
+	// 모든 사용자 컨텍스트 메뉴를 삭제한다.
+	GridObj.RemoveAllContextMenuItem("MENU_CELL");
+
+	// 사용자 컨텍스트 메뉴를 추가한다.
+	GridObj.AddUserContextMenuItem("MENU_CELL", "USER_MENU_FAVORITE_ITEM_ADD", "즐겨찾기 추가\t(&C)");
+	GridObj.AddUserContextMenuItem("MENU_CELL", "USER_MENU_FAVORITE_FOLDER_ADD", "폴더 추가\t(&F)");
+	GridObj.AddUserContextMenuItem("MENU_CELL", "USER_MENU_FAVORITE_DEL", "삭제\t(&D)");
+}
+
+function userItemContextMenu() {
+	var GridObj = document.WiseGrid;
+
+	//모든 사용자 컨텍스트 메뉴를 삭제한다.
+	GridObj.RemoveAllContextMenuItem("MENU_CELL");
+
+	// 사용자 컨텍스트 메뉴를 추가한다.
+	GridObj.AddUserContextMenuItem("MENU_CELL", "USER_MENU_OPEN", "팝업으로 열기\t(&O)");
+	
+	// 사용자 컨텍스트 메뉴에 Separator를 하나 추가한다.
+	GridObj.AddContextMenuSeparator("MENU_CELL");
+
+	// 사용자 컨텍스트 메뉴를 추가한다.
+	GridObj.AddUserContextMenuItem("MENU_CELL", "USER_MENU_FAVORITE_DEL", "삭제\t(&D)");
+}
+
+
+/* 조회 */
+function doQuery() {
+	var GridObj = document.WiseGrid;
+	var servlet_url = "/servlet/wisegrid.sample.ExampleDrilldownMenu";
+	
+	//WiseGrid가 서버에 전송할 mode를 셋팅한다.
+	GridObj.SetParam("mode", "search");		
+
+	//WiseGrid가 서버와 통신시에 데이터를 전달한다.
+	GridObj.DoQuery(servlet_url);
+}
+
+/* WiseGrid의 Tree Node를 클릭했을때 발생 */
+function GridClickMenu(strTreeKey, strArea) {
+	var GridObj = document.WiseGrid;
+
+	var menu_flag = GridObj.GetCellImage("MENU_ID", GridObj.GetRowIndexFromTreeKey(strTreeKey));
+	if(strArea == "signbox") {
+		if(GridObj.IsTreeNodeExpand(strTreeKey)) { //해당 트리 노드가 열려있는지 체크한다. 
+			//해당 트리 노드를 닫는다. 
+			GridObj.CollapseTreeNode(strTreeKey); 
+			
+			
+			if(menu_flag == "2")
+				GridObj.SetCellImage("MENU_ID", GridObj.GetRowIndexFromTreeKey(strTreeKey), "1");
+		} else {
+			//해당 트리 노드를 연다
+			GridObj.ExpandTreeNode(strTreeKey, false); 
+			
+			if(menu_flag == "1")
+				GridObj.SetCellImage("MENU_ID", GridObj.GetRowIndexFromTreeKey(strTreeKey), "2");
+		}
+	} else if(strArea == "text" || strArea == "image") {
+		if(menu_flag == "3")  { //실제 Item 일때만 링크설정
+			var menu_url = GridObj.GetCellValue("MENU_URL", GridObj.GetRowIndexFromTreeKey(strTreeKey));
+			
+			//menu_url 으로 페이지가 이동한다.
+			document.mainIF.location.href = menu_url;
+		}
+	}
+}
+
+// 클릭한 메뉴의 Depth에 따라 다른 ContextMenu 설정
+function BeforeClickContextMenu(nRow) {
+	var GridObj = document.WiseGrid;
+
+	// 지정한 셀의 이미지를 가져온다.
+	var menu_flag = GridObj.GetCellImage("MENU_ID", nRow);
+
+	if(menu_flag == "0")
+		userRootContextMenu();
+	else if(menu_flag == "3")
+		userItemContextMenu();
+	else
+		userFolderContextMenu();	
+}
+
+// 컨텍스트 메뉴 클릭 이벤트 핸들러
+function GridClickContextMenu(strMenuItemKey, nRow) {
+	var GridObj = document.WiseGrid;
+
+	if(strMenuItemKey == "USER_MENU_OPEN") {
+		var menu_url = GridObj.GetCellValue("MENU_URL", nRow);
+		
+		popUpOpen(menu_url, "drildown_menu_pop", 1000, 700);
+	} else if(strMenuItemKey == "USER_MENU_FAVORITE_ITEM_ADD") {
+		addItem(GridObj.GetTreeKeyFromRowIndex(nRow));
+	} else if(strMenuItemKey == "USER_MENU_FAVORITE_FOLDER_ADD") {
+		addFolder(GridObj.GetTreeKeyFromRowIndex(nRow));
+	} else if(strMenuItemKey == "USER_MENU_FAVORITE_DEL") 	{
+		deleteItem(GridObj.GetTreeKeyFromRowIndex(nRow));
+	}
+}
+
+/* 폴더 추가 */
+function addFolder(strTreeKey) {
+	var GridObj = document.WiseGrid;
+	var objParam = {};
+	objParam.GridObj = GridObj;
+	objParam.curTreeKey = strTreeKey;
+	objParam.globalTreeNodeNo = globalTreeNodeNo;
+
+	var rtnValue = window.showModalDialog("example_drildown_menu_pop1.htm", objParam, "dialogWidth:210px;dialogHeight:150px");
+
+	if(typeof rtnValue != "undefined")
+		globalTreeNodeNo = rtnValue;
+}
+
+/* 아이템 추가*/
+function addItem(strTreeKey) {
+	var GridObj = document.WiseGrid;
+	var objParam = {};
+	objParam.GridObj = GridObj;
+	objParam.curTreeKey = strTreeKey;
+	objParam.globalTreeNodeNo = globalTreeNodeNo;
+
+	var rtnValue = window.showModalDialog("example_drildown_menu_pop2.htm", objParam, "dialogWidth:210px;dialogHeight:170px");
+
+	if(typeof rtnValue != "undefined")
+		globalTreeNodeNo = rtnValue;
+}
+
+/* 해당 노드 삭제 */
+function deleteItem(strTreeKey) {
+	var GridObj = document.WiseGrid;
+
+	if(confirm("삭제하시겠습니까?")) {
+		GridObj.DeleteTreeNode(strTreeKey);
+	}
+}
+
+</script>
+
+</HEAD>
+<BODY bgcolor='#FFFFFF' text='#000000'>
+<form name="Form">
+<input type="hidden" name="imageUrl" value="">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+	<tr height="20">
+		<td class="title1_k">
+			&nbsp;응용예제<br><hr>
+		</td>
+	</tr>
+	<tr height="20">
+		<td class="title2_k">
+				&nbsp;&nbsp;&nbsp; 메뉴
+		</td>
+	</tr>
+</table>
+
+<hr>
+
+<fieldset>
+<table width="98%" border="0" cellpadding="0" cellspacing="0" >
+	<tr>
+		<td width="200">
+			<table width="98%" border="0" cellpadding="0" cellspacing="0" >
+				<tr>
+					<td align='left'>
+						<script>initWiseGrid("WiseGrid", "100%", "350");</script>
+					</td>
+				</tr>
+			</table>
+		</td>
+		<td><iframe name="mainIF" src="icompia_logo.htm" width="100%" height="350" frameborder="0"></iframe></td>		
+	</tr>
+</table>
+</fieldset>
+<br>
+
+</form>
+</BODY>
+</HTML>

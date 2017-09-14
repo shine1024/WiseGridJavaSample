@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+<meta charset="UTF-8">
+<title>example_fomulra_test.html</title>
+<script type='text/javascript' src='/js/WiseGrid_TAG.js'></script>
+<script for="WiseGrid" event="Initialize()">
+    init();
+</script>
+<script>
+function init() {
+    var GridObj = document.WiseGrid;
+    GridObj.AddHeader("NUM1", "NUMBER1", "t_number", 150, 150, true);
+    GridObj.AddHeader("SUM1", "SUM1", "t_number", 150, 150, true);
+    GridObj.BoundHeader();
+    GridObj.bHDMoving = false;
+    GridObj.bHDSwapping = false;
+    GridObj.strHDClickAction = "select";
+    setData();
+}
+function setData(){
+    var GridObj = document.WiseGrid;
+    for(var i=0; i<5; i++){
+        GridObj.AddRow();
+        GridObj.SetCellValue("NUM1", GridObj.GetActiveRowIndex(), i*10);
+    }
+}
+var sum = function () {
+    var GridObj = document.WiseGrid;
+    GridObj.SetFormulaMode();
+    GridObj.SetCellHiddenValue("SUM1", 0, "=sum(A1:A2)");
+    alert("cell Value : "+GridObj.GetCellValue("SUM1",0));
+    alert("Hidden Value : "+GridObj.GetCellHiddenValue("SUM1",0));
+}
+</script>
+</head>
+<body>
+<button onclick="sum()">엑셀수식</button>
+<script>initWiseGrid("WiseGrid", "100%", "350");</script>
+</body>
+</html>

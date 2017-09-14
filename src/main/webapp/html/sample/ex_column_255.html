@@ -1,0 +1,56 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>기본예제 - 기본</title>
+<link rel='stylesheet' href='/css/wisegrid.css' type='text/css'>
+<script type='text/javascript' src='/js/WiseGrid_TAG.js'></script>
+<script language=javascript for="WiseGrid" event="Initialize()">
+    init();
+</script>
+    <script>
+    function init() {
+        var GridObj = document.WiseGrid;
+        setHeader(GridObj);
+    }
+
+    function setHeader(GridObj) {
+
+        var col = 300;
+        for (var icol = 0; icol < col; icol++) {
+            GridObj.AddHeader("text" + icol, 'text' + icol, "t_text", 500, "80", true);
+        }
+
+        GridObj.BoundHeader();
+        setData();
+    }
+
+
+
+    function setData() {
+        var GridObj = document.WiseGrid;
+
+        for(var i=0; i<10; i++) {
+            GridObj.AddRow();
+            for(var j=1; j<257; j++) {
+                GridObj.SetCellValue('text' + j, i , 'test');
+            }
+        }
+    }
+
+
+
+
+    /* EXCEL 내보내기 */
+    function excelDown() {
+        var GridObj = document.WiseGrid;
+        GridObj.ExcelExport("", "", true, true);
+    }
+
+</script>
+</head>
+
+<body>
+<script language="javascript">btn("excelDown()","엑셀다운")</script></td>
+<script>initWiseGrid("WiseGrid", "100%", "350");</script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel='stylesheet' href='/css/style.css' type='text/css'>
+<script type="text/javascript" src='/WiseGrid/WiseGridConfig.js'></script>
+<script type="text/javascript" src='/js/WiseGridExtension.js'></script>
+<script type="text/javascript" src='/js/exampleData.js'></script>
+
+<script type="text/javascript" src='example_select.js'></script>
+</head>
+<body>
+<form id="frm" name="frm">
+	<div class="title">기본조회</div>
+	<div class="description">
+		<div class="txt">
+			이 예제는 WiseGrid 기본 생성이후 통신을 이용한, 조회, 입력, 수정, 삭제, 행추가에 대한 예제입니다.			
+		</div> 
+	</div>
+	<div class="btnDiv">
+		<input type="text" name="from_date" size="8" value="20070101"> ~
+		<input type="text" name="to_date" size="8" value="">
+		<input type="button" value="조회" onclick="doQuery();">
+		<input type="button" value="등록" onclick="doInsert();">
+		<input type="button" value="수정" onclick="doUpdate();">
+		<input type="button" value="삭제" onclick="doDelete();">
+		<input type="button" value="행추가" onclick="doLineInsert();">
+	</div>
+
+	<div id="wiseGridDiv"></div>
+</form>
+</body>
+</html>

@@ -1,0 +1,294 @@
+<HTML>
+<HEAD>
+<TITLE>Advanced Sample</TITLE>
+<meta http-equiv='Content-Type' content='text/html; charset=euc-kr'>
+<link rel='stylesheet' href='/css/wisegrid.css' type='text/css'>
+<script type='text/javascript' src='/js/WiseGrid_TAG.js'></script>
+<script type='text/javascript' src='/js/WiseGrid_Property.js'></script>
+<script type='text/javascript' src='/js/WiseGrid_Basic_Sample.js'></script>
+
+<script language=javascript for='WiseGrid' event='Initialize()'>
+	init(document.WiseGrid);
+</script>
+
+<script language=javascript for="WiseGrid" event="CellClick(strColumnKey,nRow)">
+	GridCellClick(strColumnKey, nRow);
+</script>
+
+<script language=javascript for="WiseGrid" event="ChangeCell(strColumnKey, nRow, vtOldValue, vtNewValue)">
+    var GridObj = document.WiseGrid;
+    wiseGridDatas.totalPrice = wiseGridDatas.setTotalPrice(GridObj.GetSummaryBarValue('SUMMARY3','PRICE', -1, false),GridObj.GetSummaryBarValue('SUMMARY3','STOCK', -1, false));
+    GridObj.SetSummaryBarValue('SUMMARY3','SPECIFICATION',-1,  wiseGridDatas.totalPrice);
+    wiseGridDatas.gridDataToForm();
+</script>
+
+<script language=javascript>
+	/* 
+    namespace : wiseGridDatas
+    wiseGridDatas.vendorCount : 제조사수
+    wiseGridDatas.totalPrice : 총액
+    wiseGridDatas.itemCount : 상품 수
+    wiseGridDatas.priceVal : 출고가 
+    wiseGridDatas.stockVal : 재고량
+    wiseGridDatas.getTotalPrice : 
+
+*/
+var wiseGridDatas= {
+    vendorCount : 0,
+    totalPrice  : 0,
+    itemCount   : 0,
+    priceVal    : 0,
+    stockVal    : 0,
+    
+    setTotalPrice : function(_price, _stock){
+        wiseGridDatas.totalPrice = parseInt(_price) * parseInt(_stock)
+    },
+    
+    /* Form의 input필드에 와이즈 그리드 데이터를 매핑*/
+    gridDataToForm : function(){
+        document.examForm.vendorCount.value = wiseGridDatas.vendorCount;
+        document.examForm.itemCount.value = wiseGridDatas.itemCount;
+        document.examForm.priceVal.value = wiseGridDatas.priceVal;
+        document.examForm.stockVal.value = wiseGridDatas.stockVal;
+        document.examForm.totalPrice.value = wiseGridDatas.totalPrice;
+    }
+	
+};
+
+function init(GridObj)
+{
+    // 공통 속성
+	setProperty(GridObj);
+	
+	//사용자가 헤더를 드래그해서 컬럼위치를 이동할수 없다.
+	GridObj.bHDMoving = false;
+	
+	//헤더의 컬럼위치이동 콤보버튼을 비활성화 한다.
+	GridObj.bHDSwapping = false;
+	
+	//로우 셀렉터를 WiseGrid에서 숨긴다,. 
+	GridObj.bRowSelectorVisible = false;
+	
+	//로우의 테두리에 아무것도 나타나지 않는다.  
+	GridObj.strRowBorderStyle = "none";
+	
+	//RowSpacing값을 정한다. 
+	GridObj.nRowSpacing = 0;
+	
+	//클릭한 컬럼의 셀을 선택가능하게 한다.
+	GridObj.strHDClickAction = "select";
+	
+	//선택된 행의 배경색상을 설정한다.
+	GridObj.strActiveRowBgColor = "default"; 
+	
+	// 해더 생성
+	setHeader(GridObj);
+	
+
+	
+    GridObj.strHDBgColor = '242|242|242';
+    GridObj.nHDFontSize = 10;
+	GridObj.strHDFgColor="100|100|100";
+    GridObj.nHDLines = 2;
+    GridObj.nRowHeight=20;
+}
+
+function setHeader(GridObj) 
+{    
+	GridObj.AddHeader("SELECTED", 			"선택",				"t_checkbox", 	2, 		40,		true);	
+	GridObj.AddHeader("ITEM_FLAG", 			"자재구분",		"t_combo", 			10, 	90,		true);	
+	GridObj.AddHeader("VENDOR_NAME", 		"제조회사",		"t_text", 			50, 	90,	true);
+	GridObj.AddHeader("ITEM_CODE", 			"제품코드",		"t_imagetext", 	20, 	100,	false);
+	GridObj.AddHeader("ITEM_NAME", 			"제품명", 		"t_text", 			500, 	150,	true);	
+
+	GridObj.AddHeader("PRICE", 					"출고가", 		"t_number", 		22.3, 	120,		true);	
+	GridObj.AddHeader("STOCK",					"재고량", 		"t_number", 		22,		90,		true);
+
+	GridObj.AddHeader("SPECIFICATION", 	"규격", 			"t_text", 			2000, 	240,	true);	
+	GridObj.AddHeader("UNIT", 					"단위",				"t_combo",			10, 	50,		true);
+	GridObj.AddHeader("ADD_DATE",				"등록일", 		"t_date", 			8,		70,		true);	
+	GridObj.AddHeader("CHANGE_DATE",		"수정일", 		"t_date", 			8,		0,		true);	
+	GridObj.AddHeader("SEQ_NO",					"SEQ_NO", 		"t_text", 			8,		85,		true);	
+	GridObj.BoundHeader();
+	
+	GridObj.SetColHide("SEQ_NO", true);
+	GridObj.SetColHide("SELECTED", true);
+	
+	GridObj.AddComboListValue("ITEM_FLAG", "프로세서", "CPU"); 
+	GridObj.AddComboListValue("ITEM_FLAG", "메모리", "MEM"); 
+	GridObj.AddComboListValue("ITEM_FLAG", "메인보드", "MAB"); 
+	GridObj.AddComboListValue("ITEM_FLAG", "그래픽카드", "VID"); 
+	GridObj.AddComboListValue("ITEM_FLAG", "모니터", "MOR");
+	GridObj.AddComboListValue("ITEM_FLAG", "하드디스크", "HDD");
+	GridObj.AddComboListValue("ITEM_FLAG", "CDROM", "CDR");
+	GridObj.AddComboListValue("ITEM_FLAG", "키보드", "KEY");
+	GridObj.AddComboListValue("ITEM_FLAG", "마우스", "MOU");
+	
+	GridObj.AddImageList("ITEM_CODE", "/images/bt_search.gif");
+	GridObj.SetColCellFgColor("ITEM_CODE", "0|0|255");
+	
+	GridObj.AddComboListValue("UNIT", "EA", "EA");
+
+ 	GridObj.SetNumberFormat("PRICE", "#,##0.00"); 
+ 	GridObj.SetNumberFormat("STOCK", "#,##0");
+
+ 	GridObj.SetDateFormat("ADD_DATE", "yyyy/MM/dd");
+ 	GridObj.SetDateFormat("CHANGE_DATE", "yyyy/MM/dd");
+}
+
+function doQuery()
+{
+	var GridObj = document.WiseGrid;
+	var fromDate = document.examForm.from_date.value;
+	var toDate = document.examForm.to_date.value;
+	var servlet_url = "/servlet/wisegrid.sample.ExampleSelect";
+	//WiseGrid가 서버에 전송할 Param을 셋팅한다.
+	GridObj.SetParam("mode", "search");
+	GridObj.SetParam("from_date",fromDate );
+	GridObj.SetParam("to_date",toDate);
+		
+	GridObj.DoQuery(servlet_url);
+}
+
+function setMergeSummary()
+{
+	var GridObj = document.WiseGrid;
+	
+	if(GridObj.GetRowCount() == 0)
+	{
+		alert("먼저 조회하십시오.");
+		return;
+	}
+	
+	// Merge 후 SummaryBar 추가 
+	GridObj.SetGroupMerge("ITEM_FLAG,VENDOR_NAME");
+	GridObj.AddSummaryBar('SUMMARY1', '소계', 'ITEM_FLAG', 'sum', 'PRICE,STOCK'); 
+	GridObj.AddSummaryBar('SUMMARY2', '합계', 'VENDOR_NAME', 'sum', 'PRICE,STOCK');
+	GridObj.AddSummaryBar('SUMMARY3', '총계', 'summaryall', 'custom', 'VENDOR_NAME,ITEM_CODE,PRICE,STOCK,SPECIFICATION'); 
+	
+	// SummaryBar 색 지정 
+	GridObj.SetSummaryBarColor('SUMMARY1', '100|100|100', '230|230|230');
+	GridObj.SetSummaryBarColor('SUMMARY2', '100|100|100', '240|240|240');
+	GridObj.SetSummaryBarColor('SUMMARY3', '100|100|100', '220|220|220'); 
+	
+	// SummaryBar 폰트 지정 
+
+	GridObj.SetSummaryBarFont('SUMMARY1', '돋움', '12', true, false, false, false, 'PRICE'); //특정컬럼
+	GridObj.SetSummaryBarFont('SUMMARY1', '돋움', '12', true, false, false, false, 'STOCK'); //특정컬럼
+	GridObj.SetSummaryBarFont('SUMMARY2', '돋움', '12', true, false, false, false, 'PRICE'); //특정컬럼
+	GridObj.SetSummaryBarFont('SUMMARY2', '돋움', '12', true, false, false, false, 'STOCK'); //특정컬럼
+	GridObj.SetSummaryBarFont('SUMMARY3', '돋움', '12', true, true, true, false); 
+
+	
+	GridObj.SetSummaryBarValue('SUMMARY3','VENDOR_NAME',-1,GridObj.GetMergeCount('VENDOR_NAME'));
+	GridObj.SetSummaryBarFormat('SUMMARY3','#,##0개 제조사','VENDOR_NAME');
+
+	GridObj.SetSummaryBarFunction('SUMMARY3', 'count', 'ITEM_CODE');	
+	GridObj.SetSummaryBarFormat('SUMMARY3','#,##0 개 상품','ITEM_CODE');
+	
+	GridObj.SetSummaryBarFunction('SUMMARY3', 'sum', 'PRICE');
+	GridObj.SetSummaryBarFormat('SUMMARY1','#,##0 원','PRICE');
+	GridObj.SetSummaryBarFormat('SUMMARY2','#,##0 원','PRICE');
+	GridObj.SetSummaryBarFormat('SUMMARY3','#,##0 원','PRICE');
+	
+	GridObj.SetSummaryBarFunction('SUMMARY3', 'sum', 'STOCK');
+	GridObj.SetSummaryBarFormat('SUMMARY1','#,##0 EA','STOCK');
+	GridObj.SetSummaryBarFormat('SUMMARY2','#,##0 EA','STOCK');
+	GridObj.SetSummaryBarFormat('SUMMARY3','#,##0 EA','STOCK');
+
+    wiseGridDatas.itemCount = GridObj.GetMergeCount('VENDOR_NAME');
+	wiseGridDatas.priceVal = GridObj.GetSummaryBarValue('SUMMARY3','PRICE', -1, false);
+	wiseGridDatas.stockVal = GridObj.GetSummaryBarValue('SUMMARY3','STOCK', -1, false);
+    wiseGridDatas.setTotalPrice(wiseGridDatas.priceVal,wiseGridDatas.stockVal);
+    wiseGridDatas.vendorCount = GridObj.GetMergeCount('VENDOR_NAME');
+    
+	GridObj.SetSummaryBarValue('SUMMARY3','SPECIFICATION',-1,wiseGridDatas.totalPrice);
+	GridObj.SetSummaryBarFormat('SUMMARY3','총금액 : #,##0 원','SPECIFICATION');    
+	GridObj.MoveRow(19);
+	wiseGridDatas.gridDataToForm();
+}
+
+function clearSummary()
+{
+	var GridObj = document.WiseGrid;
+
+	if(GridObj.GetRowCount() == 0)
+	{
+		alert("먼저 조회하십시오.");
+		return;
+	}
+
+	GridObj.ClearSummaryBar();
+	GridObj.ClearGroupMerge();
+	
+	GridObj.MoveRow(0);
+}
+
+function getdate()
+{
+	var today = new Date();
+	var year = today.getYear();
+	var month = today.getMonth() + 1;
+	var day = today.getDate();
+	
+	if(month < 10)
+		month = "0" + month;
+		
+	if(day < 10)
+		day = "0" + day;
+
+	document.examForm.to_date.value = year + "" + month + "" + day;
+}
+	window.onload = function(){document.forms[0].reset();getdate();}
+</script>
+
+</HEAD>
+<BODY bgcolor='#FFFFFF' text='#000000'>
+<form name="examForm">
+<input type="hidden" name="merge_status" value="F">
+<div id="contents" style="width:100%">
+    <div id="headerArea">
+        <div class="title1_k">응용예제<hr/>
+        </div>
+        <div class="title2_k">합계(기능추가)</div>
+    </div>
+	
+	<div id="info" style="margin-top:10px;">
+		
+		<div style="width:auto;margin-left:30px;">
+			WiseGrid 5.x 업그레이드로 좀더 다양한 합계화면구현이 가능하게 되었습니다.
+		</div>
+		
+		<div>
+	</div>
+	<br/>
+	
+	<div id="inputArea">
+    	<input type="text" name="from_date" size="8" value="20070101"> ~
+    	<input type="text" name="to_date" size="8">
+	</div>
+	
+    <div id="buttonArea" style="float:right">
+        <div style="float:left"><script type="text/javascript">btn("doQuery()","조회")</script></div>
+        <div style="float:left"><script type="text/javascript">btn("setMergeSummary()","병합/소계적용")</script></div>
+        <div style="float:left"><script type="text/javascript">btn("clearSummary()","적용해제")</script></div>
+    </div>
+    <div id="gridArea" style="clear:both;">
+        <script type="text/javascript">initWiseGrid("WiseGrid", "100%", "350");</script>
+    </div>
+    
+    <div id="formDataArea" style="padding-left:50px;padding-top:30px;">
+        <div style="float:left;padding-left:30px;">업체수 : <input type="text" name="vendorCount" value="" style="border : 3px solid silver;width:120px;padding-left:5px;text-align:right;" /></div>
+        <div style="float:left;padding-left:30px;">상품수 : <input type="text" name="itemCount" value="" style="border : 3px solid silver;width:120px;padding-left:5px;text-align:right;" /></div>
+        <div style="float:left;padding-left:30px;">출고가 : <input type="text" name="priceVal" value="" style="border : 3px solid silver;width:120px;padding-left:5px;text-align:right;" /></div>
+        <div style="float:left;padding-left:30px;">재고량 : <input type="text" name="stockVal" value="" style="border : 3px solid silver;width:120px;padding-left:5px;text-align:right;" /></div>
+        <div style="float:left;padding-left:30px;">총금액 : <input type="text" name="totalPrice" value="" style="border : 3px solid silver;width:120px;padding-left:5px;text-align:right;" /></div>
+    </div>
+</div>
+<hr>
+
+</form>
+<br>
+ 
+</BODY>
+</HTML>
