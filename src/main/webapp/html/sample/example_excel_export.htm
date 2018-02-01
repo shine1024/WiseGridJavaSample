@@ -1,7 +1,7 @@
 <HTML>
 <HEAD>
 <TITLE>기본예제 - 엑셀내보내기</TITLE>
-<meta http-equiv='Content-Type' content='text/html; charset=euc-kr'>
+<meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
 <link rel='stylesheet' href='/css/wisegrid.css' type='text/css'>
 <script type='text/javascript' src='/js/WiseGrid_TAG.js'></script>
 <script type='text/javascript' src='/js/WiseGrid_Property.js'></script>
@@ -206,7 +206,7 @@ function ExcelDown2() {
 	GridObj.SetExcelFooter("Copyright 2014 UNIPOST (" + toDay.toLocaleString() + ")", 20, 10, 'right', "100|100|100", "220|220|220");
 	GridObj.AddExcelLine("등록일 : 2014  ~ 2014", 20, 10, "left");//, "100|100|100", "220|220|220");
 	//그리드의 데이터를 사용자의 PC에 파일로 저장한다. SetColHide()로 숨겨진 컬럼은 내보내지 않는다.
-	GridObj.ExcelExport('', '', true, true);	
+	GridObj.ExcelExport('', '', true, true);
 }
 
 </script>
