@@ -1,0 +1,127 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>기본예제 - 기본</title>
+	<script for="WiseGrid" event="Initialize()">
+        init();
+        document.getElementById('btn1').addEventListener('click', function(){
+            document.WiseGrid.ExcelExport("", "", true, true);
+		});
+	</script>
+	<script for="WiseGrid1" event="Initialize()">
+			console.log(1)
+        init1();
+        document.getElementById('btn2').addEventListener('click', function() {
+			console.log(1)
+            document.WiseGrid1.ExcelExport("", "", true, true);
+		});
+	</script>
+	<script>
+        function initWiseGrid(objName, width, height) {
+            var WISEGRID_TAG = "<OBJECT ID='" + objName + "' codebase='./WiseGrid/WiseGrid_v5_3_1_100.cab#version=5,3,1,100'";
+            WISEGRID_TAG = WISEGRID_TAG + " NAME='" + objName + "' WIDTH=" + width + " HEIGHT=" + height + " border=0";
+            WISEGRID_TAG = WISEGRID_TAG + " CLASSID='CLSID:E8AA1760-8BE5-4891-B433-C53F7333710F'>";
+            WISEGRID_TAG = WISEGRID_TAG + " <PARAM NAME = 'strLicenseKeyList' VALUE='122670CA8BD07EF9CD21AC63B6EB6E08'>";
+            WISEGRID_TAG = WISEGRID_TAG + "</OBJECT>"
+            document.write(WISEGRID_TAG);
+        }
+        function init() {
+            var GridObj = document.WiseGrid;
+            setHeader(GridObj);
+            setProperty(GridObj);
+            GridObj.SetColHide('TEXT_5', true);
+            GridObj.SetColHide('TEXT_6', true);
+            GridObj.SetColHide('TEXT_7', true);
+            GridObj.SetColHide('TEXT_8', true);
+            GridObj.SetColHide('TEXT_9', true);
+            GridObj.SetColHide('TEXT_10', true);
+            doQuery();
+        }
+
+        function init1() {
+            var GridObj = document.WiseGrid1;
+            setHeader(GridObj);
+            setProperty(GridObj);
+            doQuery1();
+        }
+
+        function setProperty(GridObj) {
+            GridObj.strHDFontName = "돋움";
+            GridObj.strCellFontName = "돋움";
+            GridObj.nCellFontSize = 10;
+            GridObj.nHDFontSize = 10;
+            GridObj.strHDBgColor="95|177|206";
+            GridObj.strHDFgColor="255|255|255";
+        }
+
+
+        function setHeader(GridObj) {
+            GridObj.AddHeader("TEXT_1", 	"TEXT_1",		"t_text", 		50, 	80,		true);
+            GridObj.AddHeader("TEXT_2", 	"TEXT_2",		"t_text", 		50, 	80,		true);
+            GridObj.AddHeader("TEXT_3", 	"TEXT_3",		"t_text", 		50, 	80,		true);
+            GridObj.AddHeader("TEXT_4", 	"TEXT_4",		"t_text", 		50, 	80,		true);
+            GridObj.AddHeader("TEXT_5", 	"TEXT_5",		"t_text", 		50, 	80,		true);
+            GridObj.AddHeader("TEXT_6", 	"TEXT_6",		"t_text", 		50, 	80,		true);
+            GridObj.AddHeader("TEXT_7", 	"TEXT_7",		"t_text", 		50, 	80,		true);
+            GridObj.AddHeader("TEXT_8", 	"TEXT_8",		"t_text", 		50, 	80,		true);
+            GridObj.AddHeader("TEXT_9", 	"TEXT_9",		"t_text", 		50, 	80,		true);
+            GridObj.AddHeader("TEXT_10", 	"TEXT_10",		"t_text", 		50, 	80,		true);
+
+            GridObj.BoundHeader();
+
+        }
+
+        function setData(gridObj) {
+            for(var n=0; n<30; n++) {
+                gridObj.addRow();
+                gridObj.SetCellValue('TEXT_1', n, 'TEXT_' + n);
+                gridObj.SetCellValue('TEXT_2', n, 'TEXT_' + n);
+                gridObj.SetCellValue('TEXT_3', n, 'TEXT_' + n);
+                gridObj.SetCellValue('TEXT_4', n, 'TEXT_' + n);
+                gridObj.SetCellValue('TEXT_5', n, 'TEXT_' + n);
+                gridObj.SetCellValue('TEXT_6', n, 'TEXT_' + n);
+                gridObj.SetCellValue('TEXT_7', n, 'TEXT_' + n);
+                gridObj.SetCellValue('TEXT_8', n, 'TEXT_' + n);
+                gridObj.SetCellValue('TEXT_9', n, 'TEXT_' + n);
+                gridObj.SetCellValue('TEXT_10', n, 'TEXT_' + n);
+            }
+        }
+
+        function doQuery() {
+            var gridObj = document.WiseGrid;
+            setData(gridObj);
+        }
+
+        function doQuery1() {
+            var gridObj = document.WiseGrid1;
+            setData(gridObj);
+        }
+
+
+	</script>
+<body>
+<button id="btn2">다운로드 - 엑셀용</button>
+<!--<button id="btn1">다운로드 - 화면표시용</button>-->
+<table  width="100%" height="350" border="0" cellpadding="0" cellspacing="0" >
+	<tr>
+		<td align='center'>그리드 - 화면표시용</td>
+	</tr>
+	<tr>
+		<td align='center'>
+			<script>initWiseGrid("WiseGrid", "1000", "300");</script>
+		</td>
+	</tr>
+</table>
+<table  width="100%" height="350" border="0" cellpadding="0" cellspacing="0" >
+	<tr>
+		<td align='center'>그리드 - 엑셀용</td>
+	</tr>
+	<tr>
+		<td align='center'>
+			<script>initWiseGrid("WiseGrid1", "1000", "300");</script>
+		</td>
+	</tr>
+</table>
+</table>
+</body>
+</html>

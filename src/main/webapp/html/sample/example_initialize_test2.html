@@ -1,0 +1,68 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+    <script type='text/javascript' src='/js/WiseGrid_TAG.js'></script>
+    <title>WiseGrid Initialize Test</title>
+</head>
+<script language=javascript for='WiseGrid' event='Initialize()'>
+    var gridObj = document.WiseGrid;
+    init(gridObj);
+</script>
+<script>
+function init(gridObj) {
+    gridObj.AddHeader("D00"                  ,"누계"      ,"t_number"     , 10.1 , 50 , false);
+    gridObj.AddHeader("D01"                  ,"1일"          ,"t_number"     , 10.1 , 50 , false);
+    gridObj.AddHeader("D02"                  ,"2일"          ,"t_number"     , 10.1 , 50 , false);
+    gridObj.AddHeader("D03"                  ,"3일"          ,"t_number"     , 10.1 , 50 , false);
+    gridObj.AddHeader("D04"                  ,"4일"          ,"t_number"     , 10.1 , 50 , false);
+    gridObj.AddHeader("D05"                  ,"5일"          ,"t_number"     , 10.1 , 50 , false);
+    gridObj.AddHeader("D06"                  ,"6일"          ,"t_number"     , 10.1 , 50 , false);
+    gridObj.AddHeader("D07"                  ,"7일"          ,"t_number"     , 10.1 , 50 , false);
+    gridObj.AddHeader("D08"                  ,"8일"          ,"t_number"     , 10.1 , 50 , false);
+    gridObj.AddHeader("D09"                  ,"9일"          ,"t_number"     , 10.1 , 50 , false);
+    gridObj.AddHeader("D10"                  ,"10일"      ,"t_number"     , 10.1 , 50 , false);
+    gridObj.AddHeader("D11"                  ,"11일"      ,"t_number"     , 10.1 , 50 , false);
+    gridObj.AddHeader("D12"                  ,"12일"      ,"t_number"     , 10.1 , 50 , false);
+    gridObj.AddHeader("D13"                  ,"13일"      ,"t_number"     , 10.1 , 50 , false);
+    gridObj.AddHeader("D14"                  ,"14일"      ,"t_number"     , 10.1 , 50 , false);
+    gridObj.AddHeader("D15"                  ,"15일"      ,"t_number"     , 10.1 , 50 , false);
+    gridObj.AddHeader("D16"                  ,"16일"      ,"t_number"     , 10.1 , 50 , false);
+    gridObj.AddHeader("D17"                  ,"17일"      ,"t_number"     , 10.1 , 50 , false);
+    gridObj.AddHeader("D18"                  ,"18일"      ,"t_number"     , 10.1 , 50 , false);
+    gridObj.AddHeader("D19"                  ,"19일"      ,"t_number"     , 10.1 , 50 , false);
+    gridObj.AddHeader("D20"                  ,"20일"      ,"t_number"     , 10.1 , 50 , false);
+    gridObj.AddHeader("D21"                  ,"21일"      ,"t_number"     , 10.1 , 50 , false);
+    gridObj.AddHeader("D22"                  ,"22일"      ,"t_number"     , 10.1 , 50 , false);
+    gridObj.BoundHeader();
+
+    gridObj.SetNumberFormat("D00",   "0,##0.0");
+    gridObj.SetNumberFormat("D01",   "0,##0.0");
+    gridObj.SetNumberFormat("D02",   "0,##0.0");
+    gridObj.SetNumberFormat("D03",   "0,##0.0");
+    gridObj.SetNumberFormat("D04",   "0,##0.0");
+    gridObj.SetNumberFormat("D05",   "0,##0.0");
+    gridObj.SetNumberFormat("D06",   "0,##0.0");
+    gridObj.SetNumberFormat("D07",   "0,##0.0");
+    gridObj.SetNumberFormat("D08",   "0,##0.0");
+    gridObj.SetNumberFormat("D09",   "0,##0.0");
+    gridObj.SetNumberFormat("D10",   "0,##0.0");
+    gridObj.SetNumberFormat("D11",   "0,##0.0");
+    gridObj.SetNumberFormat("D12",   "0,##0.0");
+    gridObj.SetNumberFormat("D13",   "0,##0.0");
+    gridObj.SetNumberFormat("D14",   "0,##0.0");
+    gridObj.SetNumberFormat("D15",   "0,##0.0");
+    gridObj.SetNumberFormat("D16",   "0,##0.0");
+    gridObj.SetNumberFormat("D17",   "0,##0.0");
+    gridObj.SetNumberFormat("D18",   "0,##0.0");
+    gridObj.SetNumberFormat("D19",   "0,##0.0");
+    gridObj.SetNumberFormat("D20",   "0,##0.0");
+    gridObj.SetNumberFormat("D20",   "0,##0.0");
+    gridObj.SetNumberFormat("D21",   "0,##0.0");
+
+}
+</script>
+<body>
+<script>initWiseGrid("WiseGrid", "100%", "350");</script>
+</body>
+</html>

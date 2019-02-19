@@ -1,0 +1,69 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>SummarayBar Total Value</title>
+    <script for="WiseGrid" event="Initialize()">
+        initialize();
+    </script>
+    <script type='text/javascript' src='/js/WiseGrid_TAG.js'></script>
+</head>
+<body>
+<script>initWiseGrid("WiseGrid", "100%", "350")</script>
+<script>
+    var gridObj = document.WiseGrid;
+    var data = [
+            ['1', '품목1', '1', '100'] ,
+            ['2', '품목2', '2', '100'] ,
+            ['3', '품목3', '1', '100'] ,
+            ['4', '품목4', '3', '300'] ,
+            ['5', '품목5', '1', '200'] ,
+            ['6', '품목6', '1', '100'] ,
+            ['7', '품목7', '1', '200'] ,
+            ['8', '품목8', '2', '600'] ,
+    ]
+
+    gridObj.nAlphaLevel  = 0;
+    gridObj.bHDMoving = false;
+    gridObj.bHDSwapping = false;
+    gridObj.bRowSelectorVisible = false;
+    gridObj.strRowBorderStyle = 'none';
+    gridObj.nRowSpacing = 0;
+    gridObj.strHDClickAction = 'select';
+
+    function initialize() {
+        setHeader();
+        setGridData();
+        setCustomSummary();
+    }
+
+
+    function setHeader() {
+        gridObj.AddHeader("NO", "순번", "t_number", 10, 100, true);
+        gridObj.AddHeader("ITEM", "품목명", "t_text", 10, 100, true);
+        gridObj.AddHeader("UNIT", "수량", "t_number", 10, 140, true);
+        gridObj.AddHeader("AMOUNT", "금액", "t_number", 10, 140, true);
+        gridObj.boundHeader();
+    }
+
+    function setGridData() {
+        for(var n=0; n<data.length; n++) {
+            gridObj.AddRow();
+            gridObj.SetCellValue('NO', n, data[n][0]);
+            gridObj.SetCellValue('ITEM', n, data[n][1]);
+            gridObj.SetCellValue('UNIT', n, data[n][2]);
+            gridObj.SetCellValue('AMOUNT', n, data[n][3]);
+        }
+    }
+
+    function setCustomSummary() {
+        gridObj.AddSummaryBar('CUSTOM_SUMMARY', '총계', 'summaryall', 'custom', 'UNIT,AMOUNT');
+        gridObj.SetSummaryBarFunction('CUSTOM_SUMMARY', 'average', 'UNIT');
+        gridObj.SetSummaryBarFunction('CUSTOM_SUMMARY', 'sum', 'AMOUNT');
+        gridObj.SetSummaryBarFormat('CUSTOM_SUMMARY','평균수량 : #,##0 개','UNIT');
+        gridObj.SetSummaryBarFormat('CUSTOM_SUMMARY','총금액 : #,##0 원','AMOUNT');
+
+    }
+
+</script>
+</body>
+</html>

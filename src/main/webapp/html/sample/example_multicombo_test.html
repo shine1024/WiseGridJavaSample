@@ -12,29 +12,37 @@
 <script for="WiseGrid" event="changeCombo(strKey, nRow, oldIndex, newIndex)">
 chsngeCombo(strKey, nRow);
 </script>
-    <script>
+<script>
 function init(){
     var grid = document.WiseGrid;
     grid.AddHeader("COMBO1", "COMBO1", "t_combo", 100, 100, true);
     grid.AddHeader("COMBO2", "COMBO2", "t_combo", 100, 100, true);
     grid.BoundHeader();
 
-    //grid.AddComboList("COMBO1", "C1");
-    grid.AddComboListValue("COMBO1", "VALUE1", "CC1");
-    grid.AddComboListValue("COMBO1", "VALUE2", "CC2");
+//    grid.AddComboList("COMBO1", "B");
+    grid.AddComboListValue("COMBO1", "상의", "TOP");
+    grid.AddComboListValue("COMBO1", "하의", "BOTTOM");
 
-    grid.AddComboList("COMBO2", "CC1");
-    grid.AddComboList("COMBO2", "CC2");
+    grid.AddComboList("COMBO2", "TOP");
+    grid.AddComboListValue("COMBO2", "티셔츠", "T", "TOP");
+    grid.AddComboListValue("COMBO2", "후드티", "H", "TOP");
 
+    grid.AddComboList("COMBO2", "BOTTOM");
+    grid.AddComboListValue("COMBO2", "청바지", "C", "BOTTOM");
+    grid.AddComboListValue("COMBO2", "슬랙스", "S", "BOTTOM");
 }
 
 function chsngeCombo(colKey, nRow){
-    alert(colKey, nRow);
+    if(colKey === 'COMBO1') {
+
+
+    }
 }
 
 function addRow(){
     var grid = document.WiseGrid;
     grid.AddRow();
+
 }
 </script>
 </HEAD>

@@ -1,7 +1,7 @@
 <HTML>
 <HEAD>
 <TITLE>Advanced Sample</TITLE>
-<meta http-equiv='Content-Type' content='text/html; charset=euc-kr'>
+<meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
 <link rel='stylesheet' href='/css/wisegrid.css' type='text/css'>
 <script type='text/javascript' src='/js/WiseGrid_TAG.js'></script>
 <script type='text/javascript' src='/js/WiseGrid_Property.js'></script>
@@ -162,21 +162,21 @@ function setMergeSummary()
 	
 	// Merge 후 SummaryBar 추가 
 	GridObj.SetGroupMerge("ITEM_FLAG,VENDOR_NAME");
-	GridObj.AddSummaryBar('SUMMARY1', '소계', 'ITEM_FLAG', 'sum', 'PRICE,STOCK'); 
-	GridObj.AddSummaryBar('SUMMARY2', '합계', 'VENDOR_NAME', 'sum', 'PRICE,STOCK');
+//	GridObj.AddSummaryBar('SUMMARY1', '소계', 'ITEM_FLAG', 'sum', 'PRICE,STOCK');
+//	GridObj.AddSummaryBar('SUMMARY2', '합계', 'VENDOR_NAME', 'sum', 'PRICE,STOCK');
 	GridObj.AddSummaryBar('SUMMARY3', '총계', 'summaryall', 'custom', 'VENDOR_NAME,ITEM_CODE,PRICE,STOCK,SPECIFICATION'); 
 	
 	// SummaryBar 색 지정 
-	GridObj.SetSummaryBarColor('SUMMARY1', '100|100|100', '230|230|230');
-	GridObj.SetSummaryBarColor('SUMMARY2', '100|100|100', '240|240|240');
+//	GridObj.SetSummaryBarColor('SUMMARY1', '100|100|100', '230|230|230');
+//	GridObj.SetSummaryBarColor('SUMMARY2', '100|100|100', '240|240|240');
 	GridObj.SetSummaryBarColor('SUMMARY3', '100|100|100', '220|220|220'); 
 	
 	// SummaryBar 폰트 지정 
 
-	GridObj.SetSummaryBarFont('SUMMARY1', '돋움', '12', true, false, false, false, 'PRICE'); //특정컬럼
-	GridObj.SetSummaryBarFont('SUMMARY1', '돋움', '12', true, false, false, false, 'STOCK'); //특정컬럼
-	GridObj.SetSummaryBarFont('SUMMARY2', '돋움', '12', true, false, false, false, 'PRICE'); //특정컬럼
-	GridObj.SetSummaryBarFont('SUMMARY2', '돋움', '12', true, false, false, false, 'STOCK'); //특정컬럼
+//	GridObj.SetSummaryBarFont('SUMMARY1', '돋움', '12', true, false, false, false, 'PRICE'); //특정컬럼
+//	GridObj.SetSummaryBarFont('SUMMARY1', '돋움', '12', true, false, false, false, 'STOCK'); //특정컬럼
+//	GridObj.SetSummaryBarFont('SUMMARY2', '돋움', '12', true, false, false, false, 'PRICE'); //특정컬럼
+//	GridObj.SetSummaryBarFont('SUMMARY2', '돋움', '12', true, false, false, false, 'STOCK'); //특정컬럼
 	GridObj.SetSummaryBarFont('SUMMARY3', '돋움', '12', true, true, true, false); 
 
 	
@@ -187,13 +187,13 @@ function setMergeSummary()
 	GridObj.SetSummaryBarFormat('SUMMARY3','#,##0 개 상품','ITEM_CODE');
 	
 	GridObj.SetSummaryBarFunction('SUMMARY3', 'sum', 'PRICE');
-	GridObj.SetSummaryBarFormat('SUMMARY1','#,##0 원','PRICE');
-	GridObj.SetSummaryBarFormat('SUMMARY2','#,##0 원','PRICE');
+//	GridObj.SetSummaryBarFormat('SUMMARY1','#,##0 원','PRICE');
+//	GridObj.SetSummaryBarFormat('SUMMARY2','#,##0 원','PRICE');
 	GridObj.SetSummaryBarFormat('SUMMARY3','#,##0 원','PRICE');
 	
 	GridObj.SetSummaryBarFunction('SUMMARY3', 'sum', 'STOCK');
-	GridObj.SetSummaryBarFormat('SUMMARY1','#,##0 EA','STOCK');
-	GridObj.SetSummaryBarFormat('SUMMARY2','#,##0 EA','STOCK');
+//	GridObj.SetSummaryBarFormat('SUMMARY1','#,##0 EA','STOCK');
+//	GridObj.SetSummaryBarFormat('SUMMARY2','#,##0 EA','STOCK');
 	GridObj.SetSummaryBarFormat('SUMMARY3','#,##0 EA','STOCK');
 
     wiseGridDatas.itemCount = GridObj.GetMergeCount('VENDOR_NAME');

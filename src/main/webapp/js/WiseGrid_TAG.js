@@ -14,12 +14,10 @@ function initUniWiseGrid(objName, width, height) {
 
 
 function initWiseGrid(objName, width, height) {
-    //var WISEGRID_TAG = "<OBJECT ID='" + objName + "' codebase='/WiseGrid/WiseGrid_v5_3_1_98.cab#version=5,3,1,98'";
-    var WISEGRID_TAG = "<OBJECT ID='" + objName + "' codebase='/WiseGrid/WiseGrid_v_5_3_1_99.cab#version=5,3,1,99'";
+    var WISEGRID_TAG = "<OBJECT ID='" + objName + "' codebase='/WiseGrid/WiseGrid_v_5_3_1_100.cab#version=5,3,1,100'";
     WISEGRID_TAG = WISEGRID_TAG + " NAME='" + objName + "' WIDTH=" + width + " HEIGHT=" + height + " border=0";
     WISEGRID_TAG = WISEGRID_TAG + " CLASSID='CLSID:E8AA1760-8BE5-4891-B433-C53F7333710F'>";
     WISEGRID_TAG = WISEGRID_TAG + " <PARAM NAME = 'strLicenseKeyList' VALUE='122670CA8BD07EF9CD21AC63B6EB6E08'>";
-    //WISEGRID_TAG = WISEGRID_TAG + " <PARAM NAME = 'strLicenseKeyList' VALUE='M+UMiwRSibpQ9Ynz4hRLqJByNH8oRVTD/eg3UO+UnHZ6OeGZ1C6Bs4UqEAxjXvYTIWM0yCiKU1h6YIHigeZaIQ=='>";
     WISEGRID_TAG = WISEGRID_TAG + "</OBJECT>"
     document.write(WISEGRID_TAG);
 }

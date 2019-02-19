@@ -1,34 +1,39 @@
 <HTML>
 <HEAD>
     <TITLE>Test Events</TITLE>
+    <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
 </HEAD>
 <BODY>
 <script src="/js/WiseGridVB_TAG.js"></script>
 <SCRIPT FOR="WiseGrid" EVENT="Initialize()" LANGUAGE="javascript">
-    WiseGrid.AddHeader("TEST1", "TEST1", "t_text", 150, 150, true);
+
+    WiseGrid.strHDBgColor="95|177|206";
+    WiseGrid.bHDMoving = false;
+    WiseGrid.bHDSwapping = false;
+    WiseGrid.nHDLines = 4;
+
+    WiseGrid.AddHeader("SUB_HEADER1", "서브헤더1", "t_text", 150, 150, true);
+    WiseGrid.AddHeader("SUB_HEADER2", "서브헤더2", "t_text", 150, 150, true);
+
+    WiseGrid.AddGroup("GROUP_HEADER", "그룹헤더");
+    WiseGrid.AppendHeader("GROUP_HEADER", "SUB_HEADER1");
+    WiseGrid.AppendHeader("GROUP_HEADER", "SUB_HEADER2");
+
     WiseGrid.BoundHeader();
+
     WiseGrid.AddRow();
     WiseGrid.AddRow();
     WiseGrid.AddRow();
     WiseGrid.AddRow();
 </SCRIPT>
 
+
 <!--
-<script for="WiseGrid" event="HeaderClick(strColumnKey)" language="vbscript">
-    msgbox "header Click"
-    call a("aa")
-</script>
+    VB스크립트는 IE10 이하부터 사용가능
+    Cell 클릭 시 헤더텍스트 변경
 -->
-
-
-
-<!--<script for="WiseGrid" event="CellClick(colKey, nRow, keyDown)" language="javascript">
-    alert("Cell Click");
-</script>-->
-
-
 <script for="WiseGrid" event="CellClick(colKey, nRow)" language="vbscript">
-    msgbox "Cell Click"
+    document.WiseGrid.SetGroupHDText "GROUP_HEADER", "헤더텍스트 변경"
 </script>
 
 

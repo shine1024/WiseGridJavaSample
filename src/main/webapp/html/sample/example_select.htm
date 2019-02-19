@@ -49,20 +49,17 @@ function init() {
 
 function setHeader(GridObj) {
 	GridObj.AddHeader("SEQ_NO",			"SEQ_NO", 		"t_text", 		8,		85,		true);
-//	GridObj.AddHeader("ALLSELECTED",		"전체선택",			"t_checkbox", 	2, 		80,		true);
 	GridObj.AddHeader("SELECTED",		"선택",			"t_checkbox", 	2, 		80,		true);
 	GridObj.AddHeader("ITEM_FLAG", 		"자재구분",		"t_combo", 		10, 	90,		true);
 	GridObj.AddHeader("VENDOR_NAME", 	"제조회사",		"t_text", 		50, 	80,		true);
 	GridObj.AddHeader("ITEM_CODE", 		"제품코드",		"t_imagetext", 	4000, 	100,	false);
-	GridObj.AddHeader("ITEM_NAME", 		"제품명", 		"t_text", 		-1, 	150,	true);
+	GridObj.AddHeader("ITEM_NAME", 		"제품명", 		"t_text", 		100, 	150,	true);
 	GridObj.AddHeader("SPECIFICATION", 	"규격", 			"t_text", 		-1, 	200,	true);
 	GridObj.AddHeader("UNIT", 			"단위",			"t_combo",		10, 	50,		true);
 	GridObj.AddHeader("PRICE", 			"출고가", 		"t_number", 	12.6, 	80,		true);
 	GridObj.AddHeader("STOCK",			"재고량", 		"t_number", 	30.3,		60,		true);
 	GridObj.AddHeader("ADD_DATE",		"등록일", 		"t_date", 		8,	150,		true);
 	GridObj.AddHeader("CHANGE_DATE",	"수정일", 		"t_date", 		8,	150,		true);
-
-//	GridObj.AddHeader("TEST", 	"규격", 			"t_text", 		-1, 	200,	true);
 
 
 
@@ -118,8 +115,7 @@ function setHeader(GridObj) {
     GridObj.SetNumberFormat("PRICE", "#,###.#####0");
 
 	//t_date 타입의 컬럼을 포맷타입으로  지정한다.
-//    GridObj.SetDateFormat("ADD_DATE", "yyyy-MM-dd")
-    GridObj.SetDateFormat("ADD_DATE", "yyyy-MM")
+    GridObj.SetDateFormat("ADD_DATE", "yyyy-MM-dd")
     GridObj.SetDateFormat("CHANGE_DATE", "yyyy-MM-dd")
 
 	//엑셀로 Export할때 상단에 헤더를 추가한다.

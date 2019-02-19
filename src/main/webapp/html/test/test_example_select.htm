@@ -3,20 +3,10 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>기본예제 - 기본</title>
 <link rel='stylesheet' href='/css/wisegrid.css' type='text/css'>
-<!--<link rel='stylesheet' href='/css/jquery-ui.css' type='text/css'>-->
-<!--<script type='text/javascript' src='/js/jquery/jquery-1.11.1.min.js'></script>-->
-<!--<script type='text/javascript' src='/js/jquery/jquery-ui.js'></script>-->
 <script type='text/javascript' src='/js/WiseGrid_TAG.js'></script>
-<!--<script type='text/javascript' src='/js/WiseGrid_Property.js'></script>-->
-<!--<script type='text/javascript' src='/js/WiseGrid_Basic_Sample.js'></script>-->
 <script for="WiseGrid" event="Initialize()">
 	init();
 </script>
-<!--
-<script  for="WiseGrid" event="EndQuery()">
-	GridEndQuery();
-</script>
--->
 
 
 
@@ -24,14 +14,12 @@
 function init() {
 	var GridObj = document.WiseGrid;
 	setHeader(GridObj);
-//	doQuery();
 }
 
 function setHeader(GridObj) {
 	GridObj.AddHeader("PRICE", 			"출고가", 		"t_number", 	"12.6", 	"200",		"true");
 	GridObj.AddHeader("NUMBER", 			"숫자", 		"t_number", 	"12.6", 	"200",		"true");
 	GridObj.BoundHeader();
-
     GridObj.setNumberFormat('NUMBER', '#,###.#####');
 }
 

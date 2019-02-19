@@ -99,10 +99,8 @@ public class ExampleSelect extends HttpServlet {
 //            gdRes.getHeader("ITEM_FLAG").setComboValues(comboValues_1, comboHiddenValues_1);
 
 
-            BigDecimal bigDecimal = new BigDecimal(123123123213123123123123.21312312313);
-            double exRate = 6.682283;
             for (int i = 0; i < rowCount; i++) {
-                gdRes.getHeader("SELECTED").addValue("0", "");
+                gdRes.getHeader("SELECTED").addValue("1", "");
                 gdRes.getHeader("SEQ_NO").addValue(String.valueOf(i), "");
                 gdRes.getHeader("ITEM_FLAG").addSelectedHiddenValue(sd.getValue(i, 0));
                 gdRes.getHeader("VENDOR_NAME").addValue(sd.getValue(i, 1), "");
@@ -110,8 +108,7 @@ public class ExampleSelect extends HttpServlet {
                 gdRes.getHeader("ITEM_NAME").addValue(sd.getValue(i, 3), "");
                 gdRes.getHeader("SPECIFICATION").addValue(sd.getValue(i, 4), "");
                 gdRes.getHeader("UNIT").addSelectedHiddenValue(sd.getValue(i, 5));
-//                gdRes.getHeader("PRICE").addValue(sd.getValue(i, 6), "");
-                gdRes.getHeader("PRICE").addValue(String.valueOf(exRate), "");
+                gdRes.getHeader("PRICE").addValue(sd.getValue(i, 6), "");
                 gdRes.getHeader("STOCK").addValue(sd.getValue(i, 7), "");
                 gdRes.getHeader("ADD_DATE").addValue(sd.getValue(i, 8), "");
                 gdRes.getHeader("CHANGE_DATE").addValue(sd.getValue(i, 9), "");

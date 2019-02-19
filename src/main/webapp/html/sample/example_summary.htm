@@ -15,7 +15,16 @@
 	GridCellClick(strColumnKey, nRow);
 </script>
 
-<script language=javascript>
+<script language=javascript for="WiseGrid" event="ChangeCell(strColumnKey, nRow, vtOldValue, vtNewValue)">
+	console.log(strColumnKey, nRow, vtOldValue, vtNewValue);
+    console.log(document.WiseGrid.getSummaryBarValue('SUMMARY1', 'STOCK', 2, true));
+</script>
+
+<script language=javascript for="WiseGrid" event="EndQuery()">
+    setMergeSummary();
+</script>
+
+	<script language=javascript>
 function init(GridObj) {
 	setHeader(GridObj);
 	setProperty(GridObj);
