@@ -1,0 +1,296 @@
+<HTML>
+<HEAD>
+<title>기본예제 - 여러개의 그리드</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv='X-UA-Compatible' content='IE=9'>
+<link rel='stylesheet' href='/samsung_card_issue/css/wisegrid.css' type='text/css'>
+<script src="/samsung_card_issue/js/WiseGridExtension.js"></script>
+<script src="/samsung_card_issue/js/WiseGridConfig.js"></script>
+<script language=javascript for="WiseGrid1" event="CellClick(strColumnKey,nRow)">
+	GridCellClickSel(document.WiseGrid1, strColumnKey, nRow)
+</script>
+<script language=javascript for="WiseGrid2" event="CellClick(strColumnKey,nRow)">
+	GridCellClickSel(document.WiseGrid2, strColumnKey, nRow)
+</script>
+<script language=javascript for="WiseGrid3" event="CellClick(strColumnKey,nRow)">
+	GridCellClickSel(document.WiseGrid3, strColumnKey, nRow)
+</script>
+<script language=javascript for="WiseGrid4" event="CellClick(strColumnKey,nRow)">
+	GridCellClickSel(document.WiseGrid4, strColumnKey, nRow)
+</script>
+
+<script language=javascript>
+W$.ready(function () {
+	WiseGridEx.render({id:"WiseGrid1", width:"100%", height:"200", target:"WiseGridDiv1",
+		initialize: function(){
+			init(document.WiseGrid1);
+		}
+	});
+	WiseGridEx.render({id:"WiseGrid2", width:"100%", height:"200", target:"WiseGridDiv2",
+		initialize: function(){
+			init(document.WiseGrid2);
+		}
+	});
+	WiseGridEx.render({id:"WiseGrid3", width:"100%", height:"200", target:"WiseGridDiv3",
+		initialize: function(){
+			init(document.WiseGrid3);
+		}
+	});
+	WiseGridEx.render({id:"WiseGrid4", width:"100%", height:"200", target:"WiseGridDiv4",
+		initialize: function(){
+			init(document.WiseGrid4);
+		}
+	});
+});
+
+function init(GridObj) {
+	//로우 셀렉터를 WiseGrid에서 숨긴다. // extension.js 에러발생
+	GridObj.bRowSelectorVisible = false;
+
+	//Statusbar를 WiseGrid에서 숨긴다.
+	GridObj.bStatusbarVisible = false;
+
+	//사용자가 헤더를 드래그해서 컬럼위치를 이동할수 없다.
+	GridObj.bHDSwapping = false;
+
+	setHeader(GridObj);
+	doQuery();
+}
+
+function setHeader(GridObj) {
+	//그리드에 컬럼을 등록한다. 
+	GridObj.AddHeader("SELECTED", 		"선택",			"t_checkbox", 	2, 		50,		true);	
+	GridObj.AddHeader("ITEM_FLAG", 		"자재구분",		"t_combo", 		10, 	90,		false);	
+	GridObj.AddHeader("VENDOR_NAME", 	"제조회사",		"t_text", 		50, 	80,		false);
+	GridObj.AddHeader("ITEM_CODE", 		"제품코드",		"t_imagetext", 	20, 	100,	false);
+	GridObj.AddHeader("ITEM_NAME", 		"제품명", 		"t_text", 		500,	150,	false);	
+	GridObj.AddHeader("SPECIFICATION", 	"규격", 			"t_text", 		2000, 	200,	false);	
+	GridObj.AddHeader("UNIT", 			"단위",			"t_combo",		10, 	50,		false);
+	GridObj.AddHeader("PRICE", 			"출고가", 		"t_number", 	22.3, 	80,		false);	
+	GridObj.AddHeader("STOCK",			"재고량", 		"t_number", 	22,		60,		false);
+	GridObj.AddHeader("ADD_DATE",		"등록일", 		"t_date", 		8,		85,		false);	
+	GridObj.AddHeader("CHANGE_DATE",	"수정일", 		"t_date", 		8,		85,		false);	
+	GridObj.AddHeader("SEQ_NO",			"SEQ_NO", 		"t_text", 		8,		85,		false);
+
+	//AddHeader를 완료한 후 헤더를 그리드에 바인딩한다
+	GridObj.BoundHeader();
+
+	//해당 컬럼을 숨긴다.
+	GridObj.SetColHide("SEQ_NO", true);
+
+	//t_checkbox 타입의 컬럼에 체크를 전체적용한다.
+	GridObj.SetColHDCheckBoxVisible("SELECTED", true);  
+
+	//t_combo 타입의 컬럼에 Combo List 를 추가한다. 
+	GridObj.AddComboListValue("ITEM_FLAG", "프로세서", "CPU"); 
+	GridObj.AddComboListValue("ITEM_FLAG", "메모리", "MEM"); 
+	GridObj.AddComboListValue("ITEM_FLAG", "메인보드", "MAB"); 
+	GridObj.AddComboListValue("ITEM_FLAG", "그래픽카드", "VID"); 
+	GridObj.AddComboListValue("ITEM_FLAG", "모니터", "MOR");
+	GridObj.AddComboListValue("ITEM_FLAG", "하드디스크", "HDD");
+	GridObj.AddComboListValue("ITEM_FLAG", "CDROM", "CDR");
+	GridObj.AddComboListValue("ITEM_FLAG", "키보드", "KEY");
+	GridObj.AddComboListValue("ITEM_FLAG", "마우스", "MOU");
+
+	GridObj.AddComboListValue("UNIT", "EA", "EA");
+
+	//이미지리스트에 이미지 URL을 추가한다
+	GridObj.AddImageList("ITEM_CODE", "/images/bt_search.gif");
+
+	//셀의 글자색을 적용한다.
+	GridObj.SetColCellFgColor("ITEM_CODE", "0|0|255");
+	
+	//t_number 타입의 컬럼을 포맷타입으로  지정한다.
+	GridObj.SetNumberFormat("PRICE", "#,##0.00"); 
+	GridObj.SetNumberFormat("STOCK", "#,##0"); 
+
+	//t_date 타입의 컬럼을 포맷타입으로  지정한다.
+	GridObj.SetDateFormat("ADD_DATE", "yyyy/MM/dd");
+	GridObj.SetDateFormat("CHANGE_DATE", "yyyy/MM/dd");
+}
+
+/* 조회 */
+function doQuery() {
+	var GridObj = document.WiseGrid1;	
+	var servlet_url = "/servlet/samsung_card_issue.ExampleSelect";
+
+	//WiseGrid가 서버에 전송할 mode를 셋팅한다.
+	GridObj.SetParam("mode", "search");
+	
+	//WiseGrid가 서버와 통신시에 데이터를 전달한다.
+	GridObj.DoQuery(servlet_url);
+}
+
+/* WiseGrid의 셀을 클릭했을때 발생한다.  */
+function GridCellClickSel(GridObj, strColumnKey, nRow) {
+	if(strColumnKey != "ITEM_CODE" && strColumnKey != "SELECTED") {
+		if(GridObj.GetCellValue("SELECTED", nRow) == "0") { //지정한 셀의 값을 가져온다. 
+			for(i = 0; i < GridObj.GetColCount(); i++) 	{
+				GridObj.SetCellValue("SELECTED", nRow, "1");
+				GridObj.SetCellBgColor(GridObj.GetColHDKey(i), nRow, "188|210|238");
+			}
+		} else {
+			for(i = 0; i < GridObj.GetColCount(); i++) {
+				GridObj.SetCellValue("SELECTED", nRow, "0");
+				GridObj.SetCellBgColor(GridObj.GetColHDKey(i), nRow, "255|255|255");
+			}
+		}
+	}
+	if(strColumnKey === "ITEM_CODE") {
+		window.open("/samsung_card_issue/example_multi_grid_select.htm", "multi_grid", "width=1100, height=1000, toolbar=no, menubar=no, scrollbars=no, resizable=yes" );
+	}
+}
+/* 로우가 체크되었는지 확인한다. */
+function chkSelected(GridObj) {
+	for(i = 0; i < GridObj.GetRowCount(); i++) {//그리드 데이터의 로우수를 반환한다.
+		if(GridObj.GetCellValue("SELECTED", i) == "1") { //지정한 셀의 값을 가져온다. 
+			return true;
+		}
+	}
+	return false;
+}
+
+//WiseGrid의 값을 다른 WiseGrid로 옮긴다.
+function moveData(fromGridObj, toGridObj) {
+	if(!chkSelected(fromGridObj)) {
+		alert("선택된 건이 없습니다.");
+		return;
+	}
+
+	for(i = 0; i < fromGridObj.GetRowCount(); i++) {
+		if(fromGridObj.GetCellValue("SELECTED", i) == "1") {
+
+			toGridObj.AddRow(); //옮겨긴 그리드의 마지막 열에 빈 로우를 추가한다.
+
+			for(j = 0; j < toGridObj.GetColCount(); j++) {
+				if(toGridObj.GetColType(toGridObj.GetColHDKey(j)) == "t_combo") {//컬럼 인덱스로 컬럼키를 가져온 컬럼의 타입을 가져온다. 
+					toGridObj.SetComboSelectedIndex(toGridObj.GetColHDKey(j), toGridObj.GetRowCount()-1, fromGridObj.GetComboSelectedIndex(toGridObj.GetColHDKey(j), i));
+					toGridObj.SetCellBgColor(toGridObj.GetColHDKey(j), toGridObj.GetRowCount()-1, "188|210|238");
+				} else if(toGridObj.GetColType(toGridObj.GetColHDKey(j)) == "t_imagetext") {
+					toGridObj.SetCellImage(toGridObj.GetColHDKey(j), toGridObj.GetRowCount()-1, 0);
+					toGridObj.SetCellValue(toGridObj.GetColHDKey(j), toGridObj.GetRowCount()-1, fromGridObj.GetCellValue(toGridObj.GetColHDKey(j), i));
+					toGridObj.SetCellHiddenValue(toGridObj.GetColHDKey(j), toGridObj.GetRowCount()-1, fromGridObj.GetCellHiddenValue(toGridObj.GetColHDKey(j), i));
+					toGridObj.SetCellBgColor(toGridObj.GetColHDKey(j), toGridObj.GetRowCount()-1, "188|210|238");
+				} else {
+					toGridObj.SetCellValue(toGridObj.GetColHDKey(j), toGridObj.GetRowCount()-1, fromGridObj.GetCellValue(toGridObj.GetColHDKey(j), i));
+					toGridObj.SetCellBgColor(toGridObj.GetColHDKey(j), toGridObj.GetRowCount()-1, "188|210|238");
+				}
+			}
+		}
+	}
+
+	for(i = fromGridObj.GetRowCount()-1; i >= 0; i--) {
+		if(fromGridObj.GetCellValue("SELECTED", i) == "1")
+			
+			//로우를 삭제한다
+			fromGridObj.DeleteRow(i);
+	}
+}
+
+
+</script>
+
+</HEAD>
+<BODY bgcolor='#FFFFFF' text='#000000'>
+<form name="examForm">
+<input type="hidden" name="imageUrl" value="">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr height="20">
+<td class="title1_k">
+	&nbsp;기본예제<br><hr>
+</td>
+</tr>
+<tr height="20">
+<td class="title2_k">
+		&nbsp;&nbsp;&nbsp; 여러개의 그리드 적용
+</td>
+</tr>
+
+</table>
+<hr>
+<table width="98%" border="0" cellspacing="0" cellpadding="0"  class="title3">
+	<tr>
+		<td>
+			<table width="100%" border="0" cellpadding="2" cellspacing="0" >
+				<tr>
+				  <td valign="top" align="right">
+					<table border=0 cellpadding="0" cellspacing="0">
+						<tr>
+							<td><script language="javascript">btn("doQuery()","조회")</script></td>
+						</tr>
+					</table>
+				  </td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+<table width="98%" border="0" cellpadding="0" cellspacing="0" >
+	<tr>
+		<td align='left'>
+			<table width="100%" border="0" cellpadding="0" cellspacing="0">
+				<tr>
+					<td>
+						<table width="100%" border="0" cellpadding="0" cellspacing="0">
+							<tr><td bgcolor="#00455d" height="3"></td></tr>
+<!--							<tr><td><script>initWiseGrid("WiseGrid1", "100%", "200");</script></td></tr>-->
+							<tr><td><div id="WiseGridDiv1"></div></td></tr>
+						</table>
+					</td>
+					<td width="60"><a href="javascript:moveData(document.WiseGrid1, document.WiseGrid2);">
+						<img src="/images/arrow_right.gif" border="0" width="57" height="25"></a><br><br>
+						<a href="javascript:moveData(document.WiseGrid2, document.WiseGrid1);">
+						<img src="/images/arrow_left.gif" border="0" width="57" height="25"></a>
+					</td>
+					<td>
+						<table width="100%" border="0" cellpadding="0" cellspacing="0">
+							<tr><td bgcolor="#00455d" height="3"></td></tr>
+<!--							<tr><td><script>initWiseGrid("WiseGrid2", "100%", "200");</script></td></tr>-->
+							<tr><td><div id="WiseGridDiv2"></div></td></tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td height="27" align="center"><a href="javascript:moveData(document.WiseGrid3, document.WiseGrid1);">
+						<img src="/images/arrow_up.gif" border="0" width="25" height="57"></a>&nbsp;&nbsp;&nbsp;
+						<a href="javascript:moveData(document.WiseGrid1, document.WiseGrid3);">
+						<img src="/images/arrow_down.gif" border="0" width="25" height="57"></a>
+					</td>
+					<td></td>
+					<td height="27" align="center">
+						<a href="javascript:moveData(document.WiseGrid4, document.WiseGrid2);">
+						<img src="/images/arrow_up.gif" border="0" width="25" height="57"></a>&nbsp;&nbsp;&nbsp;
+						<a href="javascript:moveData(document.WiseGrid2, document.WiseGrid4);">
+						<img src="/images/arrow_down.gif" border="0" width="25" height="57"></a>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<table width="100%" border="0" cellpadding="0" cellspacing="0">
+							<tr><td bgcolor="#00455d" height="3"></td></tr>
+<!--							<tr><td><script>initWiseGrid("WiseGrid3", "100%", "200");</script></td></tr>-->
+							<tr><td><div id="WiseGridDiv3"></div></td></tr>
+						</table>
+					</td>
+					<td width="60">
+						<a href="javascript:moveData(document.WiseGrid3, document.WiseGrid4);">
+						<img src="/images/arrow_right.gif" border="0" width="57" height="25"></a><br><br>
+						<a href="javascript:moveData(document.WiseGrid4, document.WiseGrid3);">
+						<img src="/images/arrow_left.gif" border="0" width="57" height="25"></a>
+					</td>
+					<td>
+						<table width="100%" border="0" cellpadding="0" cellspacing="0">
+							<tr><td bgcolor="#00455d" height="3"></td></tr>
+<!--							<tr><td><script>initWiseGrid("WiseGrid4", "100%", "200");</script></td></tr>-->
+							<tr><td><div id="WiseGridDiv4"></div></td></tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+</form>
+
+</BODY>
+</HTML>

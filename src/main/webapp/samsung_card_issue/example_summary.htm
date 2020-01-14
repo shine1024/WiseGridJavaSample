@@ -1,0 +1,215 @@
+<HTML>
+<HEAD>
+<title>합계</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv='X-UA-Compatible' content='IE=9'>
+<link rel='stylesheet' href='/samsung_card_issue/css/wisegrid.css' type='text/css'>
+<script src="/samsung_card_issue/js/WiseGridExtension.js"></script>
+<script src="/samsung_card_issue/js/WiseGridConfig.js"></script>
+<script language=javascript for="WiseGrid" event="CellClick(strColumnKey,nRow)">
+	GridCellClick(strColumnKey);
+</script>
+
+<script language=javascript for="WiseGrid" event="EndQuery()">
+    setMergeSummary();
+</script>
+
+<script language=javascript>
+W$.ready(function () {
+	WiseGridEx.render({id:"WiseGrid", width:"100%", height:"350", target:"WiseGridDiv",
+		initialize: function(){
+			init(document.WiseGrid);
+		}
+	});
+});
+
+function init(GridObj) {
+	setHeader(GridObj);
+
+	GridObj.bHDMoving = false;
+	GridObj.bHDSwapping = false;
+	GridObj.bRowSelectorVisible = false;
+	GridObj.strRowBorderStyle = "none";
+	GridObj.nRowSpacing = 0;
+	GridObj.strHDClickAction = "select";
+	GridObj.strActiveRowBgColor = "default";
+	GridObj.strRowSizing = 'autofree';
+	doQuery();
+}
+
+function setHeader(GridObj) {    
+	GridObj.AddHeader("SELECTED",		"선택",			"t_checkbox", 	2, 		40,		true);
+	GridObj.AddHeader("ITEM_FLAG", 		"자재구분",		"t_combo", 		10, 	90,		true);
+	GridObj.AddHeader("VENDOR_NAME", 	"제조회사",		"t_text", 		50, 	80,		true);
+	GridObj.AddHeader("ITEM_CODE", 		"제품코드",		"t_imagetext", 	20, 	100,	false);
+	GridObj.AddHeader("ITEM_NAME", 		"제품명", 		"t_text", 		500, 	150,	true);
+	GridObj.AddHeader("SPECIFICATION", 	"규격", 			"t_text", 		2000, 	200,	true);
+	GridObj.AddHeader("UNIT", 			"단위",			"t_combo",		10, 	50,		true);
+	GridObj.AddHeader("PRICE", 			"출고가", 	"t_number", 	22.3, 	140,		true);
+	GridObj.AddHeader("STOCK",			"재고량", 		"t_number", 	22,		60,		true);
+	GridObj.AddHeader("ADD_DATE",		"등록일", 		"t_date", 		8,		85,		true);
+	GridObj.AddHeader("CHANGE_DATE",	"수정일일", 		"t_date", 		8,		85,		true);
+	GridObj.AddHeader("SEQ_NO",			"SEQ_NO", 		"t_text", 		8,		85,		true);	
+
+	GridObj.BoundHeader();
+
+	GridObj.SetColHide("SEQ_NO", true);
+//	GridObj.SetColHide("SELECTED", true);
+
+	GridObj.AddComboListValue("ITEM_FLAG", "프로세서", "CPU");
+	GridObj.AddComboListValue("ITEM_FLAG", "메모리", "MEM");
+	GridObj.AddComboListValue("ITEM_FLAG", "메인보드", "MAB");
+	GridObj.AddComboListValue("ITEM_FLAG", "그래픽카드", "VID");
+	GridObj.AddComboListValue("ITEM_FLAG", "모니터", "MOR");
+	GridObj.AddComboListValue("ITEM_FLAG", "하드디스크", "HDD");
+	GridObj.AddComboListValue("ITEM_FLAG", "CDROM", "CDR");
+	GridObj.AddComboListValue("ITEM_FLAG", "키보드", "KEY");
+	GridObj.AddComboListValue("ITEM_FLAG", "마우스", "MOU");
+	GridObj.AddComboListValue("UNIT", "EA", "EA");
+	GridObj.AddImageList("ITEM_CODE", "/images/bt_search.gif");
+	GridObj.SetColCellFgColor("ITEM_CODE", "0|0|255");
+	GridObj.SetNumberFormat("PRICE", "#,##0.00");
+	GridObj.SetNumberFormat("STOCK", "#,##0"); 
+	GridObj.SetDateFormat("ADD_DATE", "yyyy/MM/dd");
+	GridObj.SetDateFormat("CHANGE_DATE", "yyyy/MM/dd");
+}
+
+/* ??? */
+function doQuery() {
+	var GridObj = document.WiseGrid;
+	var servlet_url = "/servlet/samsung_card_issue.ExampleSelect";
+	
+	GridObj.SetParam("mode", "search");
+
+	GridObj.DoQuery(servlet_url);
+}
+
+function setSummary() {
+	var GridObj = document.WiseGrid;
+
+	if(GridObj.GetRowCount() == 0) {
+		alert("먼저 조회하십시오.");
+		return;
+	}
+	
+	GridObj.ClearSummaryBar();
+
+	GridObj.ClearGroupMerge();
+
+	GridObj.AddSummaryBar('SUMMARY3', '합계', 'summaryall', 'sum', 'PRICE,STOCK');
+
+
+
+
+
+	GridObj.SetSummaryBarColor('SUMMARY3', '100|100|100', '250|222|222');
+
+	GridObj.SetSummaryBarFont('SUMMARY3', '맑은고딕', '10', true, false, false, false);
+
+	GridObj.MoveRow(GridObj.GetRowCount() - 1);
+}
+
+function testSummary() {
+	var GridObj = document.WiseGrid;
+
+	GridObj.ClearSummaryBar();
+	GridObj.AddSummaryBar('SUMMARY_TEST', '', 'summaryall', 'sum', 'SELECTED');
+}
+
+function setMergeSummary() {
+	var GridObj = document.WiseGrid;
+
+	if(GridObj.GetRowCount() == 0) {
+		alert("먼저 조회하십시오.");
+		return;
+	}
+
+	GridObj.ClearSummaryBar();
+
+	GridObj.ClearGroupMerge();
+
+	GridObj.SetGroupMerge("ITEM_FLAG,VENDOR_NAME");
+
+	GridObj.AddSummaryBar('SUMMARY1', '소계', 'ITEM_FLAG', 'sum', 'PRICE,STOCK');
+	GridObj.AddSummaryBar('SUMMARY2', '소계', 'VENDOR_NAME', 'sum', 'PRICE,STOCK');
+	GridObj.AddSummaryBar('SUMMARY3', '소계', 'summaryall', 'sum', 'PRICE,STOCK');
+
+	GridObj.SetSummaryBarColor('SUMMARY1', '100|100|100', '210|251|212');
+	GridObj.SetSummaryBarColor('SUMMARY2', '100|100|100', '222|243|250');
+	GridObj.SetSummaryBarColor('SUMMARY3', '100|100|100', '250|222|222'); 
+
+	GridObj.SetSummaryBarFont('SUMMARY1', '맑은고딕', '10', true, false, false, false);
+	GridObj.SetSummaryBarFont('SUMMARY2', '맑은고딕', '10', true, false, false, false);
+	GridObj.SetSummaryBarFont('SUMMARY3', '맑은고딕', '10', true, false, false, false);
+	
+	GridObj.MoveRow(0);
+}
+
+function clearSummary() {
+	var GridObj = document.WiseGrid;
+
+	if(GridObj.GetRowCount() == 0) {
+		alert("먼저 조회하십시오.");
+		return;
+	}
+
+	GridObj.ClearSummaryBar();
+	GridObj.ClearGroupMerge();
+
+	GridObj.MoveRow(0);
+}
+function GridCellClick(strColumnKey) {
+	if(strColumnKey === "ITEM_CODE") {
+		window.open("/samsung_card_issue/example_multi_grid_select.htm", "multi_grid", "width=1100, height=1000, toolbar=no, menubar=no, scrollbars=no, resizable=yes" );
+	}
+}
+</script>
+
+</HEAD>
+<BODY bgcolor='#FFFFFF' text='#000000'>
+<form name="Form">
+<input type="hidden" name="merge_status" value="F">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+	<tr height="20">
+		<td class="title1_k">
+			&nbsp;기본예제<br><hr>
+		</td>
+	</tr>
+	<tr height="20">
+		<td class="title2_k">
+				&nbsp;&nbsp;&nbsp; 합계(기능추가)
+		</td>
+	</tr>
+</table>
+<hr>
+
+<table width="100%" border="0" cellpadding="2" cellspacing="0" >
+	<tr>
+	  <td valign="top" align="right">
+		<table border=0 cellpadding="0" cellspacing="0">
+			<tr>
+				<td><script language="javascript">btn("doQuery()","조회")</script></td>
+				<td><script language="javascript">btn("testSummary()","테스트")</script></td>
+				<td><script language="javascript">btn("setSummary()","합계")</script></td>
+				<td><script language="javascript">btn("setMergeSummary()","병합/합계")</script></td>
+				<td><script language="javascript">btn("clearSummary()","적용해제")</script></td>
+			</tr>
+		</table>
+	  </td>
+	</tr>
+</table>
+
+<table width="98%" border="0" cellpadding="0" cellspacing="0" >
+	<tr> 
+		<td bgcolor="#00455d" height="3"></td>
+	</tr>
+	<tr>
+		<td align='left'>
+			<div id="WiseGridDiv"></div>
+		</td>
+	</tr>
+</table>
+
+</form>
+</BODY>
+</HTML>

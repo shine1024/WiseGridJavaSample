@@ -1,0 +1,405 @@
+<HTML>
+<HEAD>
+<TITLE>기본예제 - 통합통신 예제</TITLE>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv='X-UA-Compatible' content='IE=9'>
+<link rel='stylesheet' href='/samsung_card_issue/css/wisegrid.css' type='text/css'>
+<script src="/samsung_card_issue/js/WiseGridExtension.js"></script>
+<script src="/samsung_card_issue/js/WiseGridConfig.js"></script>
+<script  for="WiseGridMaster" event="CellClick(strColumnKey, nRow)">
+	GridCellClick(strColumnKey);
+</script>
+<script  for="WiseGridSub1" event="CellClick(strColumnKey, nRow)">
+	GridCellClick(strColumnKey);
+</script>
+<script  for="WiseGridSub2" event="CellClick(strColumnKey, nRow)">
+	GridCellClick(strColumnKey);
+</script>
+<script  for="WiseGridSub3" event="CellClick(strColumnKey, nRow)">
+	GridCellClick(strColumnKey);
+</script>
+<script language=javascript for="WiseGridMaster" event="EndQuery()">
+  EndGridQuery();
+</script>
+
+<script language=javascript>
+W$.ready(function () {
+	WiseGridEx.render({id:"WiseGridMaster", width:"100%", height:"200", target:"WiseGridMaster",
+		initialize: function(){
+			init(document.WiseGridMaster);
+		}
+	});
+	WiseGridEx.render({id:"WiseGridSub1", width:"100%", height:"200", target:"WiseGridSub1",
+		initialize: function(){
+			init(document.WiseGridSub1);
+		}
+	});
+	WiseGridEx.render({id:"WiseGridSub2", width:"100%", height:"200", target:"WiseGridSub2",
+		initialize: function(){
+			init(document.WiseGridSub2);
+		}
+	});
+	WiseGridEx.render({id:"WiseGridSub3", width:"100%", height:"200", target:"WiseGridSub3",
+		initialize: function(){
+			init(document.WiseGridSub3);
+		}
+	});
+});
+
+
+var init_num=0;
+function init(GridObj) {
+	//로우 셀렉터를 WiseGrid에서 숨긴다.
+	GridObj.bRowSelectorVisible = false;
+
+	//Statusbar를 WiseGrid에서 숨긴다.
+	//GridObj.bStatusbarVisible = false;
+
+	//사용자가 헤더를 드래그해서 컬럼위치를 이동할수 없다.
+	GridObj.bHDSwapping = false;
+
+	setHeader(GridObj);
+	init_num = init_num+1;
+	if(init_num === 4){
+	    doQuery();
+	}
+}
+
+function setHeader(GridObj) {
+		//그리드에 컬럼을 등록한다.	 
+	GridObj.AddHeader("CRUD",			"구분",			"t_text", 		8, 		50,		true);	
+	GridObj.AddHeader("ITEM_FLAG", 		"자재구분",		"t_combo", 		10, 	90,		true);	
+	GridObj.AddHeader("VENDOR_NAME", 	"제조회사",		"t_text", 		50, 	80,		true);
+	GridObj.AddHeader("ITEM_CODE", 		"제품코드",		"t_imagetext", 	20, 	100,	false);
+	GridObj.AddHeader("ITEM_NAME", 		"제품명", 		"t_text", 		500, 	150,	true);	
+	GridObj.AddHeader("SPECIFICATION", 	"규격", 			"t_text", 		2000, 	200,	true);	
+	GridObj.AddHeader("UNIT", 			"단위",			"t_combo",		10, 	50,		true);
+	GridObj.AddHeader("PRICE", 			"출고가", 		"t_number", 	22.3, 	80,		true);	
+	GridObj.AddHeader("STOCK",			"재고량", 		"t_number", 	22,		60,		true);
+	GridObj.AddHeader("ADD_DATE",		"등록일", 		"t_date", 		8,		85,		true);	
+	GridObj.AddHeader("CHANGE_DATE",	"수정일", 		"t_date", 		8,		85,		true);	
+	GridObj.AddHeader("SEQ_NO",			"SEQ_NO", 		"t_text", 		8,		85,		true);	
+
+	//AddHeader를 완료한 후 헤더를 그리드에 바인딩한다
+	GridObj.BoundHeader();
+
+	//저장모드를 사용해 서버사이드와 통신한다. 	
+	GridObj.SetCRUDMode("CRUD", "생성", "수정", "삭제");
+	
+	//해당 컬럼을 숨긴다.
+	GridObj.SetColHide("SEQ_NO", true);
+
+	//t_combo 타입의 컬럼에 Combo List 를 추가한다. 
+	GridObj.AddComboListValue("ITEM_FLAG", "프로세서", "CPU"); 
+	GridObj.AddComboListValue("ITEM_FLAG", "메모리", "MEM"); 
+	GridObj.AddComboListValue("ITEM_FLAG", "메인보드", "MAB"); 
+	GridObj.AddComboListValue("ITEM_FLAG", "그래픽카드", "VID"); 
+	GridObj.AddComboListValue("ITEM_FLAG", "모니터", "MOR");
+	GridObj.AddComboListValue("ITEM_FLAG", "하드디스크", "HDD");
+	GridObj.AddComboListValue("ITEM_FLAG", "CDROM", "CDR");
+	GridObj.AddComboListValue("ITEM_FLAG", "키보드", "KEY");
+	GridObj.AddComboListValue("ITEM_FLAG", "마우스", "MOU");
+
+	GridObj.AddComboListValue("UNIT", "EA", "EA");
+
+	//이미지리스트에 이미지 URL을 추가한다.
+	GridObj.AddImageList("ITEM_CODE", "/images/bt_search.gif");
+
+	//셀의 글자색을 적용한다.
+	GridObj.SetColCellFgColor("ITEM_CODE", "0|0|255");	
+
+ 	//t_number 타입의 컬럼을 포맷타입으로  지정한다.
+	GridObj.SetNumberFormat("PRICE", "#,##0.00"); 
+	GridObj.SetNumberFormat("STOCK", "#,##0"); 
+
+	//t_date 타입의 컬럼을 포맷타입으로  지정한다.
+	GridObj.SetDateFormat("ADD_DATE", "yyyy/MM/dd");
+	GridObj.SetDateFormat("CHANGE_DATE", "yyyy/MM/dd");
+}
+
+/* 조회 */
+function doQuery() {
+	var GridObj = document.WiseGridMaster;	
+	var row_count = document.examForm.zip_row_count.value;
+	var servlet_url = "/servlet/samsung_card_issue.ExampleCoordinateComm";
+	//WiseGrid가 서버에 전송할 mode를 셋팅한다.
+	GridObj.SetParam("MODE", "S");	
+	GridObj.SetParam("ROWCOUNT", row_count);
+	//  WiseGrid1 통신시에 WiseGrid2 , WiseGrid3, WiseGrid4 의 Raw 데이터를 더해서 보낸다
+
+	GridObj.AddGridRawData("WISEGRID_SUB1",document.WiseGridSub1.GetGridRawData());
+	GridObj.AddGridRawData("WISEGRID_SUB2",document.WiseGridSub2.GetGridRawData());	
+	GridObj.AddGridRawData("WISEGRID_SUB3",document.WiseGridSub3.GetGridRawData());	
+	
+	//WiseGrid가 서버와 통신시에 데이터를 전달한다.
+	GridObj.DoQuery(servlet_url);
+}
+
+/* 조회 */
+function doZip() {
+	startTimer('Z');
+	var GridObj = document.WiseGridMaster;	
+	var row_count = document.examForm.zip_row_count.value;
+	var servlet_url = "/servlet/wisegrid.sample.ExampleCoordinateComm";
+	//WiseGrid가 서버에 전송할 mode를 셋팅한다.
+	GridObj.SetParam("MODE", "ZIP");	
+	GridObj.SetParam("ROWCOUNT", row_count);
+	
+	//  WiseGrid1 통신시에 WiseGrid2 , WiseGrid3, WiseGrid4 의 Raw 데이터를 더해서 보낸다
+	GridObj.AddGridRawData("WISEGRID_SUB1",document.WiseGridSub1.GetGridRawData());
+	GridObj.AddGridRawData("WISEGRID_SUB2",document.WiseGridSub2.GetGridRawData());	
+	GridObj.AddGridRawData("WISEGRID_SUB3",document.WiseGridSub3.GetGridRawData());	
+	
+	//WiseGrid가 서버와 통신시에 데이터를 전달한다.
+	GridObj.DoQuery(servlet_url);
+}
+
+function doSave() {
+	var GridObj = document.WiseGridMaster;	
+	var servlet_url = "/servlet/wisegrid.sample.ExampleCoordinateComm";
+	//WiseGrid가 서버에 전송할 mode를 셋팅한다.
+	GridObj.SetParam("MODE", "SAVE");	 
+	
+	//  WiseGrid1 통신시에 WiseGrid2 , WiseGrid3, WiseGrid4 의 Raw 데이터를 더해서 보낸다
+	GridObj.AddGridRawData("WISEGRID_SUB1",document.WiseGridSub1.GetGridRawData("CRUD"));
+	GridObj.AddGridRawData("WISEGRID_SUB2",document.WiseGridSub2.GetGridRawData("CRUD"));	
+	GridObj.AddGridRawData("WISEGRID_SUB3",document.WiseGridSub3.GetGridRawData("CRUD"));
+	
+	//WiseGrid가 서버와 통신시에 데이터를 전달한다.
+	GridObj.DoQuery(servlet_url,"CRUD");
+}
+
+function EndGridQuery() {
+	
+	var MasterGridObj = document.WiseGridMaster;
+	var SubGridObj1 = document.WiseGridSub1;
+	var SubGridObj2 = document.WiseGridSub2;
+	var SubGridObj3 = document.WiseGridSub3;
+	
+	var status = MasterGridObj.GetStatus();
+	if(status == "true") {
+		// WiseGrid1 이 통신할때 Server side에서 셋팅된 RawData를 가져옴
+		// RawData를 가져와서 각 그리드에 Data를 Set해준다.			
+		SubGridObj1.SetGridRawData(MasterGridObj.GetRecvRawData("WISEGRID_SUB1"), false);
+		SubGridObj2.SetGridRawData(MasterGridObj.GetRecvRawData("WISEGRID_SUB2"), false);
+		SubGridObj3.SetGridRawData(MasterGridObj.GetRecvRawData("WISEGRID_SUB3"), false);
+		
+		// MODE 라는 id를 가지는 Param 값을 가져옴 
+		var mode = MasterGridObj.GetParam("MODE");	
+		if(mode ==  "SAVE") {
+			// fieldset에 처리된 데이터를 보여준다.        
+	        var  innerdata1 ="<font size=3 color ='blue'>WiseGrid Master</font><br>" + MasterGridObj.GetParam("saveData")+"<br><br>";
+	        var  innerdata2 ="<font size=3 color ='blue'>WiseGrid Sub1</font><br>" + SubGridObj1.GetParam("saveData")+"<br><br>";
+	        var  innerdata3 ="<font size=3 color ='blue'>WiseGrid Sub2</font><br>" + SubGridObj2.GetParam("saveData")+"<br><br>";   
+	        var  innerdata4 ="<font size=3 color ='blue'>WiseGrid Sub3</font><br>" + SubGridObj3.GetParam("saveData")+"<br><br>";
+             
+			var innerdata = innerdata1+innerdata2+innerdata3+innerdata4;
+			document.examForm.result.innerHTML= '<legend>결과 데이터 </legend>'+innerdata ;               
+		} else if(mode == "ZIP") {
+			endTimer(mode);
+		}
+		
+	} else {
+		alert(MasterGridObj.GetMessage());
+	}
+}
+
+/*  행 추가 */
+function AddRow(GridObj){
+    GridObj.AddRow();
+}
+
+/*  선택된 Row 삭제 */
+function DeleteRow(GridObj){   
+    GridObj.DeleteRow(GridObj.GetActiveRowIndex());
+}
+
+/* 조회방법에 따른 시작시간 */
+function startTimer(method) {	
+	toDay = new Date();
+	from_time = toDay.getTime();
+
+	if(method == "N") {// Normal
+	
+		document.getElementById('sec_count').innerHTML = "조회방법 : <font color='blue'>일반조회중</font>&nbsp&nbsp&nbsp&nbsp<font color='gray'>";
+	} else {// Zip	
+		document.getElementById('sec_count').innerHTML = "조회방법 : <font color='blue'>압축조회중</font>&nbsp&nbsp&nbsp&nbsp<font color='gray'>";
+	}
+}
+
+var query_timer = null;
+var from_time = null;
+var to_time = null;
+
+/* 조회방법에 따른 끝시간 */
+function endTimer(method) {
+	toDay = new Date();
+	to_time = toDay.getTime();
+
+	total_time = (to_time - from_time) / 1000;
+	if(method == "N") {// Normal	
+		document.getElementById('sec_count').innerHTML = "조회방법 : <font color='red'>일반조회완료</font>&nbsp&nbsp&nbsp&nbsp<font color='purple'>" + total_time + "</font> 초";
+		clearInterval(query_timer);
+	} else { // Zip	
+		document.getElementById('sec_count').innerHTML = "조회방법 : <font color='red'>압축조회완료</font>&nbsp&nbsp&nbsp&nbsp<font color='purple'>" + total_time + "</font> 초";
+		clearInterval(query_timer);
+	}
+}
+
+function GridCellClick(strColumnKey) {
+	if(strColumnKey === "ITEM_CODE") {
+		window.open("/samsung_card_issue/example_multi_grid_select.htm", "multi_grid", "width=1100, height=1000, toolbar=no, menubar=no, scrollbars=no, resizable=yes" );
+	}
+}
+
+</script>
+
+</HEAD>
+<BODY bgcolor='#FFFFFF' text='#000000'>
+<form name="examForm">
+<input type="hidden" name="imageUrl" value="">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr height="20">
+<td class="title1_k">
+	&nbsp;기본예제<br><hr>
+</td>
+</tr>
+<tr height="20">
+<td class="title2_k">
+		&nbsp;&nbsp;&nbsp; 통합통신 예제
+</td>
+</tr>
+
+</table>
+<hr>
+<table width="98%" border="0" cellspacing="0" cellpadding="0"  class="title3">
+	<tr>
+		<td>
+			<table width="100%" border="0" cellpadding="2" cellspacing="0" >
+				<tr>					
+					<td>
+						<select name="zip_row_count">						
+							<option value="1000" selected>1,000건</option>
+							<option value="5000">5,000건</option>
+							<option value="10000" >10,000건</option>							
+						</select>
+					</td>
+				  <td valign="top" align="right">
+					<table border=0 cellpadding="0" cellspacing="0">
+						<tr>
+							<td><script language="javascript">btn("doQuery()","통합조회")</script></td>
+							<td><script language="javascript">btn("doZip()","압축조회")</script></td>
+							<td><script language="javascript">btn("doSave()","통합저장")</script></td>
+						</tr>
+					</table>
+				  </td>
+				</tr>
+			</table>
+			<table width="98%" border="0" cellspacing="0" cellpadding="0"  class="title3">
+				<tr>
+					<td align="right"><div id="sec_count" name="sec_count"><font color='blue'>#조회시간을 확인할 수 있습니다#</font></div></td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+<br /><br />
+
+<table width="98%" border="0" cellpadding="0" cellspacing="0" >
+	<tr>
+		<td align='left'>
+			<table width="100%" border="0" cellpadding="0" cellspacing="0">
+			  <tr>
+			   <td align="right">
+			     <table border=0 cellpadding="0" cellspacing="0">
+						<tr>
+							<td><script language="javascript">btn("AddRow(document.WiseGridMaster)","행추가")</script></td>
+							<td><script language="javascript">btn("DeleteRow(document.WiseGridMaster)","삭제")</script></td>
+						</tr>
+					</table> 			       
+			   </td> 
+			  <td></td> 
+			 <td align="right">
+			    <table border=0 cellpadding="0" cellspacing="0">
+						<tr>
+							<td><script language="javascript">btn("AddRow(document.WiseGridSub1)","행추가")</script></td>
+							<td><script language="javascript">btn("DeleteRow(document.WiseGridSub1)","삭제")</script></td>
+						</tr>
+					</table> 	 
+			 </td> 
+			  </tr>
+				<tr>
+					<td>
+						<table width="100%" border="0" cellpadding="0" cellspacing="0">
+							<tr><td bgcolor="#00455d" height="3"></td></tr>
+							<tr><td><div id="WiseGridMaster"></div></td></tr>
+						</table>
+					</td>
+					<td width="60">
+					<img src="/images/blank.gif" border="0" width="57" height="25"><br>			
+					</td>
+					<td>
+						<table width="100%" border="0" cellpadding="0" cellspacing="0">
+							<tr><td bgcolor="#00455d" height="3"></td></tr>
+							<tr><td><div id="WiseGridSub1"></div></td></tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td height="27" align="center">
+					<img src="/images/blank.gif" border="0" width="57" height="25"><br><br><br>		
+					</td>
+					<td></td>
+					<td height="27" align="center">
+						<img src="/images/blank.gif" border="0" width="57" height="25"><br><br><br>			
+					</td>
+				</tr>
+				<tr>
+			       <td align="right">
+			         <table border=0 cellpadding="0" cellspacing="0">
+						    <tr>
+							    <td><script language="javascript">btn("AddRow(document.WiseGridSub2)","행추가")</script></td>
+							    <td><script language="javascript">btn("DeleteRow(document.WiseGridSub2)","삭제")</script></td>
+						    </tr>
+					    </table> 			       
+			       </td> 
+			      <td></td> 
+			     <td align="right">
+			        <table border=0 cellpadding="0" cellspacing="0">
+						    <tr>
+							    <td><script language="javascript">btn("AddRow(document.WiseGridSub3)","행추가")</script></td>
+							    <td><script language="javascript">btn("DeleteRow(document.WiseGridSub3)","삭제")</script></td>
+						    </tr>
+					    </table> 	 
+			     </td> 
+			  </tr>
+				<tr>
+					<td>
+						<table width="100%" border="0" cellpadding="0" cellspacing="0">
+							<tr><td bgcolor="#00455d" height="3"></td></tr>
+							<tr><td><div id="WiseGridSub2"></div></td></tr>
+						</table>
+					</td>
+					<td width="60">					
+						<img src="/images/blank.gif" border="0" width="57" height="25"><br>						
+					</td>
+					<td>
+						<table width="100%" border="0" cellpadding="0" cellspacing="0">
+							<tr><td bgcolor="#00455d" height="3"></td></tr>
+							<tr><td><div id="WiseGridSub3"></div></td></tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+<br /><br />
+<fieldset id= 'result'>
+ <legend>결과 데이터 </legend>   
+   처리된 결과의 데이터를 보여줍니다.    
+</fieldset>     
+</form>
+
+</BODY>
+</HTML>
